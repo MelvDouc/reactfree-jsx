@@ -1,0 +1,22 @@
+{
+  "ts-node": {
+    "esm": true
+  },
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "DOM",
+      "ES2022"
+    ],
+    "module": "ES2022",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./",
+    "outDir": "../dist",
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "declaration": true
+  },
+  "exclude": [
+    "**/node_modules"
+  ]
+}

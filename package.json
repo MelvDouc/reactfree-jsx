@@ -1,0 +1,41 @@
+{
+  "name": "reactfree-jsx",
+  "version": "1.1.0",
+  "author": "Melvin Doucet",
+  "description": "A package to use JSX without React",
+  "keywords": [
+    "vanilla",
+    "js",
+    "jsx",
+    "tsx",
+    "vite"
+  ],
+  "engines": {
+    "node": ">=18.9.0",
+    "npm": ">=8.19.1"
+  },
+  "license": "ISC",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MelvDouc/reactfree-jsx.git"
+  },
+  "scripts": {
+    "build": "tsc -p src",
+    "build:watch": "tsc -p src -w",
+    "prepare": "npm run build",
+    "test": "npm run build && rm -rf test/node_modules && npm --prefix test install && npm --prefix test run dev"
+  },
+  "bugs": {
+    "url": "https://github.com/MelvDouc/reactfree-jsx/issues",
+    "email": "melv.douc@gmail.com"
+  },
+  "homepage": "https://github.com/MelvDouc/reactfree-jsx#readme",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "melv_observable": "^1.0.2"
+  }
+}
