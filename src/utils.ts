@@ -2,28 +2,28 @@ import Observable from "melv_observable";
 import { ComponentChildren, Props } from "./types";
 
 export function appendChildren(element: HTMLElement, children: ComponentChildren): void {
-  if (!Array.isArray(children)) {
-    if (children instanceof Observable) {
-      const value = children.getValue() as ComponentChildren;
-      appendChildren(element, value);
-      children.subscribe((value) => {
-        Array.isArray(value)
-          ? element.replaceChildren(...value)
-          : element.replaceChildren(value);
-      });
-      return;
-    }
-    element.append(children as string | Node);
+  if (Array.isArray(children)) {
+    children.forEach((child) => {
+      if (child != null)
+        appendChildren(element, child);
+    });
     return;
   }
 
-  children.forEach((child) => {
-    if (child != null)
-      appendChildren(element, child);
-  });
+  if (children instanceof Observable) {
+    const value = children.getValue() as ComponentChildren;
+    appendChildren(element, value);
+    children.subscribe((value) => {
+      Array.isArray(value)
+        ? element.replaceChildren(...value)
+        : element.replaceChildren(value);
+    });
+    return;
+  }
+  element.append(children as string | Node);
 }
 
-export function applyClass<T>(
+export function applyClassObj<T>(
   element: HTMLElement,
   classObj: Record<string, boolean | { obs: Observable<T>, predicate: (value: T | undefined) => boolean; }>
 ) {
@@ -54,14 +54,9 @@ export function applyStyle(element: HTMLElement, styleObj: Record<string, any>) 
 export function applyProps(element: Element, props: Props) {
   Object.entries(props).forEach(([key, value]) => {
     if (key.startsWith("_")) {
-      const k = key.slice(1) as keyof object;
-      (element[k] as any) = (value as Observable<any>).getValue();
-      (value as Observable<any>).subscribe((x) => (element[k] as any) = x);
-      return;
-    }
-    if (key.startsWith("on") && typeof value === "function") {
-      const eventType = key.slice(2);
-      element.addEventListener(eventType, value as EventListener);
+      const elementKey = key.slice(1) as keyof object;
+      (element[elementKey] as any) = (value as Observable<any>).getValue();
+      (value as Observable<any>).subscribe((x) => (element[elementKey] as any) = x);
       return;
     }
     (element[key as keyof object] as any) = value;

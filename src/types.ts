@@ -163,6 +163,7 @@ interface SVGElementEditableProps extends ElementEditableProps {
 }
 
 export interface Props extends BaseProps, Partial<HTMLElementEditableProps>, Partial<SVGElementEditableProps> {
+  classNames?: string[];
   classObj?: Record<string, boolean | { obs: Observable<any>, predicate: (value: any) => boolean; }>;
   styleObj?: Record<string, string | Observable<string>>;
   [key: string]: any;

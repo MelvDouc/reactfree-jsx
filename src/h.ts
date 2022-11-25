@@ -2,7 +2,7 @@ import type { ComponentFactory, Props, ComponentChild } from "./types";
 import {
   appendChildren,
   applyProps,
-  applyClass,
+  applyClassObj,
   applyStyle
 } from "./utils";
 
@@ -23,8 +23,13 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     delete props.$init;
   }
 
+  if (Array.isArray(props.classNames)) {
+    element.className = props.classNames.join(" ");
+    delete props.classNames;
+  }
+
   if (props.classObj) {
-    applyClass(element, props.classObj);
+    applyClassObj(element, props.classObj);
     delete props.classObj;
   }
 
@@ -35,5 +40,5 @@ export function h<T extends keyof HTMLElementTagNameMap>(
 
   applyProps(element, props);
   appendChildren(element, children);
-  return element as Element;
+  return element;
 }
