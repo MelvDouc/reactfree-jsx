@@ -3,6 +3,27 @@
 A package to use JSX and TSX with the full power of Vanilla JS minus the
 constraints of React.
 
+## JSX
+
+```tsx
+function Counter({ initialCount }: { initialCount: number }) {
+  const $init = (element) => {
+    const countObs = new Observable(initialCount);
+    countObs.subscribe((count) => element.innerText = String(count));
+    countObs.notify();
+  };
+
+  return (
+    <div>
+      <div $init={$init}></div>
+      <button onclick={() => countObs.updateValue((count) => count + 1)}>
+        +
+      </button>
+    </div>
+  );
+}
+```
+
 ## vite.config.js
 
 ```javascript
