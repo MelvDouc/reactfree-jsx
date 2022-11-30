@@ -13,19 +13,22 @@ export function h<T extends keyof HTMLElementTagNameMap>(
 ) {
   props ??= {};
 
-  if (typeof tagName === "function")
-    return tagName({ ...props, children });
+  if (typeof tagName === "function") {
+    if (!(tagName.prototype instanceof HTMLElement))
+      return tagName({ ...props, children });
+    const element = Reflect.construct(tagName, [props]);
+    appendChildren(element, children);
+    return element;
+  }
 
   const element = document.createElement<T>(tagName);
-
-  if (typeof props.$init === "function") {
-    props.$init(element);
-    delete props.$init;
-  }
+  const { $init } = props;
+  delete props.$init;
 
   if (Array.isArray(props.classNames)) {
     element.className = props.classNames.join(" ");
     delete props.classNames;
+    delete props.className;
   }
 
   if (props.classObj) {
@@ -40,5 +43,9 @@ export function h<T extends keyof HTMLElementTagNameMap>(
 
   applyProps(element, props);
   appendChildren(element, children);
+
+  if ($init)
+    $init(element);
+
   return element;
 }
