@@ -7,7 +7,9 @@ export type {
 export type ComponentChild = ComponentChild[] | Node | string | number | boolean | undefined | null;
 export type ComponentChildren = ComponentChild | ComponentChild[];
 export type ComponentFactory = (props: BaseProps) => Element | ComponentFactory;
-
+export type StyleObj = Record<keyof CSSStyleDeclaration, string | Observable<string>>;
+export type ClassObj<T = any> = Record<string, boolean | ClassObjObsAndPredicate>;
+type ClassObjObsAndPredicate<T = any> = { obs: Observable<T>, predicate: (value: T | undefined) => boolean; };
 interface BaseProps {
   children?: ComponentChildren;
 }
@@ -164,8 +166,8 @@ interface SVGElementEditableProps extends ElementEditableProps {
 
 export interface Props extends BaseProps, Partial<HTMLElementEditableProps>, Partial<SVGElementEditableProps> {
   classNames?: string[];
-  classObj?: Record<string, boolean | { obs: Observable<any>, predicate: (value: any) => boolean; }>;
-  styleObj?: Record<string, string | Observable<string>>;
+  classObj?: ClassObj;
+  styleObj?: StyleObj;
   [key: string]: any;
 }
 

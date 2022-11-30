@@ -1,64 +1,76 @@
 import Observable from "melv_observable";
-import { ComponentChildren, Props } from "./types";
+import { ClassObj, ComponentChildren, Props, StyleObj } from "./types";
 
-export function appendChildren(element: HTMLElement, children: ComponentChildren): void {
+export function applyChildren(element: HTMLElement, children: ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null)
-        appendChildren(element, child);
+        applyChildren(element, child);
     });
     return;
   }
 
-  if (children instanceof Observable) {
-    const value = children.getValue() as ComponentChildren;
-    appendChildren(element, value);
-    children.subscribe((value) => {
-      Array.isArray(value)
-        ? element.replaceChildren(...value)
-        : element.replaceChildren(value);
-    });
+  if (!(children instanceof Observable)) {
+    element.append(children as string | Node);
     return;
   }
-  element.append(children as string | Node);
+
+  const value = children.getValue() as ComponentChildren;
+  applyChildren(element, value);
+  children.subscribe((value) => {
+    Array.isArray(value)
+      ? element.replaceChildren(...value)
+      : element.replaceChildren(value);
+  });
 }
 
 export function applyClassObj<T>(
   element: HTMLElement,
-  classObj: Record<string, boolean | { obs: Observable<T>, predicate: (value: T | undefined) => boolean; }>
+  classObj: ClassObj
 ) {
-  const add = (className: string) => element.classList.add(className),
-    remove = (className: string) => element.classList.remove(className);
-  Object.entries(classObj).forEach(([key, value]) => {
+  const { classList } = element;
+  const add = classList.add.bind(classList),
+    remove = classList.remove.bind(classList);
+
+  for (const key in classObj) {
+    const value = classObj[key];
+
     if (typeof value === "boolean") {
       value ? add(key) : remove(key);
-      return;
+      continue;
     }
+
     const { obs, predicate } = value;
     predicate(obs.getValue()) ? add(key) : remove(key);
     obs.subscribe((value) => predicate(value) ? add(key) : remove(key));
-  });
+  }
 }
 
-export function applyStyle(element: HTMLElement, styleObj: Record<string, any>) {
-  Object.entries(styleObj).forEach(([key, value]) => {
+export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
+  for (const key in styleObj) {
+    const value = styleObj[key];
+
     if (value instanceof Observable) {
-      element.style[key as keyof object] = value.getValue();
-      value.subscribe((x) => element.style[key as keyof object] = x);
-      return;
+      element.style[key] = value.getValue();
+      value.subscribe((x) => element.style[key] = x);
+      continue;
     }
-    element.style[key as keyof object] = value;
-  });
+
+    element.style[key] = value;
+  }
 }
 
 export function applyProps(element: Element, props: Props) {
-  Object.entries(props).forEach(([key, value]) => {
-    if (key.startsWith("_")) {
+  for (const key in props) {
+    const value = props[key];
+
+    if (key.startsWith("_") && value instanceof Observable) {
       const elementKey = key.slice(1) as keyof object;
-      (element[elementKey] as any) = (value as Observable<any>).getValue();
-      (value as Observable<any>).subscribe((x) => (element[elementKey] as any) = x);
-      return;
+      (element[elementKey] as any) = value.getValue();
+      value.subscribe((x) => (element[elementKey] as any) = x);
+      continue;
     }
+
     (element[key as keyof object] as any) = value;
-  });
+  }
 }

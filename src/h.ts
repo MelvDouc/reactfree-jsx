@@ -1,6 +1,6 @@
 import type { ComponentFactory, Props, ComponentChild } from "./types";
 import {
-  appendChildren,
+  applyChildren,
   applyProps,
   applyClassObj,
   applyStyle
@@ -17,7 +17,7 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     if (!(tagName.prototype instanceof HTMLElement))
       return tagName({ ...props, children });
     const element = Reflect.construct(tagName, [props]);
-    appendChildren(element, children);
+    applyChildren(element, children);
     return element;
   }
 
@@ -42,7 +42,7 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   }
 
   applyProps(element, props);
-  appendChildren(element, children);
+  applyChildren(element, children);
 
   if ($init)
     $init(element);
