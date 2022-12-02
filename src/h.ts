@@ -1,4 +1,4 @@
-import type { ComponentFactory, Props, ComponentChild } from "./types";
+import type { ComponentFactory, Props, ComponentChild } from "./types/index";
 import {
   applyChildren,
   applyProps,
@@ -8,7 +8,7 @@ import {
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory,
-  props: Props,
+  props: Props<T>,
   ...children: ComponentChild[]
 ) {
   props ??= {};
@@ -21,7 +21,7 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     return element;
   }
 
-  const element = document.createElement<T>(tagName);
+  const element = document.createElement(tagName) as HTMLElementTagNameMap[T];
   const { $init } = props;
   delete props.$init;
 
@@ -41,11 +41,9 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     delete props.styleObj;
   }
 
-  applyProps(element, props);
+  applyProps<T>(element as JSX.IntrinsicElements[T], props);
   applyChildren(element, children);
 
-  if ($init)
-    $init(element);
-
+  $init && $init(element as any);
   return element;
 }

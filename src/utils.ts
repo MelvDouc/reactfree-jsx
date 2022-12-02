@@ -1,5 +1,5 @@
 import Observable from "melv_observable";
-import { ClassObj, ComponentChildren, Props, StyleObj } from "./types";
+import { ClassObj, ComponentChildren, Props, StyleObj } from "./types/index";
 
 export function applyChildren(element: HTMLElement, children: ComponentChildren): void {
   if (Array.isArray(children)) {
@@ -24,8 +24,13 @@ export function applyChildren(element: HTMLElement, children: ComponentChildren)
   });
 }
 
-export function applyClassObj<T>(
-  element: HTMLElement,
+export function applyClassObj(
+  element: {
+    classList: {
+      add: (...tokens: string[]) => void;
+      remove: (...tokens: string[]) => void;
+    };
+  },
   classObj: ClassObj
 ) {
   const { classList } = element;
@@ -60,17 +65,19 @@ export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
   }
 }
 
-export function applyProps(element: Element, props: Props) {
-  for (const key in props) {
+export function applyProps<T extends keyof JSX.IntrinsicElements>(element: JSX.IntrinsicElements[T], props: Props<T>) {
+  let key: keyof typeof props;
+
+  for (key in props) {
     const value = props[key];
 
     if (key.startsWith("_") && value instanceof Observable) {
-      const elementKey = key.slice(1) as keyof object;
-      (element[elementKey] as any) = value.getValue();
-      value.subscribe((x) => (element[elementKey] as any) = x);
+      const elementKey = key.slice(1) as keyof JSX.IntrinsicElements[T];
+      element[elementKey] = value.getValue();
+      value.subscribe((x) => element[elementKey] = x);
       continue;
     }
 
-    (element[key as keyof object] as any) = value;
+    (element[key] as typeof value) = value;
   }
 }
