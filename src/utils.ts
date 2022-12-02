@@ -1,11 +1,13 @@
 import Observable from "melv_observable";
 import { ClassObj, ComponentChildren, Props, StyleObj } from "./types/index";
 
-export function applyChildren(element: HTMLElement, children: ComponentChildren): void {
+export function applyChildren(
+  element: HTMLElement,
+  children: ComponentChildren
+): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
-      if (child != null)
-        applyChildren(element, child);
+      if (child != null) applyChildren(element, child);
     });
     return;
   }
@@ -47,7 +49,7 @@ export function applyClassObj(
 
     const { obs, predicate } = value;
     predicate(obs.getValue()) ? add(key) : remove(key);
-    obs.subscribe((value) => predicate(value) ? add(key) : remove(key));
+    obs.subscribe((value) => (predicate(value) ? add(key) : remove(key)));
   }
 }
 
@@ -57,7 +59,7 @@ export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
 
     if (value instanceof Observable) {
       element.style[key] = value.getValue();
-      value.subscribe((x) => element.style[key] = x);
+      value.subscribe((x) => (element.style[key] = x));
       continue;
     }
 
@@ -65,7 +67,10 @@ export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
   }
 }
 
-export function applyProps<T extends keyof JSX.IntrinsicElements>(element: JSX.IntrinsicElements[T], props: Props<T>) {
+export function applyProps<T extends keyof JSX.IntrinsicElements>(
+  element: JSX.IntrinsicElements[T],
+  props: Props<T>
+) {
   let key: keyof typeof props;
 
   for (key in props) {
@@ -74,7 +79,7 @@ export function applyProps<T extends keyof JSX.IntrinsicElements>(element: JSX.I
     if (key.startsWith("_") && value instanceof Observable) {
       const elementKey = key.slice(1) as keyof JSX.IntrinsicElements[T];
       element[elementKey] = value.getValue();
-      value.subscribe((x) => element[elementKey] = x);
+      value.subscribe((x) => (element[elementKey] = x));
       continue;
     }
 

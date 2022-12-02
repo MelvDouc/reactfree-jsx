@@ -1,10 +1,5 @@
 import type { ComponentFactory, Props, ComponentChild } from "./types/index";
-import {
-  applyChildren,
-  applyProps,
-  applyClassObj,
-  applyStyle
-} from "./utils";
+import { applyChildren, applyProps, applyClassObj, applyStyle } from "./utils";
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory,
