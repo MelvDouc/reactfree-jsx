@@ -15,7 +15,7 @@ export type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.Intrinsic
 declare global {
   namespace JSX {
     type WritableHTMLElements = {
-      [K in keyof FreeJsxElementTagNameMap]: FreeJsxElementTagNameMap[K]
+      [K in keyof FreeJsxElementTagNameMap]: Partial<FreeJsxElementTagNameMap[K]>
     };
 
     type ObservableHTMLElements = {
@@ -26,7 +26,7 @@ declare global {
 
     type InitializableHTMLElements = {
       [K in keyof FreeJsxElementTagNameMap]: {
-        $init?: (element: FreeJsxElementTagNameMap[K]) => void;
+        $init?: (element: HTMLElementTagNameMap[K]) => void;
         classNames?: string[];
         classObj?: ClassObj;
         styleObj?: StyleObj;
