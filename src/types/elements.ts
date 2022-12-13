@@ -17,7 +17,13 @@ import {
   value,
 } from "./common-interfaces";
 
-export interface FreeJsxElementTagNameMap {
+export type FreeJsxElementTagNameMap = {
+  [K in keyof NonPartialFreeJsxElementTagNameMap]: Partial<
+    NonPartialFreeJsxElementTagNameMap[K]
+  >;
+};
+
+interface NonPartialFreeJsxElementTagNameMap {
   a: html_anchor;
   abbr: html_element;
   address: html_element;

@@ -16,7 +16,7 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     return element;
   }
 
-  const element = document.createElement(tagName) as HTMLElementTagNameMap[T];
+  const element = document.createElement<T>(tagName);
   const { $init } = props;
   delete props.$init;
 
@@ -36,9 +36,9 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     delete props.styleObj;
   }
 
-  applyProps<T>(element as JSX.IntrinsicElements[T], props);
+  applyProps<T>(element, props);
   applyChildren(element, children);
 
-  $init && $init(element as any);
+  $init && $init(element);
   return element;
 }

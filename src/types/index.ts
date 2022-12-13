@@ -15,9 +15,8 @@ export type ComponentFactory = (props: {
   children?: ComponentChildren;
 }) => Element | ComponentFactory;
 
-export type StyleObj = Record<
-  keyof CSSStyleDeclaration,
-  string | Observable<string>
+export type StyleObj = Partial<
+  Record<keyof CSSStyleDeclaration, string | Observable<string>>
 >;
 export type ClassObj = Record<string, boolean | ClassObjObsAndPredicate>;
 type ClassObjObsAndPredicate<T = any> = {
@@ -52,9 +51,11 @@ declare global {
       };
     };
 
-    type IntrinsicElementsHTML = WritableHTMLElements &
-      ObservableHTMLElements &
-      InitializableHTMLElements;
+    type IntrinsicElementsHTML = {
+      [K in keyof FreeJsxElementTagNameMap]: WritableHTMLElements[K] &
+        ObservableHTMLElements[K] &
+        InitializableHTMLElements[K];
+    };
     type IntrinsicElements = IntrinsicElementsHTML;
   }
 }

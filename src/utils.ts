@@ -26,15 +26,7 @@ export function applyChildren(
   });
 }
 
-export function applyClassObj(
-  element: {
-    classList: {
-      add: (...tokens: string[]) => void;
-      remove: (...tokens: string[]) => void;
-    };
-  },
-  classObj: ClassObj
-) {
+export function applyClassObj(element: HTMLElement, classObj: ClassObj) {
   const { classList } = element;
   const add = classList.add.bind(classList),
     remove = classList.remove.bind(classList);
@@ -63,26 +55,24 @@ export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
       continue;
     }
 
-    element.style[key] = value;
+    element.style[key] = value as string;
   }
 }
 
 export function applyProps<T extends keyof JSX.IntrinsicElements>(
-  element: JSX.IntrinsicElements[T],
+  element: HTMLElementTagNameMap[T],
   props: Props<T>
 ) {
-  let key: keyof typeof props;
-
-  for (key in props) {
+  for (const key in props) {
     const value = props[key];
 
     if (key.startsWith("_") && value instanceof Observable) {
-      const elementKey = key.slice(1) as keyof JSX.IntrinsicElements[T];
+      const elementKey = key.slice(1) as keyof HTMLElementTagNameMap[T];
       element[elementKey] = value.getValue();
       value.subscribe((x) => (element[elementKey] = x));
       continue;
     }
 
-    (element[key] as typeof value) = value;
+    (element[key as keyof HTMLElementTagNameMap[T]] as typeof value) = value;
   }
 }
