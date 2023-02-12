@@ -1,10 +1,7 @@
 import Observable from "melv_observable";
 import { ClassObj, ComponentChildren, Props, StyleObj } from "./types/index";
 
-export function applyChildren(
-  element: HTMLElement,
-  children: ComponentChildren
-): void {
+export function applyChildren(element: HTMLElement, children: ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null) applyChildren(element, child);
@@ -20,9 +17,7 @@ export function applyChildren(
   const value = children.getValue() as ComponentChildren;
   applyChildren(element, value);
   children.subscribe((value) => {
-    Array.isArray(value)
-      ? element.replaceChildren(...value)
-      : element.replaceChildren(value);
+    Array.isArray(value) ? element.replaceChildren(...value) : element.replaceChildren(value);
   });
 }
 
@@ -59,10 +54,7 @@ export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
   }
 }
 
-export function applyProps<T extends keyof JSX.IntrinsicElements>(
-  element: HTMLElementTagNameMap[T],
-  props: Props<T>
-) {
+export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: Props<T>) {
   for (const key in props) {
     const value = props[key];
 
@@ -71,6 +63,11 @@ export function applyProps<T extends keyof JSX.IntrinsicElements>(
       element[elementKey] = value.getValue();
       value.subscribe((x) => (element[elementKey] = x));
       continue;
+    }
+
+    if (/^data([A-Z][a-z1-9_$]*)+/.test(key)) {
+      const dataAttribute = key.replace(/[A-Z][a-z1-9_$]*/g, (substring) => `-${substring.toLowerCase()}`);
+      element.setAttribute(dataAttribute, String(value));
     }
 
     (element[key as keyof HTMLElementTagNameMap[T]] as typeof value) = value;
