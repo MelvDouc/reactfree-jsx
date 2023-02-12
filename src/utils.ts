@@ -1,7 +1,7 @@
 import Observable from "melv_observable";
 import { ClassObj, ComponentChildren, Props, StyleObj } from "./types/index";
 
-export function applyChildren(element: HTMLElement, children: ComponentChildren): void {
+export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null) applyChildren(element, child);
