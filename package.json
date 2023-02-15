@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "prepare": "npm run build",
+    "prepublishOnly": "npm run build",
     "test": "npm run build && rm -rf test/node_modules && npm --prefix test install && npm --prefix test run dev"
   },
   "bugs": {
@@ -36,6 +36,6 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "melv_observable": "^1.0.2"
+    "melv_observable": "^1.0.5"
   }
 }

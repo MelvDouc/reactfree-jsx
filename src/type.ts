@@ -44,6 +44,7 @@ declare global {
         classNames?: string[];
         classObj?: ClassObj;
         styleObj?: StyleObj;
+        [dataAttribute: `data${string}`]: string;
       };
     };
 
