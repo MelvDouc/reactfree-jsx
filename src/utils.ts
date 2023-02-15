@@ -4,7 +4,8 @@ import { ClassObj, ComponentChildren, Props, StyleObj } from "./type";
 export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
-      if (child != null) applyChildren(element, child);
+      if (child != null)
+        applyChildren(element, child);
     });
     return;
   }
@@ -17,7 +18,9 @@ export function applyChildren(element: HTMLElement | DocumentFragment, children:
   const value = children.getValue() as ComponentChildren;
   applyChildren(element, value);
   children.subscribe((value) => {
-    Array.isArray(value) ? element.replaceChildren(...value) : element.replaceChildren(value);
+    Array.isArray(value)
+      ? element.replaceChildren(...value)
+      : element.replaceChildren(value);
   });
 }
 
