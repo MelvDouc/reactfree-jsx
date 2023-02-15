@@ -37,8 +37,8 @@ declare global {
 
     type IntrinsicElementsHTML = {
       [K in keyof HTMLElementTagNameMap]:
-      & HTMLElementTagNameMap[K]
-      & ObservableHTMLElements[K]
+      & Partial<HTMLElementTagNameMap[K]>
+      & Partial<ObservableHTMLElements[K]>
       & {
         $init?: (element: HTMLElementTagNameMap[K]) => void;
         classNames?: string[];
