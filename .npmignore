@@ -1,7 +1,6 @@
+.gitignore
 .vscode
 node_modules
 src
 test
-script.js
-.gitignore
-package copy.json
+tsconfig.json

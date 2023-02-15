@@ -1,5 +1,4 @@
 import Observable from "melv_observable";
-import { FreeJsxElementTagNameMap } from "./elements";
 export { JSX };
 
 export type ComponentChild =
@@ -29,21 +28,18 @@ export type Props<T extends keyof JSX.IntrinsicElements> = Partial<
 
 declare global {
   namespace JSX {
-    type WritableHTMLElements = {
-      [K in keyof FreeJsxElementTagNameMap]: Partial<
-        FreeJsxElementTagNameMap[K]
-      >;
-    };
-
     type ObservableHTMLElements = {
-      [K in keyof FreeJsxElementTagNameMap]: {
-        [L in keyof FreeJsxElementTagNameMap[K] as `_${string &
-          L}`]?: Observable<FreeJsxElementTagNameMap[K][L]>;
+      [K in keyof HTMLElementTagNameMap]: {
+        [L in keyof HTMLElementTagNameMap[K]as `_${string &
+        L}`]?: Observable<HTMLElementTagNameMap[K][L]>;
       };
     };
 
-    type InitializableHTMLElements = {
-      [K in keyof FreeJsxElementTagNameMap]: {
+    type IntrinsicElementsHTML = {
+      [K in keyof HTMLElementTagNameMap]:
+      & HTMLElementTagNameMap[K]
+      & ObservableHTMLElements[K]
+      & {
         $init?: (element: HTMLElementTagNameMap[K]) => void;
         classNames?: string[];
         classObj?: ClassObj;
@@ -51,11 +47,6 @@ declare global {
       };
     };
 
-    type IntrinsicElementsHTML = {
-      [K in keyof FreeJsxElementTagNameMap]: WritableHTMLElements[K] &
-        ObservableHTMLElements[K] &
-        InitializableHTMLElements[K];
-    };
     type IntrinsicElements = IntrinsicElementsHTML;
   }
 }

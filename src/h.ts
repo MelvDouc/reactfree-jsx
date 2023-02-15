@@ -1,4 +1,4 @@
-import type { ComponentFactory, Props, ComponentChild } from "./types/index";
+import type { ComponentFactory, Props, ComponentChild } from "./type";
 import { applyChildren, applyProps, applyClassObj, applyStyle } from "./utils";
 
 export function h<T extends keyof HTMLElementTagNameMap>(
@@ -9,11 +9,12 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   props ??= {};
 
   if (typeof tagName === "function") {
-    if (tagName === Fragment) {
+    if (tagName === Fragment)
       return Fragment(children);
-    }
 
-    if (!(tagName.prototype instanceof HTMLElement)) return (<ComponentFactory>tagName)({ ...props, children });
+    if (!(tagName.prototype instanceof HTMLElement))
+      return (<ComponentFactory>tagName)({ ...props, children });
+
     const element = Reflect.construct(tagName, [props]);
     applyChildren(element, children);
     return element as HTMLElement;

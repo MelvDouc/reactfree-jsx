@@ -1,5 +1,3 @@
-import Observable from "melv_observable";
-
 export * from "./h";
-export * from "./types/index";
-export { Observable };
+export * from "./type";
+export { default as Observable } from "melv_observable";

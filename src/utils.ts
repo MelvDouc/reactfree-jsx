@@ -1,5 +1,5 @@
 import Observable from "melv_observable";
-import { ClassObj, ComponentChildren, Props, StyleObj } from "./types/index";
+import { ClassObj, ComponentChildren, Props, StyleObj } from "./type";
 
 export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
   if (Array.isArray(children)) {
@@ -61,7 +61,7 @@ export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLE
     if (key.startsWith("_") && value instanceof Observable) {
       const elementKey = key.slice(1) as keyof HTMLElementTagNameMap[T];
       element[elementKey] = value.getValue();
-      value.subscribe((x) => (element[elementKey] = x));
+      value.subscribe((x: HTMLElementTagNameMap[T][keyof HTMLElementTagNameMap[T]]) => (element[elementKey] = x));
       continue;
     }
 
