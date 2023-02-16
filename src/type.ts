@@ -28,17 +28,9 @@ export type Props<T extends keyof JSX.IntrinsicElements> = Partial<
 
 declare global {
   namespace JSX {
-    type ObservableHTMLElements = {
-      [K in keyof HTMLElementTagNameMap]: {
-        [L in keyof HTMLElementTagNameMap[K]as `_${string &
-        L}`]?: Observable<HTMLElementTagNameMap[K][L]>;
-      };
-    };
-
     type IntrinsicElementsHTML = {
       [K in keyof HTMLElementTagNameMap]:
       & Partial<HTMLElementTagNameMap[K]>
-      & Partial<ObservableHTMLElements[K]>
       & {
         $init?: (element: HTMLElementTagNameMap[K]) => void;
         classNames?: string[];
