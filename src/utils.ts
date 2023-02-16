@@ -61,18 +61,9 @@ export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLE
   for (const key in props) {
     const value = props[key];
 
-    if (key.startsWith("_") && value instanceof Observable) {
-      const elementKey = key.slice(1) as keyof HTMLElementTagNameMap[T];
-      element[elementKey] = value.getValue();
-      value.subscribe((x: HTMLElementTagNameMap[T][keyof HTMLElementTagNameMap[T]]) => (element[elementKey] = x));
-      continue;
-    }
-
-    if (/^data([A-Z][a-z1-9_$]*)+/.test(key)) {
-      const dataAttribute = key.replace(/[A-Z][a-z1-9_$]*/g, (substring) => `-${substring.toLowerCase()}`);
-      element.setAttribute(dataAttribute, String(value));
-    }
-
-    (element[key as keyof HTMLElementTagNameMap[T]] as typeof value) = value;
+    if (key in element)
+      (element[key as keyof HTMLElementTagNameMap[T]] as typeof value) = value;
+    else
+      element.setAttribute(key, String(value));
   }
 }
