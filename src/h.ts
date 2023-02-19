@@ -37,8 +37,10 @@ export function h<T extends keyof HTMLElementTagNameMap>(
 
   if (props.style) {
     Object.keys(props.style).forEach((key) => {
-      // @ts-ignore
-      element.style[key] = props[key];
+      element.style.setProperty(
+        key.replace(/[A-Z]/g, s => "-" + s.toLowerCase()),
+        props.style![key as keyof object]
+      );
     });
     delete props.style;
   }
