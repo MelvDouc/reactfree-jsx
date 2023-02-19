@@ -24,8 +24,6 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   const { $init } = props;
   delete props.$init;
 
-  props.id;
-
   if (Array.isArray(props.classNames)) {
     element.className = props.classNames.join(" ");
     delete props.classNames;
@@ -38,7 +36,10 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   }
 
   if (props.style) {
-    Object.assign(element.style, props.style);
+    Object.keys(props.style).forEach((key) => {
+      // @ts-ignore
+      element.style[key] = props[key];
+    });
     delete props.style;
   }
 
