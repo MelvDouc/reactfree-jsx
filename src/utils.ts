@@ -1,5 +1,5 @@
 import Observable from "melv_observable";
-import { ClassObj, ComponentChildren, Props, StyleObj } from "./type";
+import { ClassObj, ComponentChildren, Props } from "./type";
 
 export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
   if (Array.isArray(children)) {
@@ -40,20 +40,6 @@ export function applyClassObj(element: HTMLElement, classObj: ClassObj) {
     const { obs, predicate } = value;
     predicate(obs.getValue()) ? add(key) : remove(key);
     obs.subscribe((value) => (predicate(value) ? add(key) : remove(key)));
-  }
-}
-
-export function applyStyle(element: HTMLElement, styleObj: StyleObj) {
-  for (const key in styleObj) {
-    const value = styleObj[key];
-
-    if (value instanceof Observable) {
-      element.style[key] = value.getValue();
-      value.subscribe((x) => (element.style[key] = x));
-      continue;
-    }
-
-    element.style[key] = value as string;
   }
 }
 

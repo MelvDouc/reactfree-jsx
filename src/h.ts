@@ -1,5 +1,5 @@
 import type { ComponentFactory, Props, ComponentChild } from "./type";
-import { applyChildren, applyProps, applyClassObj, applyStyle } from "./utils";
+import { applyChildren, applyProps, applyClassObj } from "./utils";
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory | typeof Fragment,
@@ -8,10 +8,10 @@ export function h<T extends keyof HTMLElementTagNameMap>(
 ): HTMLElementTagNameMap[T] | Element | ComponentFactory | DocumentFragment {
   props ??= {};
 
-  if (typeof tagName === "function") {
-    if (tagName === Fragment)
-      return Fragment(children);
+  if (tagName === Fragment)
+    return Fragment(children);
 
+  if (typeof tagName === "function") {
     if (!(tagName.prototype instanceof HTMLElement))
       return (<ComponentFactory>tagName)({ ...props, children });
 
@@ -24,6 +24,8 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   const { $init } = props;
   delete props.$init;
 
+  props.id;
+
   if (Array.isArray(props.classNames)) {
     element.className = props.classNames.join(" ");
     delete props.classNames;
@@ -35,9 +37,9 @@ export function h<T extends keyof HTMLElementTagNameMap>(
     delete props.classObj;
   }
 
-  if (props.styleObj) {
-    applyStyle(element, props.styleObj);
-    delete props.styleObj;
+  if (props.style) {
+    Object.assign(element.style, props.style);
+    delete props.style;
   }
 
   applyProps<T>(element, props);

@@ -14,9 +14,6 @@ export type ComponentFactory = (props: {
   children?: ComponentChildren;
 }) => Element | ComponentFactory;
 
-export type StyleObj = Partial<
-  Record<keyof CSSStyleDeclaration, string | Observable<string>>
->;
 export type ClassObj = Record<string, boolean | ClassObjObsAndPredicate>;
 type ClassObjObsAndPredicate<T = any> = {
   obs: Observable<T>;
@@ -25,17 +22,26 @@ type ClassObjObsAndPredicate<T = any> = {
 export type Props<T extends keyof JSX.IntrinsicElements> = Partial<
   JSX.IntrinsicElements[T]
 >;
+export type StyleObj = Partial<
+  Omit<CSSStyleDeclaration, "setProperty" | "removeProperty">
+>;
+
+type ReadWriteOnly<T> = {
+  -readonly [P in keyof T]: T[P];
+};
 
 declare global {
   namespace JSX {
     type IntrinsicElementsHTML = {
       [K in keyof HTMLElementTagNameMap]:
-      & Partial<HTMLElementTagNameMap[K]>
+      & Partial<
+        Omit<ReadWriteOnly<HTMLElementTagNameMap[K]>, "classList" | "style">
+      >
       & {
         $init?: (element: HTMLElementTagNameMap[K]) => void;
         classNames?: string[];
         classObj?: ClassObj;
-        styleObj?: StyleObj;
+        style?: StyleObj;
         [dataAttribute: `data${string}`]: string;
       };
     };
