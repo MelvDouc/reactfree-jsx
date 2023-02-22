@@ -1,5 +1,5 @@
-import type { ComponentFactory, Props, ComponentChild } from "./type";
-import { applyChildren, applyProps, applyClassObj } from "./utils";
+import type { ComponentFactory, Props, ComponentChild } from "./types/types";
+import { applyChildren, applyClasses, applyProps, applyStyles } from "./utils";
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory | typeof Fragment,
@@ -24,27 +24,8 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   const { $init } = props;
   delete props.$init;
 
-  if (Array.isArray(props.classNames)) {
-    element.className = props.classNames.join(" ");
-    delete props.classNames;
-    delete props.className;
-  }
-
-  if (props.classObj) {
-    applyClassObj(element, props.classObj);
-    delete props.classObj;
-  }
-
-  if (props.style) {
-    Object.keys(props.style).forEach((key) => {
-      element.style.setProperty(
-        key.replace(/[A-Z]/g, s => "-" + s.toLowerCase()),
-        props.style![key as keyof object]
-      );
-    });
-    delete props.style;
-  }
-
+  applyClasses(element, props);
+  applyStyles(element, props);
   applyProps<T>(element, props);
   applyChildren(element, children);
 
