@@ -1,20 +1,20 @@
 import {
-  alt,
-  autocomplete,
-  cite,
-  dimensions,
-  disabled,
-  download,
-  href,
-  name,
-  open,
-  referrerPolicy,
-  rel,
-  src,
-  target,
-  text,
-  type,
-  value,
+  WithAlt,
+  WithAutoComplete,
+  WithCite,
+  WithHeightAndWidth,
+  Disableable,
+  WithDownload,
+  WithHref,
+  WithName,
+  Openable,
+  WithReferrerPolicy,
+  WithRel,
+  WithSrc,
+  WithTarget,
+  WithText,
+  WithType,
+  WithValue,
 } from "./common-interfaces";
 
 export interface FreeJsxElementTagNameMap {
@@ -78,7 +78,7 @@ export interface FreeJsxElementTagNameMap {
   li: FreeJsxLiAttributes;
   link: FreeJsxLinkAttributes;
   main: FreeJsxHtmlElementAttributes;
-  map: WithName<FreeJsxHtmlElementAttributes>;
+  map: FreeJsxMapAttributes;
   mark: FreeJsxHtmlElementAttributes;
   menu: FreeJsxHtmlElementAttributes;
   meta: FreeJsxMetaAttributes;
@@ -115,7 +115,7 @@ export interface FreeJsxElementTagNameMap {
   table: FreeJsxTableAttributes;
   tbody: FreeJsxHtmlElementAttributes;
   td: FreeJsxTableCellAttributes;
-  template: FreeJsxTemplateAttributes;
+  template: FreeJsxHtmlElementAttributes;
   textarea: FreeJsxTextareaAttributes;
   tfoot: FreeJsxHtmlElementAttributes;
   th: FreeJsxTableCellAttributes;
@@ -132,8 +132,6 @@ export interface FreeJsxElementTagNameMap {
 }
 
 type OmitEventListenerTogglers<T> = Omit<T, "addEventListener" | "removeEventListener">;
-type window_event_handlers = OmitEventListenerTogglers<WindowEventHandlers>;
-type WithName<T> = T & { name: string; };
 
 interface FreeJsxElement extends ARIAMixin {
   className: string;
@@ -163,7 +161,7 @@ interface FreeJsxHtmlElementAttributes extends FreeJsxElement, OmitEventListener
   translate: boolean;
 }
 
-interface HyperlinkUtils extends href {
+interface HyperlinkUtils extends WithHref {
   hash: string;
   host: string;
   hostname: string;
@@ -178,13 +176,13 @@ interface HyperlinkUtils extends href {
 interface FreeJsxAnchorElement extends
   FreeJsxHtmlElementAttributes,
   HyperlinkUtils,
-  download,
-  name,
-  rel,
-  target,
-  type,
-  referrerPolicy,
-  text {
+  WithDownload,
+  WithName,
+  WithRel,
+  WithTarget,
+  WithType,
+  WithReferrerPolicy,
+  WithText {
   hreflang: string;
   ping: string;
 }
@@ -192,23 +190,23 @@ interface FreeJsxAnchorElement extends
 interface FreeJsxAreaElement extends
   FreeJsxHtmlElementAttributes,
   HyperlinkUtils,
-  alt,
-  download,
-  referrerPolicy,
-  target {
+  WithAlt,
+  WithDownload,
+  WithReferrerPolicy,
+  WithTarget {
   coords: string;
   ping: string;
   shape: string;
 }
 
-interface FreeJsxBaseAttributes extends FreeJsxHtmlElementAttributes, href { }
-interface FreeJsxQuoteAttributes extends FreeJsxHtmlElementAttributes, cite { }
+interface FreeJsxBaseAttributes extends FreeJsxHtmlElementAttributes, WithHref { }
+interface FreeJsxQuoteAttributes extends FreeJsxHtmlElementAttributes, WithCite { }
 
-interface FreeJsxBodyAttributes extends FreeJsxHtmlElementAttributes, window_event_handlers {
+interface FreeJsxBodyAttributes extends FreeJsxHtmlElementAttributes, OmitEventListenerTogglers<WindowEventHandlers> {
   vLink: string;
 }
 
-interface FreeJsxButtonAttributes extends FreeJsxHtmlElementAttributes, disabled, name, type, value {
+interface FreeJsxButtonAttributes extends FreeJsxHtmlElementAttributes, Disableable, WithName, WithType, WithValue {
   formAction: string;
   formEnctype: string;
   formMethod: string;
@@ -216,19 +214,18 @@ interface FreeJsxButtonAttributes extends FreeJsxHtmlElementAttributes, disabled
   formTarget: string;
 }
 
-interface FreeJsxCanvasAttributes extends FreeJsxHtmlElementAttributes {
-  height: number;
-  width: number;
-}
-interface FreeJsxDataAttributes extends FreeJsxHtmlElementAttributes, value { }
-interface FreeJsxDetailsAttributes extends FreeJsxHtmlElementAttributes, open { }
-interface FreeJsxDialogAttributes extends FreeJsxHtmlElementAttributes, open {
+interface FreeJsxCanvasAttributes extends FreeJsxHtmlElementAttributes, WithHeightAndWidth { }
+interface FreeJsxDataAttributes extends FreeJsxHtmlElementAttributes, WithValue { }
+interface FreeJsxDetailsAttributes extends FreeJsxHtmlElementAttributes, Openable { }
+
+interface FreeJsxDialogAttributes extends FreeJsxHtmlElementAttributes, Openable {
   returnValue: string;
 }
-interface FreeJsxEmbedAttributes extends FreeJsxHtmlElementAttributes, dimensions, name, src, type { }
-interface FreeJsxFieldsetAttributes extends FreeJsxHtmlElementAttributes, disabled, name { }
 
-interface FreeJsxFormAttributes extends FreeJsxHtmlElementAttributes, autocomplete, name, target {
+interface FreeJsxEmbedAttributes extends FreeJsxHtmlElementAttributes, WithHeightAndWidth, WithName, WithSrc, WithType { }
+interface FreeJsxFieldsetAttributes extends FreeJsxHtmlElementAttributes, Disableable, WithName { }
+
+interface FreeJsxFormAttributes extends FreeJsxHtmlElementAttributes, WithAutoComplete, WithName, WithTarget {
   acceptCharset: string;
   action: string;
   encoding: string;
@@ -239,35 +236,38 @@ interface FreeJsxFormAttributes extends FreeJsxHtmlElementAttributes, autocomple
 
 interface FreeJsxIframeAttributes extends
   FreeJsxHtmlElementAttributes,
-  dimensions,
-  src,
-  name,
-  referrerPolicy {
+  WithHeightAndWidth,
+  WithSrc,
+  WithName,
+  WithReferrerPolicy {
   allow: string;
   allowFullscreen: boolean;
   scrolling: string;
   srcdoc: string;
 }
 
-interface FreeJsxImageAttributes extends FreeJsxHtmlElementAttributes, alt, referrerPolicy, src {
+interface FreeJsxImageAttributes extends
+  FreeJsxHtmlElementAttributes,
+  WithAlt,
+  WithReferrerPolicy,
+  WithSrc,
+  WithHeightAndWidth {
   crossOrigin: string | null;
   decoding: "async" | "sync" | "auto";
-  height: number;
   isMap: boolean;
   loading: "eager" | "lazy";
   sizes: string;
-  width: number;
 }
 
 interface FreeJsxInputAttributes extends
   FreeJsxHtmlElementAttributes,
-  alt,
-  autocomplete,
-  disabled,
-  name,
-  src,
-  type,
-  value {
+  WithAlt,
+  WithAutoComplete,
+  Disableable,
+  WithName,
+  WithSrc,
+  WithType,
+  WithValue {
   accept: string;
   capture: string;
   checked: boolean;
@@ -306,16 +306,16 @@ interface FreeJsxLabelAttributes extends FreeJsxHtmlElementAttributes {
   htmlFor: string;
 }
 
-interface FreeJsxLiAttributes extends FreeJsxHtmlElementAttributes, value { }
+interface FreeJsxLiAttributes extends FreeJsxHtmlElementAttributes, WithValue { }
 
 interface FreeJsxLinkAttributes extends
   FreeJsxHtmlElementAttributes,
-  disabled,
-  href,
-  referrerPolicy,
-  rel,
-  target,
-  type {
+  Disableable,
+  WithHref,
+  WithReferrerPolicy,
+  WithRel,
+  WithTarget,
+  WithType {
   as: string;
   crossOrigin: string | null;
   hreflang: string;
@@ -325,7 +325,9 @@ interface FreeJsxLinkAttributes extends
   media: string;
 }
 
-interface FreeJsxMetaAttributes extends WithName<FreeJsxHtmlElementAttributes> {
+interface FreeJsxMapAttributes extends FreeJsxHtmlElementAttributes, WithName { }
+
+interface FreeJsxMetaAttributes extends FreeJsxHtmlElementAttributes, WithName {
   content: string;
   httpEquiv: string;
   media: string;
@@ -340,30 +342,30 @@ interface FreeJsxMeterAttributes extends FreeJsxHtmlElementAttributes {
   value: number;
 }
 
-interface FreeJsxModAttributes extends FreeJsxHtmlElementAttributes, cite { }
+interface FreeJsxModAttributes extends FreeJsxHtmlElementAttributes, WithCite { }
 
-interface FreeJsxObjectAttributes extends FreeJsxHtmlElementAttributes, dimensions, name, type {
+interface FreeJsxObjectAttributes extends FreeJsxHtmlElementAttributes, WithHeightAndWidth, WithName, WithType {
   data: string;
   standby: string;
   useMap: string;
 }
 
-interface FreeJsxOlAttributes extends FreeJsxHtmlElementAttributes, type {
+interface FreeJsxOlAttributes extends FreeJsxHtmlElementAttributes, WithType {
   reversed: boolean;
   start: number;
 }
 
-interface FreeJsxOptgroupAttributes extends FreeJsxHtmlElementAttributes, disabled {
+interface FreeJsxOptgroupAttributes extends FreeJsxHtmlElementAttributes, Disableable {
   label: string;
 }
 
-interface FreeJsxOptionAttributes extends FreeJsxHtmlElementAttributes, disabled, value, text {
+interface FreeJsxOptionAttributes extends FreeJsxHtmlElementAttributes, Disableable, WithValue, WithText {
   defaultSelected: boolean;
   label: string;
   selected: boolean;
 }
 
-interface FreeJsxOutputAttributes extends FreeJsxHtmlElementAttributes, name, value {
+interface FreeJsxOutputAttributes extends FreeJsxHtmlElementAttributes, WithName, WithValue {
   defaultValue: string;
 }
 
@@ -372,7 +374,7 @@ interface FreeJsxProgressAttributes extends FreeJsxHtmlElementAttributes {
   value: number;
 }
 
-interface FreeJsxScriptAttributes extends FreeJsxHtmlElementAttributes, referrerPolicy, src, text, type {
+interface FreeJsxScriptAttributes extends FreeJsxHtmlElementAttributes, WithReferrerPolicy, WithSrc, WithText, WithType {
   async: boolean;
   crossOrigin: string;
   defer: boolean;
@@ -382,10 +384,10 @@ interface FreeJsxScriptAttributes extends FreeJsxHtmlElementAttributes, referrer
 
 interface FreeJsxSelectAttributes
   extends FreeJsxHtmlElementAttributes,
-  autocomplete,
-  disabled,
-  name,
-  value {
+  WithAutoComplete,
+  Disableable,
+  WithName,
+  WithValue {
   length: number;
   multiple: boolean;
   required: boolean;
@@ -393,7 +395,7 @@ interface FreeJsxSelectAttributes
   size: number;
 }
 
-interface FreeJsxSourceAttributes extends FreeJsxHtmlElementAttributes, src, type {
+interface FreeJsxSourceAttributes extends FreeJsxHtmlElementAttributes, WithSrc, WithType {
   height: number;
   media: string;
   sizes: string;
@@ -401,18 +403,16 @@ interface FreeJsxSourceAttributes extends FreeJsxHtmlElementAttributes, src, typ
   width: number;
 }
 
-interface FreeJsxStyleElementAttributes extends FreeJsxHtmlElementAttributes, disabled {
+interface FreeJsxStyleElementAttributes extends FreeJsxHtmlElementAttributes, Disableable {
   media: string;
 }
 
-interface FreeJsxTemplateAttributes extends FreeJsxHtmlElementAttributes { }
-
 interface FreeJsxTextareaAttributes extends
   FreeJsxHtmlElementAttributes,
-  autocomplete,
-  disabled,
-  name,
-  value {
+  WithAutoComplete,
+  Disableable,
+  WithName,
+  WithValue {
   cols: number;
   defaultValue: string;
   dirName: string;
@@ -432,23 +432,21 @@ interface FreeJsxTimeAttributes extends FreeJsxHtmlElementAttributes {
   dateTime: string;
 }
 
-interface FreeJsxTitleAttributes extends FreeJsxHtmlElementAttributes, text { }
+interface FreeJsxTitleAttributes extends FreeJsxHtmlElementAttributes, WithText { }
 
-interface FreeJsxTrackAttributes extends FreeJsxHtmlElementAttributes, src {
+interface FreeJsxTrackAttributes extends FreeJsxHtmlElementAttributes, WithSrc {
   default: boolean;
   kind: string;
   label: string;
   srclang: string;
 }
 
-interface FreeJsxVideoAttributes extends FreeJsxHtmlElementAttributes {
+interface FreeJsxVideoAttributes extends FreeJsxHtmlElementAttributes, WithHeightAndWidth {
   disablePictureInPicture: boolean;
-  height: number;
   onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
   onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
   playsInline: boolean;
   poster: string;
-  width: number;
 }
 
 interface FreeJsxTableAttributes extends FreeJsxHtmlElementAttributes {

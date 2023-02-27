@@ -1,64 +1,64 @@
-export interface alt {
+export interface WithAlt {
   alt: string;
 }
 
-export interface autocomplete {
+export interface WithAutoComplete {
   autocomplete: string;
 }
 
-export interface cite {
+export interface WithCite {
   cite: string;
 }
 
-export interface disabled {
+export interface Disableable {
   disabled: boolean;
 }
 
-export interface download {
+export interface WithDownload {
   download: string;
 }
 
-export interface href {
+export interface WithHref {
   href: string;
 }
 
-export interface name {
+export interface WithName {
   name: string;
 }
 
-export interface open {
+export interface Openable {
   open: boolean;
 }
 
-export interface rel {
+export interface WithRel {
   rel: string;
 }
 
-export interface src {
+export interface WithSrc {
   src: string;
 }
 
-export interface referrerPolicy {
+export interface WithReferrerPolicy {
   referrerPolicy: string;
 }
 
-export interface target {
+export interface WithTarget {
   target: string;
 }
 
-export interface text {
+export interface WithText {
   text: string;
 }
 
-export interface type {
+export interface WithType {
   type: string;
 }
 
-export interface value {
+export interface WithValue {
   value: string;
 }
 
-export interface dimensions {
-  height?: string;
-  width?: string;
+export interface WithHeightAndWidth {
+  height: string;
+  width: string;
 }

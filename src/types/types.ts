@@ -18,7 +18,7 @@ export type FreeJsxStyles = Partial<
 
 declare global {
   namespace JSX {
-    type IntrinsicElementsHTML = {
+    export type IntrinsicElementsHTML = {
       [K in keyof FreeJsxElementTagNameMap]:
       & Partial<FreeJsxElementTagNameMap[K]>
       & {
@@ -28,6 +28,6 @@ declare global {
       };
     };
 
-    type IntrinsicElements = IntrinsicElementsHTML;
+    export type IntrinsicElements = IntrinsicElementsHTML;
   }
 }
