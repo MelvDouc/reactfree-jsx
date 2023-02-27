@@ -1,3 +1,3 @@
 export * from "./h";
+export { default as Observable } from "./utils/Observable";
 export * from "./types/types";
-export { default as Observable } from "melv_observable";
