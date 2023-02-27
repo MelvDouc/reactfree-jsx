@@ -1,3 +1,4 @@
+import type Observable from "../utils/Observable";
 import { FreeJsxElementTagNameMap } from "./elements";
 export { JSX };
 
@@ -21,11 +22,13 @@ declare global {
     export type IntrinsicElementsHTML = {
       [K in keyof FreeJsxElementTagNameMap]:
       & Partial<FreeJsxElementTagNameMap[K]>
+      & { [P in keyof FreeJsxElementTagNameMap[K]as `obs_${Extract<P, string>}`]?: Observable<FreeJsxElementTagNameMap[K][P]> }
       & {
         $init?: (element: HTMLElementTagNameMap[K]) => void;
         classes?: Record<string, boolean>;
+        classNames?: string[];
         style?: FreeJsxStyles;
-      };
+      }
     };
 
     export type IntrinsicElements = IntrinsicElementsHTML;

@@ -135,7 +135,6 @@ type OmitEventListenerTogglers<T> = Omit<T, "addEventListener" | "removeEventLis
 
 interface FreeJsxElement extends ARIAMixin {
   className: string;
-  classNames: string[];
   id: string;
   onfullscreenchange: ((this: Element, ev: Event) => any) | null;
   onfullscreenerror: ((this: Element, ev: Event) => any) | null;
