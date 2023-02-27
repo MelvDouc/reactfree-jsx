@@ -1,3 +1,5 @@
+/!\ IMPORTANT: Use vite 3.1.0 or below.
+
 # React-free JSX
 
 A package to use JSX and TSX with the full power of Vanilla JS minus the
@@ -32,8 +34,8 @@ import { defineConfig } from "vite";
 export default defineConfig({
   esbuild: {
     jsxFactory: "h",
-    jsxFragment: "",
-    jsxInject: "import {h} from 'reactfree-jsx'",
+    jsxFragment: "Fragment",
+    jsxInject: "import {h, Fragment} from 'reactfree-jsx'",
   },
 });
 ```
