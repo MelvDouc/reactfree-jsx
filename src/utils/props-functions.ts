@@ -3,9 +3,24 @@ import { ComponentChildren, Props } from "../types/types";
 
 export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTMLElement, props: Props<T>): void {
   if (props.classes) {
-    for (const key in props.classes) {
-      if (props.classes[key] === true)
-        element.classList.add(key);
+    const { classList } = element;
+
+    for (const cssClass in props.classes) {
+      const hasClass = props.classes[cssClass];
+
+      if (hasClass === true) {
+        classList.add(cssClass);
+        continue;
+      }
+
+      if (!(hasClass instanceof Observable)) continue;
+
+      hasClass.value && classList.add(cssClass);
+      hasClass.subscribe((value) => {
+        value
+          ? classList.add(cssClass)
+          : classList.remove(cssClass);
+      });
     }
   } else if (props.classNames) {
     element.className = props.classNames.join(" ");
