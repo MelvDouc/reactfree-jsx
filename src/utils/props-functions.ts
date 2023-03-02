@@ -18,19 +18,12 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
   delete props.className;
 }
 
-export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren | Observable<ComponentChildren>): void {
+export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null)
         applyChildren(element, child);
     });
-    return;
-  }
-
-  if (children instanceof Observable) {
-    const value = children.value as ComponentChildren;
-    applyChildren(element, value);
-    children.subscribe((value) => applyChildren(element, value));
     return;
   }
 
