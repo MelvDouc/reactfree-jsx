@@ -153,8 +153,12 @@ interface FreeJsxHtmlElementAttributes extends FreeJsxElement, OmitEventListener
   enterKeyHint: string;
   hidden: boolean;
   inert: boolean;
+  innerHTML: string;
+  innerText: string;
   inputMode: string;
   lang: string;
+  outerHTML: string;
+  outerText: string;
   spellcheck: boolean;
   title: string;
   translate: boolean;
@@ -259,7 +263,7 @@ interface FreeJsxImageAttributes extends
 }
 
 interface FreeJsxInputAttributes extends
-  FreeJsxHtmlElementAttributes,
+  Omit<FreeJsxHtmlElementAttributes, "innerHTML" | "innerText" | "outerHTML" | "outerText">,
   WithAlt,
   WithAutoComplete,
   Disableable,
