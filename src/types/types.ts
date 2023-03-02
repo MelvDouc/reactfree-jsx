@@ -25,7 +25,7 @@ declare global {
       & { [P in keyof FreeJsxElementTagNameMap[K]as `obs_${Extract<P, string>}`]?: Observable<FreeJsxElementTagNameMap[K][P]> }
       & {
         $init?: (element: HTMLElementTagNameMap[K]) => void;
-        classes?: Record<string, boolean>;
+        classes?: Record<string, boolean | Observable<boolean>>;
         classNames?: string[];
         style?: FreeJsxStyles;
       }
