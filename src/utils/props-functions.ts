@@ -51,26 +51,28 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
   delete props.style;
 }
 
-function applyProp(element: HTMLElement, key: keyof typeof element, value: typeof element[typeof key]) {
-  if (key in element)
-    // @ts-ignore
-    element[key] = value;
-  else
-    element.setAttribute(key, String(value));
+function applyProp<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], propertyKey: string, value: any) {
+  if (propertyKey in element) {
+    (element[propertyKey as keyof object] as any) = value;
+    return;
+  }
+
+  element.setAttribute(propertyKey, value);
 }
 
 export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: Props<T>) {
   for (const key in props) {
-    const value = props[key as keyof Props<T>] as any;
+    const propValue = props[key as keyof Props<T>] as any;
 
-    if (key.startsWith("obs_")) {
-      const propName = key.slice(4) as keyof object;
-      applyProp(element, propName, value);
-      (value as Observable<any>).subscribe((value) => {
-        applyProp(element, propName, value);
-      });
+    if (!key.startsWith("obs_")) {
+      applyProp(element, key, propValue);
+      continue;
     }
 
-    applyProp(element, key as keyof HTMLElement, value);
+    const propName = key.slice(4) as keyof object;
+    applyProp(element, propName, propValue.value);
+    (<Observable<any>>propValue).subscribe((value) => {
+      applyProp(element, propName, value);
+    });
   }
 }
