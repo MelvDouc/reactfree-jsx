@@ -9,18 +9,12 @@ constraints of React.
 
 ```tsx
 function Counter({ initialCount }: { initialCount: number }) {
-  const $init = (element) => {
-    const countObs = new Observable(initialCount);
-    countObs.subscribe((count) => element.innerText = String(count));
-    countObs.notify();
-  };
+  const count = new Observable(initialCount);
 
   return (
     <div>
-      <div $init={$init}></div>
-      <button onclick={() => countObs.updateValue((count) => count + 1)}>
-        +
-      </button>
+      <p innerText={count}></p>
+      <button onclick={() => count.value++}>+</button>
     </div>
   );
 }

@@ -153,8 +153,8 @@ interface FreeJsxHtmlElementAttributes extends FreeJsxElement, OmitEventListener
   enterKeyHint: string;
   hidden: boolean;
   inert: boolean;
-  innerHTML: string;
-  innerText: string;
+  innerHTML: string | number;
+  innerText: string | number;
   inputMode: string;
   lang: string;
   outerHTML: string;
