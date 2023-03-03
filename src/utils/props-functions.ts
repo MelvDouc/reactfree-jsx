@@ -1,33 +1,44 @@
 import Observable from "./Observable";
-import { ComponentChildren, Props } from "../types/types";
+import { ComponentChildren, PossibleObservable, Props } from "../types/types";
+
+function applyClassName(element: HTMLElement, className: PossibleObservable<string>): void {
+  if (typeof className === "string") {
+    element.className = className;
+    return;
+  }
+
+  element.className = className.value;
+  className.subscribe((value) => element.className = value);
+}
+
+function applyClassRecord({ classList }: HTMLElement, classes: Record<string, PossibleObservable<boolean>>): void {
+  for (const cssClass in classes) {
+    const hasClass = classes[cssClass];
+
+    if (hasClass === true) {
+      classList.add(cssClass);
+      continue;
+    }
+
+    if (!(hasClass instanceof Observable))
+      continue;
+
+    hasClass.value && classList.add(cssClass);
+    hasClass.subscribe((value) => {
+      value
+        ? classList.add(cssClass)
+        : classList.remove(cssClass);
+    });
+  }
+}
 
 export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
-  if (props.classes) {
-    const { classList } = element;
-
-    for (const cssClass in props.classes) {
-      const hasClass = props.classes[cssClass];
-
-      if (hasClass === true) {
-        classList.add(cssClass);
-        continue;
-      }
-
-      if (!(hasClass instanceof Observable))
-        continue;
-
-      hasClass.value && classList.add(cssClass);
-      hasClass.subscribe((value) => {
-        value
-          ? classList.add(cssClass)
-          : classList.remove(cssClass);
-      });
-    }
-  } else if (props.classNames) {
+  if (props.classes)
+    applyClassRecord(element, props.classes);
+  else if (props.classNames)
     element.className = props.classNames.join(" ");
-  } else if (props.className) {
-    element.className = props.className;
-  }
+  else if (props.className)
+    applyClassName(element, props.className);
 
   delete props.classes;
   delete props.classNames;
@@ -46,12 +57,12 @@ export function applyChildren(element: HTMLElement | DocumentFragment, children:
   element.append(children as string | Node);
 }
 
-export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElement, props: Props<T>) {
+export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElement, props: Props<T>): void {
   if (!props.style)
     return;
 
   for (const key in props.style) {
-    const style = props.style[key] as string | Observable<string>;
+    const style = props.style[key] as PossibleObservable<string>;
 
     if (typeof style === "string") {
       element.style[key] = style;
@@ -59,36 +70,31 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
     }
 
     element.style[key] = style.value;
-    style.subscribe((value) => {
-      element.style[key] = value;
-    });
+    style.subscribe((value) => element.style[key] = value);
   }
 
   delete props.style;
 }
 
-function applyProp<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], propertyKey: string, value: any) {
+function applyProp(element: HTMLElement, propertyKey: string, value: any) {
   if (propertyKey in element) {
-    (element[propertyKey as keyof object] as any) = value;
+    (element[propertyKey as keyof typeof element] as any) = value;
     return;
   }
 
   element.setAttribute(propertyKey, value);
 }
 
-export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: Props<T>) {
+export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
   for (const key in props) {
-    const propValue = props[key as keyof Props<T>] as any;
+    const dynamicValue = props[key as keyof Props<T>];
 
-    if (!key.startsWith("obs_")) {
-      applyProp(element, key, propValue);
+    if (!(dynamicValue instanceof Observable)) {
+      applyProp(element, key, dynamicValue);
       continue;
     }
 
-    const propName = key.slice(4) as keyof object;
-    applyProp(element, propName, propValue.value);
-    (<Observable<any>>propValue).subscribe((value) => {
-      applyProp(element, propName, value);
-    });
+    applyProp(element, key, dynamicValue.value);
+    dynamicValue.subscribe((value) => applyProp(element, key, value));
   }
 }
