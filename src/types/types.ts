@@ -2,6 +2,12 @@ import type Observable from "../utils/Observable";
 import { FreeJsxElementTagNameMap } from "./elements";
 export { JSX };
 
+type PossibleObservable<T> = T | Observable<T>;
+
+// ===== ===== ===== ===== =====
+// COMPONENTS
+// ===== ===== ===== ===== =====
+
 export type ComponentChild =
   | ComponentChild[]
   | Node
@@ -12,23 +18,39 @@ export type ComponentChild =
   | null;
 export type ComponentChildren = ComponentChild | ComponentChild[];
 export type ComponentFactory = (props: { children?: ComponentChildren; }) => Element | ComponentFactory;
+
+// ===== ===== ===== ===== =====
+// PROPERTIES
+// ===== ===== ===== ===== =====
+
 export type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
-export type FreeJsxStyles = Partial<
-  Omit<CSSStyleDeclaration, "setProperty" | "removeProperty">
->;
+type ObservableProperties<K extends keyof FreeJsxElementTagNameMap> = {
+  [P in keyof FreeJsxElementTagNameMap[K]as `obs_${Extract<P, string>}`]?: Observable<FreeJsxElementTagNameMap[K][P]>
+};
+type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
+  $init: (element: HTMLElementTagNameMap[K]) => void;
+  classes: Record<string, PossibleObservable<boolean>>;
+  classNames: string[];
+  style: FreeJsxStyles;
+};
+
+// ===== ===== ===== ===== =====
+// STYLES
+// ===== ===== ===== ===== =====
+
+type CSSStyleDeclarationMethod = "getPropertyPriority" | "getPropertyValue" | "item" | "removeProperty" | "setProperty";
+type MethodFreeCSSStyleDeclaration = Omit<CSSStyleDeclaration, CSSStyleDeclarationMethod>;
+export type FreeJsxStyles = {
+  [K in keyof MethodFreeCSSStyleDeclaration]?: PossibleObservable<MethodFreeCSSStyleDeclaration[K]>
+};
 
 declare global {
   namespace JSX {
     export type IntrinsicElementsHTML = {
       [K in keyof FreeJsxElementTagNameMap]:
       & Partial<FreeJsxElementTagNameMap[K]>
-      & { [P in keyof FreeJsxElementTagNameMap[K]as `obs_${Extract<P, string>}`]?: Observable<FreeJsxElementTagNameMap[K][P]> }
-      & {
-        $init?: (element: HTMLElementTagNameMap[K]) => void;
-        classes?: Record<string, boolean | Observable<boolean>>;
-        classNames?: string[];
-        style?: FreeJsxStyles;
-      }
+      & ObservableProperties<K>
+      & Partial<FreeJSXExtraAttributes<K>>
     };
 
     export type IntrinsicElements = IntrinsicElementsHTML;
