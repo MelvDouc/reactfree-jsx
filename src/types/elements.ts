@@ -269,8 +269,7 @@ interface FreeJsxInputAttributes extends
   Disableable,
   WithName,
   WithSrc,
-  WithType,
-  WithValue {
+  WithType {
   accept: string;
   capture: string;
   checked: boolean;
@@ -299,6 +298,7 @@ interface FreeJsxInputAttributes extends
   size: number;
   step: string;
   useMap: string;
+  value: string | number;
   valueAsDate: Date | null;
   valueAsNumber: number;
   webkitdirectory: boolean;
@@ -385,8 +385,8 @@ interface FreeJsxScriptAttributes extends FreeJsxHtmlElementAttributes, WithRefe
   noModule: boolean;
 }
 
-interface FreeJsxSelectAttributes
-  extends FreeJsxHtmlElementAttributes,
+interface FreeJsxSelectAttributes extends
+  FreeJsxHtmlElementAttributes,
   WithAutoComplete,
   Disableable,
   WithName,
