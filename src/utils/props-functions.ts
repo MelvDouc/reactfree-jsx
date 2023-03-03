@@ -57,7 +57,7 @@ export function applyChildren(element: HTMLElement | DocumentFragment, children:
   element.append(children as string | Node);
 }
 
-export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElement, props: Props<T>): void {
+export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
   if (!props.style)
     return;
 
