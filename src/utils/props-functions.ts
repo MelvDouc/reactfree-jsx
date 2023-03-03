@@ -1,7 +1,7 @@
 import Observable from "./Observable";
 import { ComponentChildren, Props } from "../types/types";
 
-export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTMLElement, props: Props<T>): void {
+export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
   if (props.classes) {
     const { classList } = element;
 
@@ -13,7 +13,8 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
         continue;
       }
 
-      if (!(hasClass instanceof Observable)) continue;
+      if (!(hasClass instanceof Observable))
+        continue;
 
       hasClass.value && classList.add(cssClass);
       hasClass.subscribe((value) => {
@@ -50,10 +51,17 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
     return;
 
   for (const key in props.style) {
-    element.style.setProperty(
-      key.replace(/[A-Z]/g, s => "-" + s.toLowerCase()),
-      props.style[key]!
-    );
+    const style = props.style[key] as string | Observable<string>;
+
+    if (typeof style === "string") {
+      element.style[key] = style;
+      continue;
+    }
+
+    element.style[key] = style.value;
+    style.subscribe((value) => {
+      element.style[key] = value;
+    });
   }
 
   delete props.style;
