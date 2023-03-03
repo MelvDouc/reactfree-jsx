@@ -15,13 +15,10 @@ function applyClassRecord({ classList }: HTMLElement, classes: Record<string, Po
   for (const cssClass in classes) {
     const hasClass = classes[cssClass];
 
-    if (hasClass === true) {
-      classList.add(cssClass);
+    if (typeof hasClass === "boolean") {
+      hasClass && classList.add(cssClass);
       continue;
     }
-
-    if (!(hasClass instanceof Observable))
-      continue;
 
     hasClass.value && classList.add(cssClass);
     hasClass.subscribe((value) => {
