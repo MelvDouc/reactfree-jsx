@@ -2,7 +2,7 @@ import type Observable from "../utils/Observable";
 import { FreeJsxElementTagNameMap } from "./elements";
 export { JSX };
 
-type PossibleObservable<T> = T | Observable<T>;
+export type PossibleObservable<T> = T | Observable<T>;
 
 // ===== ===== ===== ===== =====
 // COMPONENTS
@@ -63,11 +63,13 @@ declare global {
   namespace JSX {
     export type IntrinsicElementsHTML = {
       [K in keyof FreeJsxElementTagNameMap]:
-      & Partial<FreeJsxElementTagNameMap[K]>
-      & ObservableProperties<K>
+      & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObservable<FreeJsxElementTagNameMap[K][P]> }
       & Partial<FreeJSXExtraAttributes<K>>
     };
 
     export type IntrinsicElements = IntrinsicElementsHTML;
   }
 }
+
+let x: JSX.IntrinsicElements["input"];
+// x.;
