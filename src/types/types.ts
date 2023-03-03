@@ -70,6 +70,3 @@ declare global {
     export type IntrinsicElements = IntrinsicElementsHTML;
   }
 }
-
-let x: JSX.IntrinsicElements["input"];
-// x.;
