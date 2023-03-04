@@ -1,5 +1,9 @@
-import type { ComponentFactory, Props, ComponentChild } from "./types/types";
-import { applyChildren, applyClasses, applyProps, applyStyles } from "./utils/apply-props";
+import {
+  applyChildren,
+  applyClasses,
+  applyProps,
+  applyStyles
+} from "./utils/apply-props.js";
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory | typeof Fragment,
