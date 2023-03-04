@@ -1,3 +1,2 @@
-export * from "./h";
-export { default as Observable } from "./utils/Observable";
-export * from "./types/types";
+export * from "./h.js";
+export { default as Observable } from "./utils/Observable.js";
