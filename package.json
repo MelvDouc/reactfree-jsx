@@ -17,10 +17,9 @@
     "url": "git+https://github.com/MelvDouc/reactfree-jsx.git"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "build:watch": "tsc -w",
-    "prepublishOnly": "npm run build",
-    "test": "npm run build && rm -rf test/node_modules && npm --prefix test install && npm --prefix test run dev"
+    "prepublishOnly": "npm run build"
   },
   "bugs": {
     "url": "https://github.com/MelvDouc/reactfree-jsx/issues",
