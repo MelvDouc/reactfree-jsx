@@ -16,7 +16,7 @@ declare namespace JSX {
 // OBSERVABLE
 // ===== ===== ===== ===== =====
 
-type Observable<T> = import("./src/Observable.js").default<T>;
+type Observable<T> = import("./dist/Observable.js").default<T>;
 type PossibleObservable<T> = T | Observable<T>;
 
 // ===== ===== ===== ===== =====
