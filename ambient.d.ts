@@ -1,3 +1,155 @@
+// ===== ===== ===== ===== =====
+// JSX
+// ===== ===== ===== ===== =====
+
+declare namespace JSX {
+  type IntrinsicElementsHTML = {
+    [K in keyof FreeJsxElementTagNameMap]:
+    & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObservable<FreeJsxElementTagNameMap[K][P]> }
+    & Partial<FreeJSXExtraAttributes<K>>
+  };
+
+  type IntrinsicElements = IntrinsicElementsHTML;
+}
+
+// ===== ===== ===== ===== =====
+// OBSERVABLE
+// ===== ===== ===== ===== =====
+
+type Observable<T> = {
+  new(value?: T): Observable<T>;
+  value: T;
+  subscribe(subscription: (value: T) => any): VoidFunction;
+  followObservable<O>(observable: Observable<O>, mapFn: (value: O) => T): ThisParameterType<Observable<T>>;
+  notify(): void;
+};
+type PossibleObservable<T> = T | Observable<T>;
+
+// ===== ===== ===== ===== =====
+// COMPONENTS
+// ===== ===== ===== ===== =====
+
+type ComponentChild =
+  | ComponentChild[]
+  | Node
+  | string
+  | number
+  | boolean
+  | undefined
+  | null;
+type ComponentChildren = ComponentChild | ComponentChild[];
+type ComponentFactory = (props: { children?: ComponentChildren; }) => Element | ComponentFactory;
+
+// ===== ===== ===== ===== =====
+// PROPERTIES
+// ===== ===== ===== ===== =====
+
+type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
+type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
+  /**
+   * A function to run on the element after its properties have been set.
+   * @param element The element being created.
+   */
+  $init: (element: HTMLElementTagNameMap[K]) => void;
+  /**
+   * A record of CSS classes that will be added to the element if the value is true
+   * or, if it is an observable, when its value changes to `true`.
+   */
+  classes: Record<string, PossibleObservable<boolean>>;
+  /**
+   * An array of CSS classes to add to the element.
+   */
+  classNames: string[];
+  /**
+   * A record of CSS classes that will be applied to the element
+   * either directly or dynamically via an observable.
+   */
+  style: FreeJsxStyles;
+};
+
+// ===== ===== ===== ===== =====
+// STYLES
+// ===== ===== ===== ===== =====
+
+type CSSStyleDeclarationMethod = "getPropertyPriority" | "getPropertyValue" | "item" | "length" | "removeProperty" | "setProperty";
+type MethodFreeCSSStyleDeclaration = Omit<CSSStyleDeclaration, CSSStyleDeclarationMethod>;
+type FreeJsxStyles = {
+  [K in keyof MethodFreeCSSStyleDeclaration]?: PossibleObservable<MethodFreeCSSStyleDeclaration[K]>
+};
+
+// ===== ===== ===== ===== =====
+// COMMON PROPS
+// ===== ===== ===== ===== =====
+
+interface WithAlt {
+  alt: string;
+}
+
+interface WithAutoComplete {
+  autocomplete: string;
+}
+
+interface WithCite {
+  cite: string;
+}
+
+interface Disableable {
+  disabled: boolean;
+}
+
+interface WithDownload {
+  download: string;
+}
+
+interface WithHref {
+  href: string;
+}
+
+interface WithName {
+  name: string;
+}
+
+interface Openable {
+  open: boolean;
+}
+
+interface WithRel {
+  rel: string;
+}
+
+interface WithSrc {
+  src: string;
+}
+
+interface WithReferrerPolicy {
+  referrerPolicy: string;
+}
+
+interface WithTarget {
+  target: string;
+}
+
+interface WithText {
+  text: string;
+}
+
+interface WithType {
+  type: string;
+}
+
+interface WithValue {
+  value: string | number;
+}
+
+interface WithHeightAndWidth {
+  height: number | string;
+  width: number | string;
+}
+
+// ===== ===== ===== ===== =====
+// PROPS INTERFACES
+// ===== ===== ===== ===== =====
+
 type OmitEventListenerTogglers<T> = Omit<T, "addEventListener" | "removeEventListener">;
 
 interface FreeJsxElementProps extends ARIAMixin {
@@ -336,4 +488,122 @@ interface FreeJsxVideoProps extends FreeJsxHtmlElementProps, WithHeightAndWidth 
   onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
   playsInline: boolean;
   poster: string;
+}
+
+// ===== ===== ===== ===== =====
+// FREEJSX_TAG_NAME_MAP
+// ===== ===== ===== ===== =====
+
+interface FreeJsxElementTagNameMap {
+  a: FreeJsxAnchorProps;
+  abbr: FreeJsxHtmlElementProps;
+  address: FreeJsxHtmlElementProps;
+  area: FreeJsxAreaElement;
+  article: FreeJsxHtmlElementProps;
+  aside: FreeJsxHtmlElementProps;
+  audio: FreeJsxHtmlElementProps;
+  b: FreeJsxHtmlElementProps;
+  base: FreeJsxBaseProps;
+  bdi: FreeJsxHtmlElementProps;
+  bdo: FreeJsxHtmlElementProps;
+  blockquote: FreeJsxQuoteProps;
+  body: FreeJsxBodyProps;
+  br: FreeJsxHtmlElementProps;
+  button: FreeJsxButtonProps;
+  canvas: FreeJsxCanvasProps;
+  caption: FreeJsxHtmlElementProps;
+  cite: FreeJsxHtmlElementProps;
+  code: FreeJsxHtmlElementProps;
+  col: FreeJsxHtmlElementProps;
+  colgroup: FreeJsxHtmlElementProps;
+  data: FreeJsxDataProps;
+  datalist: FreeJsxHtmlElementProps;
+  dd: FreeJsxHtmlElementProps;
+  del: FreeJsxModProps;
+  details: FreeJsxDetailsProps;
+  dfn: FreeJsxHtmlElementProps;
+  dialog: FreeJsxDialogProps;
+  div: FreeJsxHtmlElementProps;
+  dl: FreeJsxHtmlElementProps;
+  dt: FreeJsxHtmlElementProps;
+  em: FreeJsxHtmlElementProps;
+  embed: FreeJsxEmbedProps;
+  fieldset: FreeJsxFieldsetProps;
+  figcaption: FreeJsxHtmlElementProps;
+  figure: FreeJsxHtmlElementProps;
+  footer: FreeJsxHtmlElementProps;
+  form: FreeJsxFormProps;
+  h1: FreeJsxHtmlElementProps;
+  h2: FreeJsxHtmlElementProps;
+  h3: FreeJsxHtmlElementProps;
+  h4: FreeJsxHtmlElementProps;
+  h5: FreeJsxHtmlElementProps;
+  h6: FreeJsxHtmlElementProps;
+  head: FreeJsxHtmlElementProps;
+  header: FreeJsxHtmlElementProps;
+  hgroup: FreeJsxHtmlElementProps;
+  hr: FreeJsxHtmlElementProps;
+  html: FreeJsxHtmlElementProps;
+  i: FreeJsxHtmlElementProps;
+  iframe: FreeJsxIframeProps;
+  img: FreeJsxImageProps;
+  input: FreeJsxInputProps;
+  ins: FreeJsxModProps;
+  kbd: FreeJsxHtmlElementProps;
+  label: FreeJsxLabelProps;
+  legend: FreeJsxHtmlElementProps;
+  li: FreeJsxLiProps;
+  link: FreeJsxLinkProps;
+  main: FreeJsxHtmlElementProps;
+  map: FreeJsxMapProps;
+  mark: FreeJsxHtmlElementProps;
+  menu: FreeJsxHtmlElementProps;
+  meta: FreeJsxMetaProps;
+  meter: FreeJsxMeterProps;
+  nav: FreeJsxHtmlElementProps;
+  noscript: FreeJsxHtmlElementProps;
+  object: FreeJsxObjectElementProps;
+  ol: FreeJsxOlProps;
+  optgroup: FreeJsxOptgroupProps;
+  option: FreeJsxOptionProps;
+  output: FreeJsxOutputProps;
+  p: FreeJsxHtmlElementProps;
+  picture: FreeJsxHtmlElementProps;
+  pre: FreeJsxHtmlElementProps;
+  progress: FreeJsxProgressProps;
+  q: FreeJsxQuoteProps;
+  rp: FreeJsxHtmlElementProps;
+  rt: FreeJsxHtmlElementProps;
+  ruby: FreeJsxHtmlElementProps;
+  s: FreeJsxHtmlElementProps;
+  samp: FreeJsxHtmlElementProps;
+  script: FreeJsxScriptProps;
+  section: FreeJsxHtmlElementProps;
+  select: FreeJsxSelectProps;
+  slot: FreeJsxSourceProps;
+  small: FreeJsxHtmlElementProps;
+  source: FreeJsxSourceProps;
+  span: FreeJsxHtmlElementProps;
+  strong: FreeJsxHtmlElementProps;
+  style: FreeJsxStyleElementProps;
+  sub: FreeJsxHtmlElementProps;
+  summary: FreeJsxHtmlElementProps;
+  sup: FreeJsxHtmlElementProps;
+  table: FreeJsxTableProps;
+  tbody: FreeJsxHtmlElementProps;
+  td: FreeJsxTableCellProps;
+  template: FreeJsxHtmlElementProps;
+  textarea: FreeJsxTextareaProps;
+  tfoot: FreeJsxHtmlElementProps;
+  th: FreeJsxTableCellProps;
+  thead: FreeJsxHtmlElementProps;
+  time: FreeJsxTimeProps;
+  title: FreeJsxTitleProps;
+  tr: FreeJsxHtmlElementProps;
+  track: FreeJsxTrackProps;
+  u: FreeJsxHtmlElementProps;
+  ul: FreeJsxHtmlElementProps;
+  var: FreeJsxHtmlElementProps;
+  video: FreeJsxVideoProps;
+  wbr: FreeJsxHtmlElementProps;
 }

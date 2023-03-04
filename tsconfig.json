@@ -14,8 +14,13 @@
     "outDir": "dist",
     "strict": true,
     "strictPropertyInitialization": false,
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true
   },
+  "include": [
+    "src",
+    "ambient.d.ts"
+  ],
   "exclude": [
     "**/node_modules",
     "dist",
