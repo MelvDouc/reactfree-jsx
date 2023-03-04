@@ -1,5 +1,4 @@
-import Observable from "./Observable";
-import { ComponentChildren, PossibleObservable, Props } from "../types/types";
+import Observable from "./Observable.js";
 
 function applyClassName(element: HTMLElement, className: PossibleObservable<string>): void {
   if (typeof className === "string") {
@@ -59,7 +58,7 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
     return;
 
   for (const key in props.style) {
-    const style = props.style[key] as PossibleObservable<string>;
+    const style = props.style[key]!;
 
     if (typeof style === "string") {
       element.style[key] = style;
