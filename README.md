@@ -1,20 +1,20 @@
-/!\ IMPORTANT: Use vite 3.1.0 or below.
+⚠️ **IMPORTANT** Use vite 3.1.0 or below.
 
 # React-free JSX
 
-A package to use JSX and TSX with the full power of Vanilla JS minus the
-constraints of React.
+A package to use JSX and TSX with the full power of Vanilla JS minus the constraints of React.
 
 ## JSX
 
 ```tsx
-function Counter({ initialCount }: { initialCount: number }) {
-  const count = new Observable(initialCount);
+function Counter() {
+  const count = new Observable(0);
 
   return (
     <div>
       <p innerText={count}></p>
       <button onclick={() => count.value++}>+</button>
+      <button onclick={() => count.value--}>-</button>
     </div>
   );
 }
@@ -36,9 +36,8 @@ export default defineConfig({
 
 ## types.d.ts
 
-A VS Code bug appears to make it so that it doesn't recognize the JSX namespace
-but it can be fixed by having a types file containing:
+To have ambient types available, add a types.d.ts file to your project containing:
 
-```javascript
-import("reactfree-jsx");
+```typescript
+/// <reference path="reactfree-jsx" />
 ```
