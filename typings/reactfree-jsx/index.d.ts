@@ -1,14 +1,22 @@
-import type Observable from "../utils/Observable";
-import { FreeJsxElementTagNameMap } from "./elements";
-export { JSX };
+type PossibleObservable<T> = T | Observable<T>;
 
-export type PossibleObservable<T> = T | Observable<T>;
+// ===== ===== ===== ===== =====
+// OBSERVABLE
+// ===== ===== ===== ===== =====
+
+type Observable<T> = {
+  new(value?: T): Observable<T>;
+  value: T;
+  subscribe(subscription: (value: T) => any): VoidFunction;
+  followObservable<O>(observable: Observable<O>, mapFn: (value: O) => T): ThisParameterType<Observable<T>>;
+  notify(): void;
+};
 
 // ===== ===== ===== ===== =====
 // COMPONENTS
 // ===== ===== ===== ===== =====
 
-export type ComponentChild =
+type ComponentChild =
   | ComponentChild[]
   | Node
   | string
@@ -16,17 +24,14 @@ export type ComponentChild =
   | boolean
   | undefined
   | null;
-export type ComponentChildren = ComponentChild | ComponentChild[];
-export type ComponentFactory = (props: { children?: ComponentChildren; }) => Element | ComponentFactory;
+type ComponentChildren = ComponentChild | ComponentChild[];
+type ComponentFactory = (props: { children?: ComponentChildren; }) => Element | ComponentFactory;
 
 // ===== ===== ===== ===== =====
 // PROPERTIES
 // ===== ===== ===== ===== =====
 
-export type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
-type ObservableProperties<K extends keyof FreeJsxElementTagNameMap> = {
-  [P in keyof FreeJsxElementTagNameMap[K]as `obs_${Extract<P, string>}`]?: Observable<FreeJsxElementTagNameMap[K][P]>
-};
+type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
 type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
   /**
    * A function to run on the element after its properties have been set.
@@ -55,18 +60,20 @@ type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
 
 type CSSStyleDeclarationMethod = "getPropertyPriority" | "getPropertyValue" | "item" | "length" | "removeProperty" | "setProperty";
 type MethodFreeCSSStyleDeclaration = Omit<CSSStyleDeclaration, CSSStyleDeclarationMethod>;
-export type FreeJsxStyles = {
+type FreeJsxStyles = {
   [K in keyof MethodFreeCSSStyleDeclaration]?: PossibleObservable<MethodFreeCSSStyleDeclaration[K]>
 };
 
-declare global {
-  namespace JSX {
-    export type IntrinsicElementsHTML = {
-      [K in keyof FreeJsxElementTagNameMap]:
-      & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObservable<FreeJsxElementTagNameMap[K][P]> }
-      & Partial<FreeJSXExtraAttributes<K>>
-    };
+// ===== ===== ===== ===== =====
+// JSX
+// ===== ===== ===== ===== =====
 
-    export type IntrinsicElements = IntrinsicElementsHTML;
-  }
+declare namespace JSX {
+  type IntrinsicElementsHTML = {
+    [K in keyof FreeJsxElementTagNameMap]:
+    & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObservable<FreeJsxElementTagNameMap[K][P]> }
+    & Partial<FreeJSXExtraAttributes<K>>
+  };
+
+  type IntrinsicElements = IntrinsicElementsHTML;
 }
