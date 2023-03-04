@@ -5,7 +5,7 @@
 declare namespace JSX {
   type IntrinsicElementsHTML = {
     [K in keyof FreeJsxElementTagNameMap]:
-    & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObservable<FreeJsxElementTagNameMap[K][P]> }
+    & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObs<FreeJsxElementTagNameMap[K][P]> }
     & Partial<FreeJSXExtraAttributes<K>>
   };
 
@@ -16,8 +16,14 @@ declare namespace JSX {
 // OBSERVABLE
 // ===== ===== ===== ===== =====
 
-type Observable<T> = import("./dist/Observable.js").default<T>;
-type PossibleObservable<T> = T | Observable<T>;
+interface Obs<T> {
+  value: T;
+  subscribe(subscription: (value: T) => void): VoidFunction;
+  followObservable<O>(obs: Obs<O>, mapFn: (value: O) => T): Obs<T>;
+  notify(): void;
+}
+
+type PossibleObs<T> = T | Obs<T>;
 
 // ===== ===== ===== ===== =====
 // COMPONENTS
@@ -49,7 +55,7 @@ type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
    * A record of CSS classes that will be added to the element if the value is true
    * or, if it is an observable, when its value changes to `true`.
    */
-  classes: Record<string, PossibleObservable<boolean>>;
+  classes: Record<string, PossibleObs<boolean>>;
   /**
    * An array of CSS classes to add to the element.
    */
@@ -68,7 +74,7 @@ type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
 type CSSStyleDeclarationMethod = "getPropertyPriority" | "getPropertyValue" | "item" | "length" | "removeProperty" | "setProperty";
 type MethodFreeCSSStyleDeclaration = Omit<CSSStyleDeclaration, CSSStyleDeclarationMethod>;
 type FreeJsxStyles = {
-  [K in keyof MethodFreeCSSStyleDeclaration]?: PossibleObservable<MethodFreeCSSStyleDeclaration[K]>
+  [K in keyof MethodFreeCSSStyleDeclaration]?: PossibleObs<MethodFreeCSSStyleDeclaration[K]>
 };
 
 // ===== ===== ===== ===== =====

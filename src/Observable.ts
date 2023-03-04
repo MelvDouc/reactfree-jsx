@@ -1,4 +1,4 @@
-export default class Observable<T extends any> {
+export default class Observable<T extends any> implements Obs<T> {
   #value: T;
   #subscriptions = new Set<(value: T) => any>();
 

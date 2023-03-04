@@ -1,6 +1,6 @@
 import Observable from "./Observable.js";
 
-function applyClassName(element: HTMLElement, className: PossibleObservable<string>): void {
+function applyClassName(element: HTMLElement, className: PossibleObs<string>): void {
   if (typeof className === "string") {
     element.className = className;
     return;
@@ -10,7 +10,7 @@ function applyClassName(element: HTMLElement, className: PossibleObservable<stri
   className.subscribe((value) => element.className = value);
 }
 
-function applyClassRecord({ classList }: HTMLElement, classes: Record<string, PossibleObservable<boolean>>): void {
+function applyClassRecord({ classList }: HTMLElement, classes: Record<string, PossibleObs<boolean>>): void {
   for (const cssClass in classes) {
     const hasClass = classes[cssClass];
 
