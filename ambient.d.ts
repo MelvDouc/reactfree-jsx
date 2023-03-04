@@ -16,7 +16,14 @@ declare namespace JSX {
 // OBSERVABLE
 // ===== ===== ===== ===== =====
 
-type Observable<T> = import("./dist/utils/Observable.js").default<T>;
+type Observable<T extends any> = {
+  constructor(value?: T): Observable<T>;
+  get value(): T;
+  set value(value: T);
+  subscribe(subscription: (value: T) => any): VoidFunction;
+  followObservable<O>(observable: Observable<O>, mapFn: (value: O) => T): Observable<T>;
+  notify(): void;
+};
 type PossibleObservable<T> = T | Observable<T>;
 
 // ===== ===== ===== ===== =====

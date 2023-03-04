@@ -1,4 +1,4 @@
 /// <reference path="../index.d.ts" />
 
 export * from "./h.js";
-export { default as Observable } from "./utils/Observable.js";
+export { default as Observable } from "./Observable.js";

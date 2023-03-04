@@ -3,7 +3,7 @@ import {
   applyClasses,
   applyProps,
   applyStyles
-} from "./utils/apply-props.js";
+} from "./apply-props.js";
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory | typeof Fragment,
