@@ -89,10 +89,6 @@ interface WithAutoComplete {
   autocomplete: string;
 }
 
-interface WithCite {
-  cite: string;
-}
-
 interface Disableable {
   disabled: boolean;
 }
@@ -111,6 +107,11 @@ interface WithName {
 
 interface Openable {
   open: boolean;
+}
+
+interface WithMinMax {
+  min: number | string;
+  max: number | string;
 }
 
 interface WithRel {
@@ -152,7 +153,7 @@ interface WithHeightAndWidth {
 
 type OmitEventListenerTogglers<T> = Omit<T, "addEventListener" | "removeEventListener">;
 
-interface FreeJsxElementProps extends ARIAMixin {
+interface ElementProps extends ARIAMixin {
   className: string;
   id: string;
   onfullscreenchange: ((this: Element, ev: Event) => any) | null;
@@ -163,7 +164,7 @@ interface FreeJsxElementProps extends ARIAMixin {
   [dataAttribute: `data${string}`]: string;
 }
 
-interface FreeJsxHtmlElementProps extends FreeJsxElementProps, OmitEventListenerTogglers<GlobalEventHandlers> {
+interface HtmlElementProps extends ElementProps, OmitEventListenerTogglers<GlobalEventHandlers> {
   accessKey: string;
   autocapitalize: string;
   contentEditable: string;
@@ -195,8 +196,12 @@ interface HyperlinkUtils extends WithHref {
   username: string;
 }
 
-interface FreeJsxAnchorProps extends
-  FreeJsxHtmlElementProps,
+interface Citable extends HtmlElementProps {
+  cite: string;
+}
+
+interface AnchorProps extends
+  HtmlElementProps,
   HyperlinkUtils,
   WithDownload,
   WithName,
@@ -209,8 +214,8 @@ interface FreeJsxAnchorProps extends
   ping: string;
 }
 
-interface FreeJsxAreaElement extends
-  FreeJsxHtmlElementProps,
+interface AreaProps extends
+  HtmlElementProps,
   HyperlinkUtils,
   WithAlt,
   WithDownload,
@@ -221,14 +226,11 @@ interface FreeJsxAreaElement extends
   shape: string;
 }
 
-interface FreeJsxBaseProps extends FreeJsxHtmlElementProps, WithHref { }
-interface FreeJsxQuoteProps extends FreeJsxHtmlElementProps, WithCite { }
-
-interface FreeJsxBodyProps extends FreeJsxHtmlElementProps, OmitEventListenerTogglers<WindowEventHandlers> {
+interface BodyProps extends HtmlElementProps, OmitEventListenerTogglers<WindowEventHandlers> {
   vLink: string;
 }
 
-interface FreeJsxButtonProps extends FreeJsxHtmlElementProps, Disableable, WithName, WithType, WithValue {
+interface ButtonProps extends HtmlElementProps, Disableable, WithName, WithType, WithValue {
   formAction: string;
   formEnctype: string;
   formMethod: string;
@@ -236,18 +238,13 @@ interface FreeJsxButtonProps extends FreeJsxHtmlElementProps, Disableable, WithN
   formTarget: string;
 }
 
-interface FreeJsxCanvasProps extends FreeJsxHtmlElementProps, WithHeightAndWidth { }
-interface FreeJsxDataProps extends FreeJsxHtmlElementProps, WithValue { }
-interface FreeJsxDetailsProps extends FreeJsxHtmlElementProps, Openable { }
-
-interface FreeJsxDialogProps extends FreeJsxHtmlElementProps, Openable {
+interface DialogProps extends HtmlElementProps, Openable {
   returnValue: string;
 }
 
-interface FreeJsxEmbedProps extends FreeJsxHtmlElementProps, WithHeightAndWidth, WithName, WithSrc, WithType { }
-interface FreeJsxFieldsetProps extends FreeJsxHtmlElementProps, Disableable, WithName { }
+interface EmbedProps extends HtmlElementProps, WithHeightAndWidth, WithName, WithSrc, WithType { }
 
-interface FreeJsxFormProps extends FreeJsxHtmlElementProps, WithAutoComplete, WithName, WithTarget {
+interface FormProps extends HtmlElementProps, WithAutoComplete, WithName, WithTarget {
   acceptCharset: string;
   action: string;
   encoding: string;
@@ -256,8 +253,8 @@ interface FreeJsxFormProps extends FreeJsxHtmlElementProps, WithAutoComplete, Wi
   noValidate: boolean;
 }
 
-interface FreeJsxIframeProps extends
-  FreeJsxHtmlElementProps,
+interface IframeProps extends
+  HtmlElementProps,
   WithHeightAndWidth,
   WithSrc,
   WithName,
@@ -268,8 +265,8 @@ interface FreeJsxIframeProps extends
   srcdoc: string;
 }
 
-interface FreeJsxImageProps extends
-  FreeJsxHtmlElementProps,
+interface ImageProps extends
+  HtmlElementProps,
   WithAlt,
   WithReferrerPolicy,
   WithSrc,
@@ -281,11 +278,13 @@ interface FreeJsxImageProps extends
   sizes: string;
 }
 
-interface FreeJsxInputProps extends
-  FreeJsxHtmlElementProps,
+interface InputProps extends
+  HtmlElementProps,
+  Disableable,
   WithAlt,
   WithAutoComplete,
-  Disableable,
+  WithHeightAndWidth,
+  WithMinMax,
   WithName,
   WithSrc,
   WithType,
@@ -302,11 +301,8 @@ interface FreeJsxInputProps extends
   formMethod: string;
   formNoValidate: boolean;
   formTarget: string;
-  height: number;
   indeterminate: boolean;
-  max: string;
   maxLength: number;
-  min: string;
   minLength: number;
   multiple: boolean;
   pattern: string;
@@ -321,17 +317,14 @@ interface FreeJsxInputProps extends
   valueAsDate: Date | null;
   valueAsNumber: number;
   webkitdirectory: boolean;
-  width: number;
 }
 
-interface FreeJsxLabelProps extends FreeJsxHtmlElementProps {
+interface LabelProps extends HtmlElementProps {
   htmlFor: string;
 }
 
-interface FreeJsxLiProps extends FreeJsxHtmlElementProps, WithValue { }
-
-interface FreeJsxLinkProps extends
-  FreeJsxHtmlElementProps,
+interface LinkProps extends
+  HtmlElementProps,
   Disableable,
   WithHref,
   WithReferrerPolicy,
@@ -347,56 +340,45 @@ interface FreeJsxLinkProps extends
   media: string;
 }
 
-interface FreeJsxMapProps extends FreeJsxHtmlElementProps, WithName { }
-
-interface FreeJsxMetaProps extends FreeJsxHtmlElementProps, WithName {
+interface MetaElementProps extends HtmlElementProps, WithName {
   content: string;
   httpEquiv: string;
   media: string;
 }
 
-interface FreeJsxMeterProps extends FreeJsxHtmlElementProps {
+interface MeterProps extends HtmlElementProps, WithMinMax, WithValue {
   high: number;
   low: number;
-  max: number;
-  min: number;
   optimum: number;
-  value: number;
 }
 
-interface FreeJsxModProps extends FreeJsxHtmlElementProps, WithCite { }
-
-interface FreeJsxObjectElementProps extends FreeJsxHtmlElementProps, WithHeightAndWidth, WithName, WithType {
+interface ObjectElementProps extends HtmlElementProps, WithHeightAndWidth, WithName, WithType {
   data: string;
   standby: string;
   useMap: string;
 }
 
-interface FreeJsxOlProps extends FreeJsxHtmlElementProps, WithType {
+interface OlProps extends HtmlElementProps, WithType {
   reversed: boolean;
   start: number;
 }
 
-interface FreeJsxOptgroupProps extends FreeJsxHtmlElementProps, Disableable {
-  label: string;
-}
-
-interface FreeJsxOptionProps extends FreeJsxHtmlElementProps, Disableable, WithValue, WithText {
+interface OptionProps extends HtmlElementProps, Disableable, WithValue, WithText {
   defaultSelected: boolean;
   label: string;
   selected: boolean;
 }
 
-interface FreeJsxOutputProps extends FreeJsxHtmlElementProps, WithName, WithValue {
+interface OutputProps extends HtmlElementProps, WithName, WithValue {
   defaultValue: string;
 }
 
-interface FreeJsxProgressProps extends FreeJsxHtmlElementProps {
+interface ProgressProps extends HtmlElementProps {
   max: number;
   value: number;
 }
 
-interface FreeJsxScriptProps extends FreeJsxHtmlElementProps, WithReferrerPolicy, WithSrc, WithText, WithType {
+interface ScriptProps extends HtmlElementProps, WithReferrerPolicy, WithSrc, WithText, WithType {
   async: boolean;
   crossOrigin: string;
   defer: boolean;
@@ -404,8 +386,8 @@ interface FreeJsxScriptProps extends FreeJsxHtmlElementProps, WithReferrerPolicy
   noModule: boolean;
 }
 
-interface FreeJsxSelectProps extends
-  FreeJsxHtmlElementProps,
+interface SelectProps extends
+  HtmlElementProps,
   WithAutoComplete,
   Disableable,
   WithName,
@@ -417,22 +399,18 @@ interface FreeJsxSelectProps extends
   size: number;
 }
 
-interface FreeJsxSlotProps extends Omit<FreeJsxElementProps, "slot">, WithName { }
-
-interface FreeJsxSourceProps extends FreeJsxHtmlElementProps, WithSrc, WithType {
-  height: number;
+interface SourceProps extends HtmlElementProps, WithHeightAndWidth, WithSrc, WithType {
   media: string;
   sizes: string;
   srcset: string;
-  width: number;
 }
 
-interface FreeJsxStyleElementProps extends FreeJsxHtmlElementProps, Disableable {
+interface StyleElementProps extends HtmlElementProps, Disableable {
   media: string;
 }
 
-interface FreeJsxTextareaProps extends
-  FreeJsxHtmlElementProps,
+interface TextareaProps extends
+  HtmlElementProps,
   WithAutoComplete,
   Disableable,
   WithName,
@@ -452,20 +430,14 @@ interface FreeJsxTextareaProps extends
   wrap: string;
 }
 
-interface FreeJsxTimeProps extends FreeJsxHtmlElementProps {
-  dateTime: string;
-}
-
-interface FreeJsxTitleProps extends FreeJsxHtmlElementProps, WithText { }
-
-interface FreeJsxTrackProps extends FreeJsxHtmlElementProps, WithSrc {
+interface TrackProps extends HtmlElementProps, WithSrc {
   default: boolean;
   kind: string;
   label: string;
   srclang: string;
 }
 
-interface FreeJsxTableProps extends FreeJsxHtmlElementProps {
+interface TableProps extends HtmlElementProps {
   caption: HTMLTableCaptionElement | null;
   cellPadding: string;
   cellSpacing: string;
@@ -474,7 +446,7 @@ interface FreeJsxTableProps extends FreeJsxHtmlElementProps {
   width: string;
 }
 
-interface FreeJsxTableCellProps extends FreeJsxHtmlElementProps {
+interface TableCellProps extends HtmlElementProps {
   abbr: string;
   colSpan: number;
   headers: string;
@@ -484,7 +456,7 @@ interface FreeJsxTableCellProps extends FreeJsxHtmlElementProps {
   scope: string;
 }
 
-interface FreeJsxVideoProps extends FreeJsxHtmlElementProps, WithHeightAndWidth {
+interface VideoProps extends HtmlElementProps, WithHeightAndWidth {
   disablePictureInPicture: boolean;
   onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
   onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
@@ -497,115 +469,115 @@ interface FreeJsxVideoProps extends FreeJsxHtmlElementProps, WithHeightAndWidth 
 // ===== ===== ===== ===== =====
 
 interface FreeJsxElementTagNameMap {
-  a: FreeJsxAnchorProps;
-  abbr: FreeJsxHtmlElementProps;
-  address: FreeJsxHtmlElementProps;
-  area: FreeJsxAreaElement;
-  article: FreeJsxHtmlElementProps;
-  aside: FreeJsxHtmlElementProps;
-  audio: FreeJsxHtmlElementProps;
-  b: FreeJsxHtmlElementProps;
-  base: FreeJsxBaseProps;
-  bdi: FreeJsxHtmlElementProps;
-  bdo: FreeJsxHtmlElementProps;
-  blockquote: FreeJsxQuoteProps;
-  body: FreeJsxBodyProps;
-  br: FreeJsxHtmlElementProps;
-  button: FreeJsxButtonProps;
-  canvas: FreeJsxCanvasProps;
-  caption: FreeJsxHtmlElementProps;
-  cite: FreeJsxHtmlElementProps;
-  code: FreeJsxHtmlElementProps;
-  col: FreeJsxHtmlElementProps;
-  colgroup: FreeJsxHtmlElementProps;
-  data: FreeJsxDataProps;
-  datalist: FreeJsxHtmlElementProps;
-  dd: FreeJsxHtmlElementProps;
-  del: FreeJsxModProps;
-  details: FreeJsxDetailsProps;
-  dfn: FreeJsxHtmlElementProps;
-  dialog: FreeJsxDialogProps;
-  div: FreeJsxHtmlElementProps;
-  dl: FreeJsxHtmlElementProps;
-  dt: FreeJsxHtmlElementProps;
-  em: FreeJsxHtmlElementProps;
-  embed: FreeJsxEmbedProps;
-  fieldset: FreeJsxFieldsetProps;
-  figcaption: FreeJsxHtmlElementProps;
-  figure: FreeJsxHtmlElementProps;
-  footer: FreeJsxHtmlElementProps;
-  form: FreeJsxFormProps;
-  h1: FreeJsxHtmlElementProps;
-  h2: FreeJsxHtmlElementProps;
-  h3: FreeJsxHtmlElementProps;
-  h4: FreeJsxHtmlElementProps;
-  h5: FreeJsxHtmlElementProps;
-  h6: FreeJsxHtmlElementProps;
-  head: FreeJsxHtmlElementProps;
-  header: FreeJsxHtmlElementProps;
-  hgroup: FreeJsxHtmlElementProps;
-  hr: FreeJsxHtmlElementProps;
-  html: FreeJsxHtmlElementProps;
-  i: FreeJsxHtmlElementProps;
-  iframe: FreeJsxIframeProps;
-  img: FreeJsxImageProps;
-  input: FreeJsxInputProps;
-  ins: FreeJsxModProps;
-  kbd: FreeJsxHtmlElementProps;
-  label: FreeJsxLabelProps;
-  legend: FreeJsxHtmlElementProps;
-  li: FreeJsxLiProps;
-  link: FreeJsxLinkProps;
-  main: FreeJsxHtmlElementProps;
-  map: FreeJsxMapProps;
-  mark: FreeJsxHtmlElementProps;
-  menu: FreeJsxHtmlElementProps;
-  meta: FreeJsxMetaProps;
-  meter: FreeJsxMeterProps;
-  nav: FreeJsxHtmlElementProps;
-  noscript: FreeJsxHtmlElementProps;
-  object: FreeJsxObjectElementProps;
-  ol: FreeJsxOlProps;
-  optgroup: FreeJsxOptgroupProps;
-  option: FreeJsxOptionProps;
-  output: FreeJsxOutputProps;
-  p: FreeJsxHtmlElementProps;
-  picture: FreeJsxHtmlElementProps;
-  pre: FreeJsxHtmlElementProps;
-  progress: FreeJsxProgressProps;
-  q: FreeJsxQuoteProps;
-  rp: FreeJsxHtmlElementProps;
-  rt: FreeJsxHtmlElementProps;
-  ruby: FreeJsxHtmlElementProps;
-  s: FreeJsxHtmlElementProps;
-  samp: FreeJsxHtmlElementProps;
-  script: FreeJsxScriptProps;
-  section: FreeJsxHtmlElementProps;
-  select: FreeJsxSelectProps;
-  slot: FreeJsxSlotProps;
-  small: FreeJsxHtmlElementProps;
-  source: FreeJsxSourceProps;
-  span: FreeJsxHtmlElementProps;
-  strong: FreeJsxHtmlElementProps;
-  style: FreeJsxStyleElementProps;
-  sub: FreeJsxHtmlElementProps;
-  summary: FreeJsxHtmlElementProps;
-  sup: FreeJsxHtmlElementProps;
-  table: FreeJsxTableProps;
-  tbody: FreeJsxHtmlElementProps;
-  td: FreeJsxTableCellProps;
-  template: FreeJsxHtmlElementProps;
-  textarea: FreeJsxTextareaProps;
-  tfoot: FreeJsxHtmlElementProps;
-  th: FreeJsxTableCellProps;
-  thead: FreeJsxHtmlElementProps;
-  time: FreeJsxTimeProps;
-  title: FreeJsxTitleProps;
-  tr: FreeJsxHtmlElementProps;
-  track: FreeJsxTrackProps;
-  u: FreeJsxHtmlElementProps;
-  ul: FreeJsxHtmlElementProps;
-  var: FreeJsxHtmlElementProps;
-  video: FreeJsxVideoProps;
-  wbr: FreeJsxHtmlElementProps;
+  a: AnchorProps;
+  abbr: HtmlElementProps;
+  address: HtmlElementProps;
+  area: AreaProps;
+  article: HtmlElementProps;
+  aside: HtmlElementProps;
+  audio: HtmlElementProps;
+  b: HtmlElementProps;
+  base: HtmlElementProps & WithHref;
+  bdi: HtmlElementProps;
+  bdo: HtmlElementProps;
+  blockquote: Citable;
+  body: BodyProps;
+  br: HtmlElementProps;
+  button: ButtonProps;
+  canvas: HtmlElementProps & WithHeightAndWidth;
+  caption: HtmlElementProps;
+  cite: HtmlElementProps;
+  code: HtmlElementProps;
+  col: HtmlElementProps;
+  colgroup: HtmlElementProps;
+  data: HtmlElementProps & WithValue;
+  datalist: HtmlElementProps;
+  dd: HtmlElementProps;
+  del: Citable;
+  details: HtmlElementProps & Openable;
+  dfn: HtmlElementProps;
+  dialog: DialogProps;
+  div: HtmlElementProps;
+  dl: HtmlElementProps;
+  dt: HtmlElementProps;
+  em: HtmlElementProps;
+  embed: EmbedProps;
+  fieldset: HtmlElementProps & Disableable & WithName;
+  figcaption: HtmlElementProps;
+  figure: HtmlElementProps;
+  footer: HtmlElementProps;
+  form: FormProps;
+  h1: HtmlElementProps;
+  h2: HtmlElementProps;
+  h3: HtmlElementProps;
+  h4: HtmlElementProps;
+  h5: HtmlElementProps;
+  h6: HtmlElementProps;
+  head: HtmlElementProps;
+  header: HtmlElementProps;
+  hgroup: HtmlElementProps;
+  hr: HtmlElementProps;
+  html: HtmlElementProps;
+  i: HtmlElementProps;
+  iframe: IframeProps;
+  img: ImageProps;
+  input: InputProps;
+  ins: Citable;
+  kbd: HtmlElementProps;
+  label: LabelProps;
+  legend: HtmlElementProps;
+  li: HtmlElementProps & WithValue;
+  link: LinkProps;
+  main: HtmlElementProps;
+  map: HtmlElementProps & WithName;
+  mark: HtmlElementProps;
+  menu: HtmlElementProps;
+  meta: MetaElementProps;
+  meter: MeterProps;
+  nav: HtmlElementProps;
+  noscript: HtmlElementProps;
+  object: ObjectElementProps;
+  ol: OlProps;
+  optgroup: HtmlElementProps & Disableable & { label: string; };
+  option: OptionProps;
+  output: OutputProps;
+  p: HtmlElementProps;
+  picture: HtmlElementProps;
+  pre: HtmlElementProps;
+  progress: ProgressProps;
+  q: Citable;
+  rp: HtmlElementProps;
+  rt: HtmlElementProps;
+  ruby: HtmlElementProps;
+  s: HtmlElementProps;
+  samp: HtmlElementProps;
+  script: ScriptProps;
+  section: HtmlElementProps;
+  select: SelectProps;
+  slot: Omit<HtmlElementProps, "slot"> & WithName;
+  small: HtmlElementProps;
+  source: SourceProps;
+  span: HtmlElementProps;
+  strong: HtmlElementProps;
+  style: StyleElementProps;
+  sub: HtmlElementProps;
+  summary: HtmlElementProps;
+  sup: HtmlElementProps;
+  table: TableProps;
+  tbody: HtmlElementProps;
+  td: TableCellProps;
+  template: HtmlElementProps;
+  textarea: TextareaProps;
+  tfoot: HtmlElementProps;
+  th: TableCellProps;
+  thead: HtmlElementProps;
+  time: HtmlElementProps & { dateTime: string; };
+  title: HtmlElementProps & WithText;
+  tr: HtmlElementProps;
+  track: TrackProps;
+  u: HtmlElementProps;
+  ul: HtmlElementProps;
+  var: HtmlElementProps;
+  video: VideoProps;
+  wbr: HtmlElementProps;
 }
