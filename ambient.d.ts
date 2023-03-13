@@ -417,6 +417,8 @@ interface FreeJsxSelectProps extends
   size: number;
 }
 
+interface FreeJsxSlotProps extends Omit<FreeJsxElementProps, "slot">, WithName { }
+
 interface FreeJsxSourceProps extends FreeJsxHtmlElementProps, WithSrc, WithType {
   height: number;
   media: string;
@@ -580,7 +582,7 @@ interface FreeJsxElementTagNameMap {
   script: FreeJsxScriptProps;
   section: FreeJsxHtmlElementProps;
   select: FreeJsxSelectProps;
-  slot: FreeJsxSourceProps;
+  slot: FreeJsxSlotProps;
   small: FreeJsxHtmlElementProps;
   source: FreeJsxSourceProps;
   span: FreeJsxHtmlElementProps;
