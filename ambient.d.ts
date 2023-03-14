@@ -4,9 +4,10 @@
 
 declare namespace JSX {
   type IntrinsicElementsHTML = {
-    [K in keyof FreeJsxElementTagNameMap]:
-    & { [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObs<FreeJsxElementTagNameMap[K][P]> }
-    & Partial<FreeJSXExtraAttributes<K>>
+    [K in keyof FreeJsxElementTagNameMap]: {
+      [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObs<FreeJsxElementTagNameMap[K][P]>
+    }
+    & Partial<ExtraProps<K>>
   };
 
   type IntrinsicElements = IntrinsicElementsHTML;
@@ -44,28 +45,32 @@ type ComponentFactory = (props: { children?: ComponentChildren; }) => Element | 
 // PROPERTIES
 // ===== ===== ===== ===== =====
 
+type OptionalClassProps = {
+  className?: PossibleObs<string>;
+  /**
+   * An array of CSS classes to add to the element.
+   */
+  classNames?: string[];
+  /**
+   * A record of CSS classes that will be added to the element if the value is true
+   * or, if it is an observable, when its value changes to `true`.
+   */
+  classes?: Record<string, PossibleObs<boolean>>;
+};
+
 type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
-type FreeJSXExtraAttributes<K extends keyof FreeJsxElementTagNameMap> = {
+type ExtraProps<K extends keyof FreeJsxElementTagNameMap> = {
   /**
    * A function to run on the element after its properties have been set.
    * @param element The element being created.
    */
   $init: (element: HTMLElementTagNameMap[K]) => void;
   /**
-   * A record of CSS classes that will be added to the element if the value is true
-   * or, if it is an observable, when its value changes to `true`.
-   */
-  classes: Record<string, PossibleObs<boolean>>;
-  /**
-   * An array of CSS classes to add to the element.
-   */
-  classNames: string[];
-  /**
    * A record of CSS classes that will be applied to the element
    * either directly or dynamically via an observable.
    */
   style: FreeJsxStyles;
-};
+} & OptionalClassProps;
 
 // ===== ===== ===== ===== =====
 // STYLES
@@ -81,11 +86,11 @@ type FreeJsxStyles = {
 // COMMON PROPS
 // ===== ===== ===== ===== =====
 
-interface WithAlt {
+interface Alt {
   alt: string;
 }
 
-interface WithAutoComplete {
+interface AutoComplete {
   autocomplete: string;
 }
 
@@ -93,15 +98,15 @@ interface Disableable {
   disabled: boolean;
 }
 
-interface WithDownload {
+interface Download {
   download: string;
 }
 
-interface WithHref {
+interface Href {
   href: string;
 }
 
-interface WithName {
+interface Named {
   name: string;
 }
 
@@ -109,16 +114,16 @@ interface Openable {
   open: boolean;
 }
 
-interface WithMinMax {
+interface MinMax {
   min: number | string;
   max: number | string;
 }
 
-interface WithRel {
+interface Rel {
   rel: string;
 }
 
-interface WithSrc {
+interface Sourced {
   src: string;
 }
 
@@ -126,7 +131,7 @@ interface WithReferrerPolicy {
   referrerPolicy: string;
 }
 
-interface WithTarget {
+interface Targeter {
   target: string;
 }
 
@@ -134,15 +139,15 @@ interface WithText {
   text: string;
 }
 
-interface WithType {
+interface TypedElement {
   type: string;
 }
 
-interface WithValue {
+interface Valued {
   value: string | number;
 }
 
-interface WithHeightAndWidth {
+interface Dimensions {
   height: number | string;
   width: number | string;
 }
@@ -151,20 +156,19 @@ interface WithHeightAndWidth {
 // PROPS INTERFACES
 // ===== ===== ===== ===== =====
 
-type OmitEventListenerTogglers<T> = Omit<T, "addEventListener" | "removeEventListener">;
+type InlineListener = ((this: Element, ev: Event) => any) | null;
 
-interface ElementProps extends ARIAMixin {
-  className: string;
+interface ElementProps extends ARIAMixin, Omit<GlobalEventHandlers, "addEventListener" | "removeEventListener"> {
   id: string;
-  onfullscreenchange: ((this: Element, ev: Event) => any) | null;
-  onfullscreenerror: ((this: Element, ev: Event) => any) | null;
+  onfullscreenchange: InlineListener;
+  onfullscreenerror: InlineListener;
   scrollLeft: number;
   scrollTop: number;
   slot: string;
   [dataAttribute: `data${string}`]: string;
 }
 
-interface HtmlElementProps extends ElementProps, OmitEventListenerTogglers<GlobalEventHandlers> {
+interface HtmlElementProps extends ElementProps {
   accessKey: string;
   autocapitalize: string;
   contentEditable: string;
@@ -177,19 +181,19 @@ interface HtmlElementProps extends ElementProps, OmitEventListenerTogglers<Globa
   innerText: string | number;
   inputMode: string;
   lang: string;
-  outerHTML: string;
-  outerText: string;
   spellcheck: boolean;
+  tabIndex: string | number;
   title: string;
   translate: boolean;
 }
 
-interface HyperlinkUtils extends WithHref {
+interface HyperlinkProps extends HtmlElementProps, Href {
   hash: string;
   host: string;
   hostname: string;
   password: string;
   pathname: string;
+  ping: string;
   port: string;
   protocol: string;
   search: string;
@@ -200,37 +204,33 @@ interface Citable extends HtmlElementProps {
   cite: string;
 }
 
-interface AnchorProps extends
-  HtmlElementProps,
-  HyperlinkUtils,
-  WithDownload,
-  WithName,
-  WithRel,
-  WithTarget,
-  WithType,
-  WithReferrerPolicy,
-  WithText {
+interface AnchorProps extends HyperlinkProps, Download, Named, Rel, Targeter, TypedElement, WithReferrerPolicy, WithText {
   hreflang: string;
-  ping: string;
 }
 
-interface AreaProps extends
-  HtmlElementProps,
-  HyperlinkUtils,
-  WithAlt,
-  WithDownload,
-  WithReferrerPolicy,
-  WithTarget {
+interface AreaProps extends HyperlinkProps, Alt, Download, WithReferrerPolicy, Targeter {
   coords: string;
-  ping: string;
   shape: string;
 }
 
-interface BodyProps extends HtmlElementProps, OmitEventListenerTogglers<WindowEventHandlers> {
-  vLink: string;
+interface BodyProps extends HtmlElementProps {
+  onafterprint: InlineListener;
+  onbeforeprint: InlineListener;
+  onbeforeunload: InlineListener;
+  onhashchange: InlineListener;
+  onlanguagechange: InlineListener;
+  onmessage: InlineListener;
+  onoffline: InlineListener;
+  ononline: InlineListener;
+  onpopstate: InlineListener;
+  onredo: InlineListener;
+  onstorage: InlineListener;
+  onundo: InlineListener;
+  onunload: InlineListener;
 }
 
-interface ButtonProps extends HtmlElementProps, Disableable, WithName, WithType, WithValue {
+interface ButtonProps extends HtmlElementProps, Disableable, Named, TypedElement, Valued {
+  autofocus: boolean;
   formAction: string;
   formEnctype: string;
   formMethod: string;
@@ -238,13 +238,11 @@ interface ButtonProps extends HtmlElementProps, Disableable, WithName, WithType,
   formTarget: string;
 }
 
-interface DialogProps extends HtmlElementProps, Openable {
+interface DialogProps extends Omit<HtmlElementProps, "tabIndex">, Openable {
   returnValue: string;
 }
 
-interface EmbedProps extends HtmlElementProps, WithHeightAndWidth, WithName, WithSrc, WithType { }
-
-interface FormProps extends HtmlElementProps, WithAutoComplete, WithName, WithTarget {
+interface FormProps extends HtmlElementProps, AutoComplete, Named, Targeter {
   acceptCharset: string;
   action: string;
   encoding: string;
@@ -253,24 +251,14 @@ interface FormProps extends HtmlElementProps, WithAutoComplete, WithName, WithTa
   noValidate: boolean;
 }
 
-interface IframeProps extends
-  HtmlElementProps,
-  WithHeightAndWidth,
-  WithSrc,
-  WithName,
-  WithReferrerPolicy {
+interface IframeProps extends HtmlElementProps, Dimensions, Named, Sourced, WithReferrerPolicy {
   allow: string;
-  allowFullscreen: boolean;
+  allowfullscreen: boolean;
   scrolling: string;
   srcdoc: string;
 }
 
-interface ImageProps extends
-  HtmlElementProps,
-  WithAlt,
-  WithReferrerPolicy,
-  WithSrc,
-  WithHeightAndWidth {
+interface ImageProps extends HtmlElementProps, Alt, Dimensions, Sourced, WithReferrerPolicy {
   crossOrigin: string | null;
   decoding: "async" | "sync" | "auto";
   isMap: boolean;
@@ -280,15 +268,15 @@ interface ImageProps extends
 
 interface InputProps extends
   HtmlElementProps,
+  Alt,
+  AutoComplete,
+  Dimensions,
   Disableable,
-  WithAlt,
-  WithAutoComplete,
-  WithHeightAndWidth,
-  WithMinMax,
-  WithName,
-  WithSrc,
-  WithType,
-  WithValue {
+  MinMax,
+  Named,
+  Sourced,
+  TypedElement,
+  Valued {
   accept: string;
   capture: string;
   checked: boolean;
@@ -313,24 +301,15 @@ interface InputProps extends
   selectionStart: number | null;
   size: number;
   step: string;
-  useMap: string;
   valueAsDate: Date | null;
   valueAsNumber: number;
-  webkitdirectory: boolean;
 }
 
 interface LabelProps extends HtmlElementProps {
   htmlFor: string;
 }
 
-interface LinkProps extends
-  HtmlElementProps,
-  Disableable,
-  WithHref,
-  WithReferrerPolicy,
-  WithRel,
-  WithTarget,
-  WithType {
+interface LinkProps extends HtmlElementProps, Disableable, Href, Rel, Targeter, TypedElement, WithReferrerPolicy {
   as: string;
   crossOrigin: string | null;
   hreflang: string;
@@ -340,36 +319,36 @@ interface LinkProps extends
   media: string;
 }
 
-interface MetaElementProps extends HtmlElementProps, WithName {
+interface MetaElementProps extends HtmlElementProps, Named {
   content: string;
   httpEquiv: string;
   media: string;
 }
 
-interface MeterProps extends HtmlElementProps, WithMinMax, WithValue {
+interface MeterProps extends HtmlElementProps, MinMax, Valued {
   high: number;
   low: number;
   optimum: number;
 }
 
-interface ObjectElementProps extends HtmlElementProps, WithHeightAndWidth, WithName, WithType {
+interface ObjectElementProps extends HtmlElementProps, Dimensions, Named, TypedElement {
   data: string;
   standby: string;
   useMap: string;
 }
 
-interface OlProps extends HtmlElementProps, WithType {
+interface OlProps extends HtmlElementProps, TypedElement {
   reversed: boolean;
   start: number;
 }
 
-interface OptionProps extends HtmlElementProps, Disableable, WithValue, WithText {
+interface OptionProps extends HtmlElementProps, Disableable, Valued, WithText {
   defaultSelected: boolean;
   label: string;
   selected: boolean;
 }
 
-interface OutputProps extends HtmlElementProps, WithName, WithValue {
+interface OutputProps extends HtmlElementProps, Named, Valued {
   defaultValue: string;
 }
 
@@ -378,7 +357,7 @@ interface ProgressProps extends HtmlElementProps {
   value: number;
 }
 
-interface ScriptProps extends HtmlElementProps, WithReferrerPolicy, WithSrc, WithText, WithType {
+interface ScriptProps extends HtmlElementProps, WithReferrerPolicy, Sourced, WithText, TypedElement {
   async: boolean;
   crossOrigin: string;
   defer: boolean;
@@ -386,12 +365,7 @@ interface ScriptProps extends HtmlElementProps, WithReferrerPolicy, WithSrc, Wit
   noModule: boolean;
 }
 
-interface SelectProps extends
-  HtmlElementProps,
-  WithAutoComplete,
-  Disableable,
-  WithName,
-  WithValue {
+interface SelectProps extends HtmlElementProps, AutoComplete, Disableable, Named, Valued {
   length: number;
   multiple: boolean;
   required: boolean;
@@ -399,7 +373,7 @@ interface SelectProps extends
   size: number;
 }
 
-interface SourceProps extends HtmlElementProps, WithHeightAndWidth, WithSrc, WithType {
+interface SourceProps extends HtmlElementProps, Dimensions, Sourced, TypedElement {
   media: string;
   sizes: string;
   srcset: string;
@@ -409,12 +383,7 @@ interface StyleElementProps extends HtmlElementProps, Disableable {
   media: string;
 }
 
-interface TextareaProps extends
-  HtmlElementProps,
-  WithAutoComplete,
-  Disableable,
-  WithName,
-  WithValue {
+interface TextareaProps extends HtmlElementProps, AutoComplete, Disableable, Named, Valued {
   cols: number;
   defaultValue: string;
   dirName: string;
@@ -430,7 +399,7 @@ interface TextareaProps extends
   wrap: string;
 }
 
-interface TrackProps extends HtmlElementProps, WithSrc {
+interface TrackProps extends HtmlElementProps, Sourced {
   default: boolean;
   kind: string;
   label: string;
@@ -456,7 +425,7 @@ interface TableCellProps extends HtmlElementProps {
   scope: string;
 }
 
-interface VideoProps extends HtmlElementProps, WithHeightAndWidth {
+interface VideoProps extends HtmlElementProps, Dimensions {
   disablePictureInPicture: boolean;
   onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
   onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
@@ -477,20 +446,20 @@ interface FreeJsxElementTagNameMap {
   aside: HtmlElementProps;
   audio: HtmlElementProps;
   b: HtmlElementProps;
-  base: HtmlElementProps & WithHref;
+  base: HtmlElementProps & Href;
   bdi: HtmlElementProps;
   bdo: HtmlElementProps;
   blockquote: Citable;
   body: BodyProps;
   br: HtmlElementProps;
   button: ButtonProps;
-  canvas: HtmlElementProps & WithHeightAndWidth;
+  canvas: HtmlElementProps & Dimensions;
   caption: HtmlElementProps;
   cite: HtmlElementProps;
   code: HtmlElementProps;
   col: HtmlElementProps;
   colgroup: HtmlElementProps;
-  data: HtmlElementProps & WithValue;
+  data: HtmlElementProps & Valued;
   datalist: HtmlElementProps;
   dd: HtmlElementProps;
   del: Citable;
@@ -501,8 +470,8 @@ interface FreeJsxElementTagNameMap {
   dl: HtmlElementProps;
   dt: HtmlElementProps;
   em: HtmlElementProps;
-  embed: EmbedProps;
-  fieldset: HtmlElementProps & Disableable & WithName;
+  embed: HtmlElementProps & Dimensions & Sourced & TypedElement;
+  fieldset: HtmlElementProps & Disableable & Named;
   figcaption: HtmlElementProps;
   figure: HtmlElementProps;
   footer: HtmlElementProps;
@@ -526,10 +495,10 @@ interface FreeJsxElementTagNameMap {
   kbd: HtmlElementProps;
   label: LabelProps;
   legend: HtmlElementProps;
-  li: HtmlElementProps & WithValue;
+  li: HtmlElementProps & Valued;
   link: LinkProps;
   main: HtmlElementProps;
-  map: HtmlElementProps & WithName;
+  map: HtmlElementProps & Named;
   mark: HtmlElementProps;
   menu: HtmlElementProps;
   meta: MetaElementProps;
@@ -554,7 +523,7 @@ interface FreeJsxElementTagNameMap {
   script: ScriptProps;
   section: HtmlElementProps;
   select: SelectProps;
-  slot: Omit<HtmlElementProps, "slot"> & WithName;
+  slot: Omit<HtmlElementProps, "slot"> & Named;
   small: HtmlElementProps;
   source: SourceProps;
   span: HtmlElementProps;
