@@ -20,7 +20,7 @@ declare namespace JSX {
 interface Obs<T> {
   value: T;
   subscribe(subscription: (value: T) => void): VoidFunction;
-  followObservable<O>(obs: Obs<O>, mapFn: (value: O) => T): Obs<T>;
+  map<U>(mapFn: (value: T) => U): Obs<U>;
   notify(): void;
 }
 

@@ -21,11 +21,10 @@ export default class Observable<T extends any> implements Obs<T> {
     return () => this.#subscriptions.delete(subscription);
   }
 
-  followObservable<O>(observable: Observable<O>, mapFn: (value: O) => T): this {
-    observable.subscribe((value) => {
-      this.value = mapFn(value);
-    });
-    return this;
+  map<U>(mapFn: (value: T) => U): Obs<U> {
+    const observable = new Observable<U>(mapFn(this.value));
+    this.subscribe((value) => observable.value = mapFn(value));
+    return observable;
   }
 
   notify(): void {
