@@ -14,6 +14,7 @@ const differentlyNamedAttributes = {
   inputMode: "inputmode",
   maxLength: "maxlength",
   minLength: "minlength",
+  playsInline: "playsinline",
   tabIndex: "tabindex",
   readOnly: "readonly",
   rowSpan: "rowspan",
@@ -126,7 +127,6 @@ export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLE
 
     applyProp(element, key, dynamicValue.value);
     dynamicValue.subscribe((value) => applyProp(element, key, value));
-    // todo: data attributes
     observedValues.set(differentlyNamedAttributes[key as keyof object] ?? key, dynamicValue);
   }
 

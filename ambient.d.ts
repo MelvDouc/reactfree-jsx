@@ -86,10 +86,6 @@ type FreeJsxStyles = {
 // COMMON PROPS
 // ===== ===== ===== ===== =====
 
-interface Alt {
-  alt: string;
-}
-
 interface AutoComplete {
   autocomplete: string;
 }
@@ -208,7 +204,8 @@ interface AnchorProps extends HyperlinkProps, Download, Named, Rel, Targeter, Ty
   hreflang: string;
 }
 
-interface AreaProps extends HyperlinkProps, Alt, Download, WithReferrerPolicy, Targeter {
+interface AreaProps extends HyperlinkProps, Download, WithReferrerPolicy, Targeter {
+  alt: string;
   coords: string;
   shape: string;
 }
@@ -258,7 +255,8 @@ interface IframeProps extends HtmlElementProps, Dimensions, Named, Sourced, With
   srcdoc: string;
 }
 
-interface ImageProps extends HtmlElementProps, Alt, Dimensions, Sourced, WithReferrerPolicy {
+interface ImageProps extends HtmlElementProps, Dimensions, Sourced, WithReferrerPolicy {
+  alt: string;
   crossOrigin: string | null;
   decoding: "async" | "sync" | "auto";
   isMap: boolean;
@@ -268,7 +266,6 @@ interface ImageProps extends HtmlElementProps, Alt, Dimensions, Sourced, WithRef
 
 interface InputProps extends
   HtmlElementProps,
-  Alt,
   AutoComplete,
   Dimensions,
   Disableable,
@@ -277,6 +274,7 @@ interface InputProps extends
   Sourced,
   TypedElement,
   Valued {
+  alt: string;
   accept: string;
   capture: string;
   checked: boolean;
@@ -417,10 +415,13 @@ interface TableProps extends HtmlElementProps {
 
 interface TableCellProps extends HtmlElementProps {
   abbr: string;
+  col: any;
+  colgroup: any;
   colSpan: number;
   headers: string;
   height: string;
-  noWrap: boolean;
+  row: any;
+  rowgroup: any;
   rowSpan: number;
   scope: string;
 }
