@@ -54,7 +54,10 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
   delete props.classNames;
 }
 
-export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
+export function applyChildren(
+  element: HTMLElement | DocumentFragment,
+  children: ComponentChildren
+): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null)
