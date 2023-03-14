@@ -86,8 +86,9 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
 }
 
 function applyProp(element: HTMLElement, key: string, value: any) {
-  if (key in element && element[key as keyof typeof element] !== value) {
-    (element[key as keyof typeof element] as any) = value;
+  if (key in element) {
+    if (element[key as keyof typeof element] !== value)
+      (element[key as keyof typeof element] as any) = value;
     return;
   }
 
