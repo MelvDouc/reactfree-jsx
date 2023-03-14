@@ -101,15 +101,15 @@ function observeAttributeChange(element: HTMLElement, observedValues: Map<string
         continue;
 
       const obs = observedValues.get(attributeName)!;
-      const key = javascriptProperties[attributeName as keyof object];
+      const key = javascriptProperties[attributeName as keyof object] ?? attributeName;
 
-      if (key && obs.value !== element[key]) {
-        obs.value = element[key];
+      if (key === attributeName && !(key in element) && obs.value !== element.getAttribute(attributeName)) {
+        obs.value = element.getAttribute(attributeName);
         continue;
       }
 
-      if (element.hasAttribute(key) && obs.value !== element.getAttribute(key))
-        obs.value = element.getAttribute(key);
+      if (obs.value !== element[key])
+        obs.value = element[key];
     }
   }).observe(element, { attributes: true });
 }
