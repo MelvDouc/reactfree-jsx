@@ -1,14 +1,29 @@
 import Observable from "./Observable.js";
 
-function applyClassName(element: HTMLElement, className: PossibleObs<string>): void {
-  if (typeof className === "string") {
-    element.className = className;
-    return;
-  }
+type DifferentAttributes = typeof differentlyNamedAttributes;
 
-  element.className = className.value;
-  className.subscribe((value) => element.className = value);
-}
+const differentlyNamedAttributes = {
+  className: "class",
+  colSpan: "colspan",
+  contentEditable: "contenteditable",
+  crossOrigin: "crossorigin",
+  dirName: "dirname",
+  htmlFor: "for",
+  imageSizes: "imagesizes",
+  imageSrcSet: "imagesrcset",
+  inputMode: "inputmode",
+  maxLength: "maxlength",
+  minLength: "minlength",
+  tabIndex: "tabindex",
+  readOnly: "readonly",
+  rowSpan: "rowspan",
+} as const;
+
+const javascriptProperties = Object.keys(differentlyNamedAttributes).reduce((acc, key) => {
+  // @ts-ignore
+  acc[differentlyNamedAttributes[key]] = key;
+  return acc;
+}, {} as Record<DifferentAttributes[keyof DifferentAttributes], keyof DifferentAttributes>);
 
 function applyClassRecord({ classList }: HTMLElement, classes: Record<string, PossibleObs<boolean>>): void {
   for (const cssClass in classes) {
@@ -33,12 +48,9 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
     applyClassRecord(element, props.classes);
   else if (props.classNames)
     element.className = props.classNames.join(" ");
-  else if (props.className)
-    applyClassName(element, props.className);
 
   delete props.classes;
   delete props.classNames;
-  delete props.className;
 }
 
 export function applyChildren(element: HTMLElement | DocumentFragment, children: ComponentChildren): void {
@@ -72,16 +84,38 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
   delete props.style;
 }
 
-function applyProp(element: HTMLElement, propertyKey: string, value: any) {
-  if (propertyKey in element) {
-    (element[propertyKey as keyof typeof element] as any) = value;
+function applyProp(element: HTMLElement, key: string, value: any) {
+  if (key in element) {
+    (element[key as keyof typeof element] as any) = value;
     return;
   }
 
-  element.setAttribute(propertyKey, value);
+  element.setAttribute(key, value);
+}
+
+function observeAttributeChange(element: HTMLElement, observedValues: Map<string, Observable<any>>) {
+  new MutationObserver((mutations) => {
+    for (const { attributeName } of mutations) {
+      if (!attributeName || !observedValues.has(attributeName))
+        continue;
+
+      const obs = observedValues.get(attributeName)!;
+      const key = javascriptProperties[attributeName as keyof object];
+
+      if (key && obs.value !== element[key]) {
+        obs.value = element[key];
+        continue;
+      }
+
+      if (element.hasAttribute(key) && obs.value !== element.getAttribute(key))
+        obs.value = element.getAttribute(key);
+    }
+  }).observe(element, { attributes: true });
 }
 
 export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
+  const observedValues = new Map<string, Observable<any>>();
+
   for (const key in props) {
     const dynamicValue = props[key as keyof Props<T>];
 
@@ -92,5 +126,10 @@ export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLE
 
     applyProp(element, key, dynamicValue.value);
     dynamicValue.subscribe((value) => applyProp(element, key, value));
+    // todo: data attributes
+    observedValues.set(differentlyNamedAttributes[key as keyof object] ?? key, dynamicValue);
   }
+
+  if (observedValues.size)
+    observeAttributeChange(element, observedValues);
 }
