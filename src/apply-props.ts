@@ -86,12 +86,13 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
 }
 
 function applyProp(element: HTMLElement, key: string, value: any) {
-  if (key in element) {
+  if (key in element && element[key as keyof typeof element] !== value) {
     (element[key as keyof typeof element] as any) = value;
     return;
   }
 
-  element.setAttribute(key, value);
+  if (element.getAttribute(key) !== value)
+    element.setAttribute(key, value);
 }
 
 function observeAttributeChange(element: HTMLElement, observedValues: Map<string, Observable<any>>) {
