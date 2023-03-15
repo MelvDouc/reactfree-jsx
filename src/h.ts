@@ -7,9 +7,9 @@ import {
 
 export function h<T extends keyof HTMLElementTagNameMap>(
   tagName: T | ComponentFactory | typeof Fragment,
-  props: Props<T>,
+  props: Props<T> | null,
   ...children: ComponentChild[]
-): HTMLElementTagNameMap[T] | Element | ComponentFactory | DocumentFragment {
+): HTMLElementTagNameMap[T] | Node | ComponentFactory {
   props ??= {};
 
   if (tagName === Fragment)
@@ -32,7 +32,6 @@ export function h<T extends keyof HTMLElementTagNameMap>(
   applyStyles(element, props);
   applyProps<T>(element, props);
   applyChildren(element, children);
-
   $init && $init(element);
   return element;
 }
