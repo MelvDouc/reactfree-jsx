@@ -54,15 +54,28 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
   delete props.classNames;
 }
 
-export function applyChildren(
-  element: HTMLElement | DocumentFragment,
-  children: ComponentChildren
-): void {
+export function applyChildren(element: Element | DocumentFragment, children: ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null)
         applyChildren(element, child);
     });
+    return;
+  }
+
+  if (children instanceof Observable) {
+    if (children.value instanceof Node) {
+      let prevNode = children.value;
+      element.appendChild(prevNode);
+      children.subscribe((value) => {
+        element.replaceChild(value, prevNode);
+        prevNode = value;
+      });
+    } else {
+      const textNode = document.createTextNode(children.value);
+      element.appendChild(textNode);
+      children.subscribe((value) => textNode.textContent = value);
+    }
     return;
   }
 
@@ -88,7 +101,7 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
   delete props.style;
 }
 
-function applyProp(element: HTMLElement, key: string, value: any) {
+function applyProp(element: HTMLElement, key: string, value: any): void {
   if (key in element) {
     if (element[key as keyof typeof element] !== value)
       (element[key as keyof typeof element] as any) = value;
@@ -99,7 +112,7 @@ function applyProp(element: HTMLElement, key: string, value: any) {
     element.setAttribute(key, value);
 }
 
-function observeAttributeChange(element: HTMLElement, observedValues: Map<string, Observable<any>>) {
+function observeAttributeChange(element: HTMLElement, observedValues: Map<string, Observable<any>>): void {
   new MutationObserver((mutations) => {
     for (const { attributeName } of mutations) {
       if (!attributeName || !observedValues.has(attributeName))
