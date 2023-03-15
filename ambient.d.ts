@@ -30,20 +30,17 @@ type PossibleObs<T> = T | Obs<T>;
 // COMPONENTS
 // ===== ===== ===== ===== =====
 
-type ComponentChild =
-  | ComponentChild[]
-  | Node
-  | string
-  | number
-  | boolean
-  | undefined
-  | null;
+type PrimitiveChild = string | number | bigint | boolean | null | undefined;
+type PrimitiveOrNodeChild = PrimitiveChild | Node;
+type ComponentChild = PrimitiveOrNodeChild | ComponentFactory | Obs<PrimitiveOrNodeChild>;
 type ComponentChildren = ComponentChild | ComponentChild[];
-type ComponentFactory = (props: { children?: ComponentChildren; }) => Element | ComponentFactory;
+type ComponentFactory = (props: { children?: ComponentChildren; }) => Node | ComponentFactory;
 
 // ===== ===== ===== ===== =====
 // PROPERTIES
 // ===== ===== ===== ===== =====
+
+type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
 
 type OptionalClassProps = {
   className?: PossibleObs<string>;
@@ -58,7 +55,6 @@ type OptionalClassProps = {
   classes?: Record<string, PossibleObs<boolean>>;
 };
 
-type Props<T extends keyof JSX.IntrinsicElements> = Partial<JSX.IntrinsicElements[T]>;
 type ExtraProps<K extends keyof FreeJsxElementTagNameMap> = {
   /**
    * A function to run on the element after its properties have been set.
