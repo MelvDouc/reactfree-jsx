@@ -6,8 +6,7 @@ declare namespace JSX {
   type IntrinsicElementsHTML = {
     [K in keyof FreeJsxElementTagNameMap]: {
       [P in keyof FreeJsxElementTagNameMap[K]]?: PossibleObs<FreeJsxElementTagNameMap[K][P]>
-    }
-    & Partial<ExtraProps<K>>
+    } & Partial<ExtraProps<K>>
   };
 
   type IntrinsicElements = IntrinsicElementsHTML;
@@ -90,20 +89,12 @@ interface Disableable {
   disabled: boolean;
 }
 
-interface Download {
-  download: string;
-}
-
 interface Href {
   href: string;
 }
 
 interface Named {
   name: string;
-}
-
-interface Openable {
-  open: boolean;
 }
 
 interface MinMax {
@@ -196,13 +187,15 @@ interface Citable extends HtmlElementProps {
   cite: string;
 }
 
-interface AnchorProps extends HyperlinkProps, Download, Named, Rel, Targeter, TypedElement, WithReferrerPolicy, WithText {
+interface AnchorProps extends HyperlinkProps, Named, Rel, Targeter, TypedElement, WithReferrerPolicy, WithText {
+  download: string;
   hreflang: string;
 }
 
-interface AreaProps extends HyperlinkProps, Download, WithReferrerPolicy, Targeter {
+interface AreaProps extends HyperlinkProps, WithReferrerPolicy, Targeter {
   alt: string;
   coords: string;
+  download: string;
   shape: string;
 }
 
@@ -231,7 +224,8 @@ interface ButtonProps extends HtmlElementProps, Disableable, Named, TypedElement
   formTarget: string;
 }
 
-interface DialogProps extends Omit<HtmlElementProps, "tabIndex">, Openable {
+interface DialogProps extends Omit<HtmlElementProps, "tabIndex"> {
+  open: boolean;
   returnValue: string;
 }
 
@@ -460,7 +454,7 @@ interface FreeJsxElementTagNameMap {
   datalist: HtmlElementProps;
   dd: HtmlElementProps;
   del: Citable;
-  details: HtmlElementProps & Openable;
+  details: HtmlElementProps & { open: boolean; };
   dfn: HtmlElementProps;
   dialog: DialogProps;
   div: HtmlElementProps;
