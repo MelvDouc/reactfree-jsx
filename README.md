@@ -1,6 +1,5 @@
 # React-free JSX
 
-
 A package to use JSX and TSX with the full power of Vanilla JS minus the constraints of React. It is meant to be installed in a Vite project.
 
 ## Getting Started
@@ -22,7 +21,7 @@ npm i -D vite@3.2.5 reactfree-jsx
 
 ### vite.config.ts
 
-Create a file with the above name to tell Vite how to compile JSX.
+Create a file with the above name in the app's route directory to tell Vite how to compile JSX.
 
 ```javascript
 import { defineConfig } from "vite";
@@ -40,7 +39,7 @@ export default defineConfig({
 
 Add `"jsx": "preserve"` to `compilerOptions`.
 
-### Ambient Types
+### JSX Namespace
 
 A VSCode bug may necessitate adding
 
@@ -158,7 +157,9 @@ Elements also have a unique `$init` prop whose value is a function which takes i
 
 ```tsx
 <div
-  $init={(element) => console.log("I can modify this element using normal JS inside this function.")}
+  $init={(element) => {
+    console.log("I can modify this element using normal JS inside this function.");
+  }}
 ></div>
 ```
 
@@ -167,7 +168,7 @@ Elements also have a unique `$init` prop whose value is a function which takes i
 A `Router` class is available in order to link internal paths with components.
 
 ```tsx
-// src/App.tsx
+// src/router.tsx
 import { Router } from "reactfree-jsx";
 
 const router = new Router({
@@ -198,6 +199,11 @@ router
       <h1>{username}'s Profile</h1>
     )
   });
+
+export default router;
+
+// src/App.tsx
+import router from "./router.tsx";
 
 export default function App() {
   const app = (
