@@ -12,12 +12,13 @@
   ],
   "license": "ISC",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MelvDouc/reactfree-jsx.git"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist/* && tsc",
     "build:watch": "tsc -w",
     "prepublishOnly": "npm run build"
   },

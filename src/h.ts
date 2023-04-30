@@ -4,6 +4,7 @@ import {
   applyProps,
   applyStyles
 } from "./apply-props.js";
+import { FreeJSX } from "./types/index.js";
 
 export function h<TagName extends (keyof HTMLElementTagNameMap) | FreeJSX.ComponentFactory | (typeof Fragment)>(
   tagName: TagName,

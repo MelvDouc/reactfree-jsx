@@ -1,4 +1,5 @@
 import Observable from "./Observable.js";
+import { FreeJSX } from "./types/index.js";
 
 type DifferentAttributes = typeof differentlyNamedAttributes;
 
@@ -12,6 +13,8 @@ const differentlyNamedAttributes = {
   imageSizes: "imagesizes",
   imageSrcSet: "imagesrcset",
   inputMode: "inputmode",
+  /** `HTMLInputElement.prototype.list` is getter-only. */
+  list: "list",
   maxLength: "maxlength",
   minLength: "minlength",
   playsInline: "playsinline",
@@ -26,7 +29,11 @@ const javascriptProperties = Object.keys(differentlyNamedAttributes).reduce((acc
   return acc;
 }, {} as Record<DifferentAttributes[keyof DifferentAttributes], keyof DifferentAttributes>);
 
-function applyClassRecord({ classList }: HTMLElement, classes: Record<string, PossibleObs<boolean>>): void {
+// ===== ===== ===== ===== =====
+// CLASS_NAME
+// ===== ===== ===== ===== =====
+
+function applyClassRecord({ classList }: HTMLElement, classes: Record<string, FreeJSX.PossibleObs<boolean>>): void {
   for (const cssClass in classes) {
     const hasClass = classes[cssClass];
 
@@ -53,6 +60,10 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
   delete props.classes;
   delete props.classNames;
 }
+
+// ===== ===== ===== ===== =====
+// CHILDREN
+// ===== ===== ===== ===== =====
 
 export function applyChildren(element: Element | DocumentFragment, children: FreeJSX.ComponentChildren): void {
   if (Array.isArray(children)) {
@@ -82,6 +93,10 @@ export function applyChildren(element: Element | DocumentFragment, children: Fre
   element.append(children as string | Node);
 }
 
+// ===== ===== ===== ===== =====
+// STYLE
+// ===== ===== ===== ===== =====
+
 export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: FreeJSX.Props<T>): void {
   if (!props.style)
     return;
@@ -100,6 +115,10 @@ export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTML
 
   delete props.style;
 }
+
+// ===== ===== ===== ===== =====
+// OTHER PROPS
+// ===== ===== ===== ===== =====
 
 function applyProp(element: HTMLElement, key: string, value: any): void {
   if (key in element) {
@@ -132,7 +151,7 @@ function observeAttributeChange(element: HTMLElement, observedValues: Map<string
   }).observe(element, { attributes: true });
 }
 
-export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: FreeJSX.Props<T>): void {
+export function applyProps<T extends keyof FreeJSX.HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: FreeJSX.Props<T>): void {
   const observedValues = new Map<string, Observable<any>>();
 
   for (const key in props) {
