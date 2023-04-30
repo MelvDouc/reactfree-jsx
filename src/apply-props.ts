@@ -44,7 +44,7 @@ function applyClassRecord({ classList }: HTMLElement, classes: Record<string, Po
   }
 }
 
-export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
+export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: FreeJSX.Props<T>): void {
   if (props.classes)
     applyClassRecord(element, props.classes);
   else if (props.classNames)
@@ -54,7 +54,7 @@ export function applyClasses<T extends keyof HTMLElementTagNameMap>(element: HTM
   delete props.classNames;
 }
 
-export function applyChildren(element: Element | DocumentFragment, children: ComponentChildren): void {
+export function applyChildren(element: Element | DocumentFragment, children: FreeJSX.ComponentChildren): void {
   if (Array.isArray(children)) {
     children.forEach((child) => {
       if (child != null)
@@ -82,7 +82,7 @@ export function applyChildren(element: Element | DocumentFragment, children: Com
   element.append(children as string | Node);
 }
 
-export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
+export function applyStyles<T extends keyof HTMLElementTagNameMap>(element: HTMLElementTagNameMap[T], props: FreeJSX.Props<T>): void {
   if (!props.style)
     return;
 
@@ -132,11 +132,11 @@ function observeAttributeChange(element: HTMLElement, observedValues: Map<string
   }).observe(element, { attributes: true });
 }
 
-export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: Props<T>): void {
+export function applyProps<T extends keyof JSX.IntrinsicElements>(element: HTMLElementTagNameMap[T], props: FreeJSX.Props<T>): void {
   const observedValues = new Map<string, Observable<any>>();
 
   for (const key in props) {
-    const dynamicValue = props[key as keyof Props<T>];
+    const dynamicValue = props[key as keyof FreeJSX.Props<T>];
 
     if (!(dynamicValue instanceof Observable)) {
       applyProp(element, key, dynamicValue);
