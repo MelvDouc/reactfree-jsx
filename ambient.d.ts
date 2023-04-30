@@ -34,7 +34,7 @@ declare namespace FreeJSX {
   type PrimitiveOrNodeChild = PrimitiveChild | Node;
   type ComponentChild = PrimitiveOrNodeChild | ComponentFactory | Obs<PrimitiveOrNodeChild>;
   type ComponentChildren = ComponentChild | ComponentChild[];
-  type ComponentFactory = (props: { children?: ComponentChildren; }) => Node | ComponentFactory;
+  type ComponentFactory<TProps extends { children?: ComponentChildren; } = any> = (props: TProps) => Node | ComponentFactory;
 
   // ===== ===== ===== ===== =====
   // PROPERTIES
