@@ -17,6 +17,7 @@ export default class Router {
     this.pageTitleFormatter = pageTitleFormatter;
     this.$404Route = $404Route;
     window.addEventListener("popstate", () => this.updateUrl(location.pathname));
+    this.onUrlChange(({ title }) => document.title = title);
   }
 
   public addRoute<Path extends string>(dynamicPath: Path, route: Route<Path>): this {
@@ -52,6 +53,9 @@ export default class Router {
     this.routeInfoObs.subscribe(subscription);
   }
 
+  /**
+   * Create an anchor that will navigate to an internal URL without reloading the page.
+   */
   public link(props: Omit<FreeJSX.Props<"a">, "href"> & { to: string; children?: FreeJSX.ComponentChild[]; }): HTMLAnchorElement {
     const { children, to, ...otherProps } = props;
     const anchor = h("a", otherProps, ...(children ?? []));
@@ -64,12 +68,15 @@ export default class Router {
   }
 }
 
-export interface Route<Path extends string> {
+interface Route<Path extends string> {
+  /**
+   * @returns An optionally dynamic page title based on path parameters.
+   */
   getPageTitle: (params: RouteParams<Path>) => string;
   component: (params: RouteParams<Path>) => string | Node | Promise<string | Node>;
 }
 
-export type RouteInfo = {
+type RouteInfo = {
   title: string;
   component: () => string | Node | Promise<string | Node>;
 };
