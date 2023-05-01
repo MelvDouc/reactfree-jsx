@@ -20,8 +20,8 @@ export default class Router {
     this.onUrlChange(({ title }) => document.title = title);
   }
 
-  public addRoute<Path extends string>(dynamicPath: Path, route: Route<Path>): this {
-    dynamicPath = dynamicPath.replace(/:([^\/]+)/g, (_, param) => `(?<${param}>[^\/]+)`) as Path;
+  public addRoute(dynamicPath: string, route: Route): this {
+    dynamicPath = dynamicPath.replace(/:([^\/]+)/g, (_, param) => `(?<${param}>[^\/]+)`);
     this.routes.push({
       regex: RegExp(`^${dynamicPath}\$`),
       ...route as any
@@ -56,7 +56,7 @@ export default class Router {
   /**
    * Create an anchor that will navigate to an internal URL without reloading the page.
    */
-  public link(props: Omit<FreeJSX.Props<"a">, "href"> & { to: string; children?: FreeJSX.ComponentChild[]; }): HTMLAnchorElement {
+  public link = (props: Omit<FreeJSX.Props<"a">, "href"> & { to: string; children?: FreeJSX.ComponentChild[]; }): HTMLAnchorElement => {
     const { children, to, ...otherProps } = props;
     const anchor = h("a", otherProps, ...(children ?? []));
     anchor.href = to;
@@ -65,25 +65,18 @@ export default class Router {
       this.navigate(to);
     };
     return anchor;
-  }
+  };
 }
 
-interface Route<Path extends string> {
+interface Route<Params extends Record<string, string> = any> {
   /**
    * @returns An optionally dynamic page title based on path parameters.
    */
-  getPageTitle: (params: RouteParams<Path>) => string;
-  component: (params: RouteParams<Path>) => string | Node | Promise<string | Node>;
+  getPageTitle: (params: Params) => string;
+  component: (params: Params) => string | Node | Promise<string | Node>;
 }
 
 type RouteInfo = {
   title: string;
   component: () => string | Node | Promise<string | Node>;
 };
-
-type RouteParams<Path extends string> =
-  Path extends `${string}/:${infer Param}/${infer Rest}` ? { [k in Param | keyof RouteParams<Rest>]: string }
-  : Path extends `:${infer Param}/${infer Rest}` ? { [k in Param | keyof RouteParams<Rest>]: string }
-  : Path extends `${string}/:${infer Param}` ? { [k in Param]: string }
-  : Path extends `:${infer Param}` ? { [k in Param]: string }
-  : never;
