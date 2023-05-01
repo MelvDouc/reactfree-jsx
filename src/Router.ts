@@ -56,8 +56,7 @@ export default class Router {
   /**
    * Create an anchor that will navigate to an internal URL without reloading the page.
    */
-  public link = (props: Omit<FreeJSX.Props<"a">, "href"> & { to: string; children?: FreeJSX.ComponentChild[]; }): HTMLAnchorElement => {
-    const { children, to, ...otherProps } = props;
+  public link = ({ children, to, ...otherProps }: RouterLinkProps): HTMLAnchorElement => {
     const anchor = h("a", otherProps, ...(children ?? []));
     anchor.href = to;
     anchor.onclick = (e) => {
@@ -79,4 +78,9 @@ interface Route<Params extends Record<string, string> = any> {
 type RouteInfo = {
   title: string;
   component: () => string | Node | Promise<string | Node>;
+};
+
+type RouterLinkProps = Omit<FreeJSX.Props<"a">, "href"> & {
+  to: string;
+  children?: FreeJSX.ComponentChild[];
 };
