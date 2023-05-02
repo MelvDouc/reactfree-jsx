@@ -18,7 +18,7 @@
     "url": "git+https://github.com/MelvDouc/reactfree-jsx.git"
   },
   "scripts": {
-    "build": "rm -rf dist/* && tsc",
+    "build": "rm -rf dist/* && tsc && tsc-alias",
     "build:watch": "tsc -w",
     "prepublishOnly": "npm run build"
   },
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/MelvDouc/reactfree-jsx#readme",
   "devDependencies": {
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.6",
     "typescript": "^4.9.3"
   }
 }
