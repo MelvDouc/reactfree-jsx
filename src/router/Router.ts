@@ -1,6 +1,6 @@
-import Observable from "./Observable.js";
-import { h } from "./h.js";
-import { FreeJSX } from "./types/index.js";
+import { Observable } from "melv_observable";
+import { h } from "@/h.js";
+import { ComponentChild, FreeJSX } from "@/types/index.js";
 
 export default class Router {
   private readonly $404Route: RouteInfo;
@@ -82,5 +82,5 @@ type RouteInfo = {
 
 type RouterLinkProps = Omit<FreeJSX.Props<"a">, "href"> & {
   to: string;
-  children?: FreeJSX.ComponentChild[];
+  children?: ComponentChild[];
 };
