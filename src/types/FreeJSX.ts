@@ -6,18 +6,19 @@ import {
   Href,
   Media,
   MinMax,
+  Named,
   Rel,
+  Required,
   Sourced,
   Targeter,
   Typed,
   Valued,
   WithReferrerPolicy
-} from "./common-props.js";
-import { ExtraProps } from "./extra-props.js";
-import { Obs, PossibleObs } from "./Obs.js";
+} from "@/types/common-props.js";
+import { PossibleObs } from "@/types/Obs.js";
+import { ExtraProps } from "@/types/extra-props.js";
 
-export type { ComponentChild, ComponentChildren, ComponentFactory } from "./children.js";
-export type { ExtraProps, Obs, PossibleObs };
+export type { ExtraProps };
 
 // ===== ===== ===== ===== =====
 // INHERITED
@@ -25,7 +26,7 @@ export type { ExtraProps, Obs, PossibleObs };
 
 type InlineListener = ((this: Element, ev: Event) => any) | null;
 
-export interface StaticProps extends ARIAMixin, Omit<GlobalEventHandlers, "addEventListener" | "removeEventListener"> {
+interface _ElemPropsNoSlot extends ARIAMixin, Omit<GlobalEventHandlers, "addEventListener" | "removeEventListener"> {
   id: string;
   onfullscreenchange: InlineListener;
   onfullscreenerror: InlineListener;
@@ -33,10 +34,9 @@ export interface StaticProps extends ARIAMixin, Omit<GlobalEventHandlers, "addEv
   scrollTop: number;
   slot: string;
   [dataAttribute: `data${string}`]: string;
-  extra: Record<string, any>;
 }
 
-export interface HTMLStaticProps extends StaticProps {
+interface _HTMLPropsNoTabIndex {
   autocapitalize: string;
   contentEditable: "true" | "false" | "inherit";
   dir: "ltr" | "rtl" | "auto" | string;
@@ -47,13 +47,16 @@ export interface HTMLStaticProps extends StaticProps {
   inputMode: "none" | "email" | "decimal" | "numeric" | "search" | "tel" | "text" | "url" | string;
   lang: string;
   spellcheck: boolean;
-  tabIndex: string | number;
   title: string;
   translate: boolean;
 }
 
-export interface HTMLStaticPropsWithName extends HTMLStaticProps {
-  name: string;
+export interface ElemProps extends _ElemPropsNoSlot {
+  slot: string;
+}
+
+export interface HTMLProps extends ElemProps, _HTMLPropsNoTabIndex {
+  tabIndex: string | number;
 }
 
 export interface Hyperlink extends Href, Targeter, WithReferrerPolicy {
@@ -69,22 +72,93 @@ export interface Hyperlink extends Href, Targeter, WithReferrerPolicy {
   username: string;
 }
 
-export interface Citable extends HTMLStaticProps {
-  cite: string;
-}
-
-export interface Anchor extends HTMLStaticPropsWithName, Hyperlink, Rel, Typed {
+export interface AnchorProps extends HTMLProps, Hyperlink, Named, Rel, Typed {
   download: string;
   hreflang: string;
 }
 
-export interface Input extends
-  HTMLStaticPropsWithName,
+export interface AreaProps extends HTMLProps, Alt, Hyperlink {
+  coords: string;
+  download: string;
+  shape: string;
+}
+
+export interface BBaseProps extends HTMLProps, Href { }
+
+export interface BodyProps extends ElemProps {
+  onafterprint: InlineListener;
+  onbeforeprint: InlineListener;
+  onbeforeunload: InlineListener;
+  onhashchange: InlineListener;
+  onlanguagechange: InlineListener;
+  onmessage: InlineListener;
+  onoffline: InlineListener;
+  ononline: InlineListener;
+  onpopstate: InlineListener;
+  onredo: InlineListener;
+  onstorage: InlineListener;
+  onundo: InlineListener;
+  onunload: InlineListener;
+}
+
+export interface ButtonProps extends HTMLProps, Named, Disableable, Typed, Valued {
+  autofocus: boolean;
+  formAction: string;
+  formEnctype: string;
+  formMethod: string;
+  formNoValidate: boolean;
+  formTarget: string;
+}
+
+export interface CanvasProps extends HTMLProps, Dimensions { }
+
+export interface CitableProps extends HTMLProps {
+  cite: string;
+}
+
+export interface DDataProps extends HTMLProps, Valued { }
+
+export interface DetailsProps extends HTMLProps {
+  open: boolean;
+}
+
+export interface DialogProps extends ElemProps, _HTMLPropsNoTabIndex { }
+export interface EmbedProps extends HTMLProps, Dimensions, Sourced, Typed { }
+export interface FieldSetProps extends HTMLProps, Named, Disableable { }
+
+export interface FormProps extends HTMLProps, AutoComplete, Named, Targeter {
+  acceptCharset: string;
+  action: string;
+  encoding: string;
+  enctype: string;
+  method: "get" | "post" | "dialog" | string;
+  noValidate: boolean;
+}
+
+export interface IFrameProps extends HTMLProps, Named, Dimensions, Sourced, WithReferrerPolicy {
+  allow: string;
+  allowfullscreen: boolean;
+  scrolling: string;
+  srcdoc: string;
+}
+
+export interface ImageProps extends HTMLProps, Alt, Dimensions, Sourced, WithReferrerPolicy {
+  crossOrigin: string | null;
+  decoding: "async" | "sync" | "auto";
+  isMap: boolean;
+  loading: "eager" | "lazy";
+  sizes: string;
+}
+
+export interface InputProps extends
+  HTMLProps,
   Alt,
   AutoComplete,
   Dimensions,
   Disableable,
   MinMax,
+  Named,
+  Required,
   Sourced,
   Valued<true> {
   accept: string;
@@ -105,7 +179,6 @@ export interface Input extends
   multiple: boolean;
   pattern: string;
   placeholder: string;
-  required: boolean;
   selectionDirection: "forward" | "backward" | "none" | string | null;
   selectionEnd: number | null;
   selectionStart: number | null;
@@ -120,7 +193,86 @@ export interface Input extends
   valueAsNumber: number;
 }
 
-export interface TableCell extends HTMLStaticProps {
+export interface LabelProps extends HTMLProps {
+  htmlFor: string;
+}
+
+export interface LiProps extends HTMLProps, Valued { }
+
+export interface LinkProps extends HTMLProps, Disableable, Href, Media, Rel, Targeter, Typed, WithReferrerPolicy {
+  as: string;
+  crossOrigin: string | null;
+  hreflang: string;
+  imageSizes: string;
+  imageSrcset: string;
+  integrity: string;
+}
+
+export interface MapProps extends HTMLProps, Named { }
+
+export interface MetaProps extends HTMLProps, Named, Media {
+  content: string;
+  httpEquiv: string;
+}
+
+export interface MeterProps extends HTMLProps, MinMax, Valued {
+  high: number;
+  low: number;
+  optimum: number;
+}
+
+export interface OlProps extends HTMLProps, Typed {
+  reversed: boolean;
+  start: number;
+}
+
+export interface OObjectProps extends HTMLProps, Named, Dimensions, Typed {
+  data: string;
+  standby: string;
+  useMap: string;
+}
+
+export interface OptGroupProps extends HTMLProps, Disableable {
+  label: string;
+}
+
+export interface OptionProps extends HTMLProps, Disableable, Valued {
+  defaultSelected: boolean;
+  label: string;
+  selected: boolean;
+}
+
+export interface OutputProps extends HTMLProps, Named, Valued<true> { }
+
+export interface ProgressProps extends HTMLProps {
+  max: number;
+  value: number;
+}
+
+export interface ScriptProps extends HTMLProps, Sourced, Typed, WithReferrerPolicy {
+  async: boolean;
+  crossOrigin: string;
+  defer: boolean;
+  integrity: string;
+  noModule: boolean;
+  text: string;
+}
+
+export interface SelectProps extends HTMLProps, AutoComplete, Disableable, Named, Required, Valued {
+  multiple: boolean;
+  selectedIndex: number;
+  size: number;
+}
+
+export interface SlotProps extends ElemProps, _HTMLPropsNoTabIndex, Named { }
+export interface StyleProps extends ElemProps, Disableable, Media { }
+
+export interface SSourceProps extends HTMLProps, Dimensions, Media, Sourced, Typed {
+  sizes: string;
+  srcset: string;
+}
+
+export interface TableCellProps extends HTMLProps {
   abbr: string;
   col: any;
   colgroup: any;
@@ -133,235 +285,155 @@ export interface TableCell extends HTMLStaticProps {
   scope: string;
 }
 
+export interface TextareaProps extends HTMLProps, AutoComplete, Disableable, Named, Required, Valued<true> {
+  cols: number;
+  dirName: string;
+  maxLength: number;
+  minLength: number;
+  placeholder: string;
+  readOnly: boolean;
+  rows: number;
+  selectionDirection: "forward" | "backward" | "none" | string;
+  selectionEnd: number;
+  selectionStart: number;
+  wrap: string;
+};
+
+export interface TimeProps extends HTMLProps {
+  dateTime: string;
+}
+
+export interface TrackProps extends HTMLProps, Sourced {
+  default: boolean;
+  kind: string;
+  label: string;
+  srclang: string;
+}
+
+export interface VideoProps extends HTMLProps, Dimensions {
+  disablePictureInPicture: boolean;
+  onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
+  onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
+  playsInline: boolean;
+  poster: string;
+}
+
 // ===== ===== ===== ===== =====
 // TAG NAME MAP
 // ===== ===== ===== ===== =====
 
 export interface HTMLPropsTagNameMap {
-  a: Anchor;
-  abbr: HTMLStaticProps;
-  address: HTMLStaticProps;
-  area: HTMLStaticProps & Alt & Hyperlink & {
-    coords: string;
-    download: string;
-    shape: string;
-  };
-  article: HTMLStaticProps;
-  aside: HTMLStaticProps;
-  audio: HTMLStaticProps;
-  b: HTMLStaticProps;
-  base: HTMLStaticProps & Href;
-  bdi: HTMLStaticProps;
-  bdo: HTMLStaticProps;
-  blockquote: Citable;
-  body: StaticProps & {
-    onafterprint: InlineListener;
-    onbeforeprint: InlineListener;
-    onbeforeunload: InlineListener;
-    onhashchange: InlineListener;
-    onlanguagechange: InlineListener;
-    onmessage: InlineListener;
-    onoffline: InlineListener;
-    ononline: InlineListener;
-    onpopstate: InlineListener;
-    onredo: InlineListener;
-    onstorage: InlineListener;
-    onundo: InlineListener;
-    onunload: InlineListener;
-  };
-  br: HTMLStaticProps;
-  button: HTMLStaticPropsWithName & Disableable & Typed & Valued & {
-    autofocus: boolean;
-    formAction: string;
-    formEnctype: string;
-    formMethod: string;
-    formNoValidate: boolean;
-    formTarget: string;
-  };
-  canvas: HTMLStaticProps & Dimensions;
-  caption: HTMLStaticProps;
-  cite: HTMLStaticProps;
-  code: HTMLStaticProps;
-  col: HTMLStaticProps;
-  colgroup: HTMLStaticProps;
-  data: HTMLStaticProps & Valued;
-  datalist: HTMLStaticProps;
-  dd: HTMLStaticProps;
-  del: Citable;
-  details: HTMLStaticProps & { open: boolean; };
-  dfn: HTMLStaticProps;
-  dialog: Omit<HTMLStaticProps, "tabIndex"> & {
-    open: boolean;
-    returnValue: string;
-  };
-  div: HTMLStaticProps;
-  dl: HTMLStaticProps;
-  dt: HTMLStaticProps;
-  em: HTMLStaticProps;
-  embed: HTMLStaticProps & Dimensions & Sourced & Typed;
-  fieldset: HTMLStaticPropsWithName & Disableable;
-  figcaption: HTMLStaticProps;
-  figure: HTMLStaticProps;
-  footer: HTMLStaticProps;
-  form: HTMLStaticPropsWithName & AutoComplete & Targeter & {
-    acceptCharset: string;
-    action: string;
-    encoding: string;
-    enctype: string;
-    method: "get" | "post" | "dialog" | string;
-    noValidate: boolean;
-  };
-  h1: HTMLStaticProps;
-  h2: HTMLStaticProps;
-  h3: HTMLStaticProps;
-  h4: HTMLStaticProps;
-  h5: HTMLStaticProps;
-  h6: HTMLStaticProps;
-  head: HTMLStaticProps;
-  header: HTMLStaticProps;
-  hgroup: HTMLStaticProps;
-  hr: HTMLStaticProps;
-  html: HTMLStaticProps;
-  i: HTMLStaticProps;
-  iframe: HTMLStaticPropsWithName & Dimensions & Sourced & WithReferrerPolicy & {
-    allow: string;
-    allowfullscreen: boolean;
-    scrolling: string;
-    srcdoc: string;
-  };
-  img: HTMLStaticProps & Alt & Dimensions & Sourced & WithReferrerPolicy & {
-    crossOrigin: string | null;
-    decoding: "async" | "sync" | "auto";
-    isMap: boolean;
-    loading: "eager" | "lazy";
-    sizes: string;
-  };
-  input: Input;
-  ins: Citable;
-  kbd: HTMLStaticProps;
-  label: HTMLStaticProps & { htmlFor: string; };
-  legend: HTMLStaticProps;
-  li: HTMLStaticProps & Valued;
-  link: HTMLStaticProps & Disableable & Href & Media & Rel & Targeter & Typed & WithReferrerPolicy & {
-    as: string;
-    crossOrigin: string | null;
-    hreflang: string;
-    imageSizes: string;
-    imageSrcset: string;
-    integrity: string;
-  };
-  main: HTMLStaticProps;
-  map: HTMLStaticPropsWithName;
-  mark: HTMLStaticProps;
-  menu: HTMLStaticProps;
-  meta: HTMLStaticPropsWithName & Media & {
-    content: string;
-    httpEquiv: string;
-  };
-  meter: HTMLStaticProps & MinMax & Valued & {
-    high: number;
-    low: number;
-    optimum: number;
-  };
-  nav: HTMLStaticProps;
-  noscript: HTMLStaticProps;
-  object: HTMLStaticPropsWithName & Dimensions & Typed & {
-    data: string;
-    standby: string;
-    useMap: string;
-  };
-  ol: HTMLStaticProps & Typed & {
-    reversed: boolean;
-    start: number;
-  };
-  optgroup: HTMLStaticProps & Disableable & { label: string; };
-  option: HTMLStaticProps & Disableable & Valued & {
-    defaultSelected: boolean;
-    label: string;
-    selected: boolean;
-  };
-  output: HTMLStaticPropsWithName & Valued<true>;
-  p: HTMLStaticProps;
-  picture: HTMLStaticProps;
-  pre: HTMLStaticProps;
-  progress: HTMLStaticProps & {
-    max: number;
-    value: number;
-  };
-  q: Citable;
-  rp: HTMLStaticProps;
-  rt: HTMLStaticProps;
-  ruby: HTMLStaticProps;
-  s: HTMLStaticProps;
-  samp: HTMLStaticProps;
-  script: HTMLStaticProps & WithReferrerPolicy & Sourced & Typed & {
-    async: boolean;
-    crossOrigin: string;
-    defer: boolean;
-    integrity: string;
-    noModule: boolean;
-    text: string;
-  };
-  section: HTMLStaticProps;
-  select: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued & {
-    multiple: boolean;
-    required: boolean;
-    selectedIndex: number;
-    size: number;
-  };
-  slot: Omit<HTMLStaticPropsWithName, "slot">;
-  small: HTMLStaticProps;
-  source: HTMLStaticProps & Dimensions & Media & Sourced & Typed & {
-    sizes: string;
-    srcset: string;
-  };
-  span: HTMLStaticProps;
-  strong: HTMLStaticProps;
-  style: StaticProps & Disableable & Media;
-  sub: HTMLStaticProps;
-  summary: HTMLStaticProps;
-  sup: HTMLStaticProps;
-  table: HTMLStaticProps;
-  tbody: HTMLStaticProps;
-  td: TableCell;
-  template: HTMLStaticProps;
-  textarea: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued<true> & {
-    cols: number;
-    dirName: string;
-    maxLength: number;
-    minLength: number;
-    placeholder: string;
-    readOnly: boolean;
-    required: boolean;
-    rows: number;
-    selectionDirection: "forward" | "backward" | "none" | string;
-    selectionEnd: number;
-    selectionStart: number;
-    wrap: string;
-  };
-  tfoot: HTMLStaticProps;
-  th: TableCell;
-  thead: HTMLStaticProps;
-  time: HTMLStaticProps & { dateTime: string; };
-  title: HTMLStaticProps;
-  tr: HTMLStaticProps;
-  track: HTMLStaticProps & Sourced & {
-    default: boolean;
-    kind: string;
-    label: string;
-    srclang: string;
-  };
-  u: HTMLStaticProps;
-  ul: HTMLStaticProps;
-  var: HTMLStaticProps;
-  video: HTMLStaticProps & Dimensions & {
-    disablePictureInPicture: boolean;
-    onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
-    onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
-    playsInline: boolean;
-    poster: string;
-  };
-  wbr: HTMLStaticProps;
+  a: AnchorProps;
+  abbr: HTMLProps;
+  address: HTMLProps;
+  area: AreaProps;
+  article: HTMLProps;
+  aside: HTMLProps;
+  audio: HTMLProps;
+  b: HTMLProps;
+  base: BBaseProps;
+  bdi: HTMLProps;
+  bdo: HTMLProps;
+  blockquote: CitableProps;
+  body: BodyProps;
+  br: HTMLProps;
+  button: ButtonProps;
+  canvas: CanvasProps;
+  caption: HTMLProps;
+  cite: HTMLProps;
+  code: HTMLProps;
+  col: HTMLProps;
+  colgroup: HTMLProps;
+  data: DDataProps;
+  datalist: HTMLProps;
+  dd: HTMLProps;
+  del: CitableProps;
+  details: DetailsProps;
+  dfn: HTMLProps;
+  dialog: DialogProps;
+  div: HTMLProps;
+  dl: HTMLProps;
+  dt: HTMLProps;
+  em: HTMLProps;
+  embed: EmbedProps;
+  fieldset: FieldSetProps;
+  figcaption: HTMLProps;
+  figure: HTMLProps;
+  footer: HTMLProps;
+  form: FormProps;
+  h1: HTMLProps;
+  h2: HTMLProps;
+  h3: HTMLProps;
+  h4: HTMLProps;
+  h5: HTMLProps;
+  h6: HTMLProps;
+  head: HTMLProps;
+  header: HTMLProps;
+  hgroup: HTMLProps;
+  hr: HTMLProps;
+  html: HTMLProps;
+  i: HTMLProps;
+  iframe: IFrameProps;
+  img: ImageProps;
+  input: InputProps;
+  ins: CitableProps;
+  kbd: HTMLProps;
+  label: LabelProps;
+  legend: HTMLProps;
+  li: LiProps;
+  link: LinkProps;
+  main: HTMLProps;
+  map: MapProps;
+  mark: HTMLProps;
+  menu: HTMLProps;
+  meta: MetaProps;
+  meter: MeterProps;
+  nav: HTMLProps;
+  noscript: HTMLProps;
+  object: OObjectProps;
+  ol: OlProps;
+  optgroup: OptGroupProps;
+  option: OptionProps;
+  output: OutputProps;
+  p: HTMLProps;
+  picture: HTMLProps;
+  pre: HTMLProps;
+  progress: ProgressProps;
+  q: CitableProps;
+  rp: HTMLProps;
+  rt: HTMLProps;
+  ruby: HTMLProps;
+  s: HTMLProps;
+  samp: HTMLProps;
+  script: ScriptProps;
+  section: HTMLProps;
+  select: SelectProps;
+  slot: SlotProps;
+  small: HTMLProps;
+  source: SSourceProps;
+  span: HTMLProps;
+  strong: HTMLProps;
+  style: StyleProps;
+  sub: HTMLProps;
+  summary: HTMLProps;
+  sup: HTMLProps;
+  table: HTMLProps;
+  tbody: HTMLProps;
+  td: TableCellProps;
+  template: HTMLProps;
+  textarea: TextareaProps;
+  tfoot: HTMLProps;
+  th: TableCellProps;
+  thead: HTMLProps;
+  time: TimeProps;
+  title: HTMLProps;
+  tr: HTMLProps;
+  track: TrackProps;
+  u: HTMLProps;
+  ul: HTMLProps;
+  var: HTMLProps;
+  video: VideoProps;
+  wbr: HTMLProps;
 }
 
 // ===== ===== ===== ===== =====
