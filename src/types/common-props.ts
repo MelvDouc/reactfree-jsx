@@ -28,8 +28,16 @@ export interface MinMax {
   max: number | string;
 }
 
+export interface Named {
+  name: string;
+}
+
 export interface Rel {
   rel: string;
+}
+
+export interface Required {
+  required: boolean;
 }
 
 export interface Sourced {

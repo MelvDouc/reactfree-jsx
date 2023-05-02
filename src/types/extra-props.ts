@@ -1,6 +1,4 @@
-import { PossibleObs } from "./Obs.js";
-
-export { ExtraProps };
+import { OptionalObs } from "melv_observable";
 
 type FreeJsxOptionalClass = {
   className?: string;
@@ -12,10 +10,10 @@ type FreeJsxOptionalClass = {
    * A record of CSS classes that will be added to the element if the value is true
    * or, if it is an observable, when its value changes to `true`.
    */
-  classes?: Record<string, PossibleObs<boolean>>;
+  classes?: Record<string, OptionalObs<boolean>>;
 };
 
-type ExtraProps<K extends keyof HTMLElementTagNameMap> = {
+export type ExtraProps<K extends keyof HTMLElementTagNameMap> = {
   /**
    * A function to run on the element after its properties have been set.
    * @param element The element being created.
@@ -26,6 +24,10 @@ type ExtraProps<K extends keyof HTMLElementTagNameMap> = {
    * either directly or dynamically via an observable.
    */
   style: FreeJsxStyles;
+  /**
+   * Additional HTML attributes to add to the element.
+   */
+  extraAttributes: Record<string, string>;
 } & FreeJsxOptionalClass;
 
 // ===== ===== ===== ===== =====
@@ -35,5 +37,5 @@ type ExtraProps<K extends keyof HTMLElementTagNameMap> = {
 type CSSStyleDeclarationMethod = "getPropertyPriority" | "getPropertyValue" | "item" | "length" | "removeProperty" | "setProperty";
 type MethodFreeCSSStyleDeclaration = Omit<CSSStyleDeclaration, CSSStyleDeclarationMethod>;
 type FreeJsxStyles = {
-  [K in keyof MethodFreeCSSStyleDeclaration]?: PossibleObs<MethodFreeCSSStyleDeclaration[K]>
+  [K in keyof MethodFreeCSSStyleDeclaration]?: OptionalObs<MethodFreeCSSStyleDeclaration[K]>
 };

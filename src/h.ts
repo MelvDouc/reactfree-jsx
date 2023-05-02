@@ -1,49 +1,63 @@
-import {
-  applyChildren,
-  applyClasses,
-  applyProps,
-  applyStyle
-} from "./apply-props.js";
-import { FreeJSX } from "./types/index.js";
+import applyChildren from "@/apply-props/apply-children.js";
+import applyClasses from "@/apply-props/apply-classes.js";
+import applyProps from "@/apply-props/apply-props.js";
+import applyStyle from "@/apply-props/apply-style.js";
+import { ComponentChild, ComponentFactory, FreeJSX } from "@/types/index.js";
 
-export function h<TagName extends (keyof HTMLElementTagNameMap) | FreeJSX.ComponentFactory | (typeof Fragment)>(
-  tagName: TagName,
-  props: TagName extends keyof HTMLElementTagNameMap ? (FreeJSX.Props<TagName> | null)
-    : TagName extends FreeJSX.ComponentFactory ? Parameters<TagName>[0]
-    : any,
-  ...children: FreeJSX.ComponentChild[]
-): TagName extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[TagName]
-  : TagName extends FreeJSX.ComponentFactory ? ReturnType<TagName>
-  : Node {
-  props ??= {} as typeof props;
-
+export function h<T extends TagName, Props = h_Props<T>, Returned = h_ReturnType<T>>(
+  tagName: T,
+  props: Props,
+  ...children: ComponentChild[]
+): Returned {
   if (tagName === Fragment)
-    return Fragment(children) as unknown as ReturnType<typeof h<TagName>>;
+    return Fragment(children) as Returned;
 
-  if (typeof tagName === "function") {
-    if (!(tagName.prototype instanceof HTMLElement))
-      return (<FreeJSX.ComponentFactory>tagName)({ ...props, children }) as unknown as ReturnType<typeof h<TagName>>;
+  props ??= {} as Props;
 
-    const element = Reflect.construct(tagName, [props]);
-    applyChildren(element, children);
-    return element;
-  }
+  if (typeof tagName !== "function")
+    // @ts-ignore
+    return createElement(tagName as keyof FreeJSX.HTMLPropsTagNameMap, props, children) as Returned;
 
+  if (!(tagName.prototype instanceof HTMLElement))
+    return (<ComponentFactory>tagName)({ ...props, children }) as Returned;
+
+  const element: HTMLElement = Reflect.construct(tagName, [props]);
+  applyChildren(element, children);
+  return element as Returned;
+}
+
+export function Fragment(children: ComponentChild[]): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  applyChildren(fragment, children);
+  return fragment;
+}
+
+function createElement<T extends keyof FreeJSX.HTMLPropsTagNameMap>(
+  tagName: T,
+  { $init, style, classes, className, classNames, extraAttributes, ...others }: FreeJSX.Props<T>,
+  children: ComponentChild[]
+) {
   const element = document.createElement(tagName);
-  const { $init, style, classes, className, classNames, ...others } = props as FreeJSX.Props<keyof FreeJSX.HTMLPropsTagNameMap>;
-  delete props.$init;
 
   applyClasses(element, className, classNames, classes);
   style && applyStyle(element, style);
   // @ts-ignore
   applyProps(element, others);
+  extraAttributes && Object.keys(extraAttributes).forEach((key) => element.setAttribute(key, extraAttributes[key]));
   applyChildren(element, children);
-  $init && $init(element as any);
-  return element as unknown as ReturnType<typeof h<TagName>>;
+  $init && $init(element);
+  return element;
+
 }
 
-export function Fragment(children: FreeJSX.ComponentChild[]): DocumentFragment {
-  const fragment = document.createDocumentFragment();
-  applyChildren(fragment, children);
-  return fragment;
-}
+type TagName = (typeof Fragment) | string | ComponentFactory;
+type h_Props<T extends TagName> =
+  T extends (typeof Fragment) ? null
+  : T extends ComponentFactory ? Parameters<T>[0]
+  : T extends keyof FreeJSX.IntrinsicElementsHTML ? FreeJSX.Props<T>
+  : string;
+type h_ReturnType<T extends TagName> =
+  T extends (typeof Fragment) ? DocumentFragment
+  : T extends ComponentFactory ? ReturnType<T>
+  : T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T]
+  : string;

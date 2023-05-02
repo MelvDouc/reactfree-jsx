@@ -4,10 +4,7 @@
   },
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "DOM",
-      "ES2020"
-    ],
+    "lib": ["DOM", "ES2020"],
     "module": "ES2020",
     "moduleResolution": "NodeNext",
     "rootDir": "src",
@@ -15,14 +12,12 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/node_modules",
-    "dist",
-    "test"
-  ]
+  "include": ["src"],
+  "exclude": ["**/node_modules", "dist", "test"]
 }

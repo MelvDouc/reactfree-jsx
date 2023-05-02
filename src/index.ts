@@ -1,9 +1,9 @@
-import { FreeJSX } from "./types/index.js";
+import { FreeJSX } from "@/types/index.js";
 
-export * from "./h.js";
-export { default as Observable } from "./Observable.js";
-export { default as Router } from "./Router.js";
-export type { FreeJSX };
+export * from "@/h.js";
+export * from "@/types/index.js";
+export { default as Router } from "@/router/Router.js";
+export { Observable } from "melv_observable";
 
 declare global {
   namespace JSX {

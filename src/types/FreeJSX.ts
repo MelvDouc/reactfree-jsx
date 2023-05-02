@@ -1,3 +1,4 @@
+import { OptionalObs } from "melv_observable";
 import {
   Alt,
   AutoComplete,
@@ -15,7 +16,6 @@ import {
   Valued,
   WithReferrerPolicy
 } from "@/types/common-props.js";
-import { PossibleObs } from "@/types/Obs.js";
 import { ExtraProps } from "@/types/extra-props.js";
 
 export type { ExtraProps };
@@ -444,6 +444,6 @@ export type Props<T extends keyof IntrinsicElementsHTML> = Partial<IntrinsicElem
 
 export type IntrinsicElementsHTML = {
   [K in keyof HTMLPropsTagNameMap]: {
-    [P in keyof HTMLPropsTagNameMap[K]]?: PossibleObs<HTMLPropsTagNameMap[K][P]>
+    [P in keyof HTMLPropsTagNameMap[K]]?: OptionalObs<HTMLPropsTagNameMap[K][P]>
   } & Partial<ExtraProps<K>>
 };
