@@ -5,13 +5,11 @@ import {
   Disableable,
   Href,
   MinMax,
-  Named,
   Rel,
   Sourced,
   Targeter,
   Valued,
-  WithReferrerPolicy,
-  WithText
+  WithReferrerPolicy
 } from "./common-props.js";
 import { ExtraProps } from "./props.js";
 import { Obs, PossibleObs } from "./Obs.js";
@@ -21,7 +19,7 @@ export type { ExtraProps, Obs, PossibleObs };
 
 type InlineListener = ((this: Element, ev: Event) => any) | null;
 
-export interface FreeJsxElement extends ARIAMixin, Omit<GlobalEventHandlers, "addEventListener" | "removeEventListener"> {
+export interface StaticProps extends ARIAMixin, Omit<GlobalEventHandlers, "addEventListener" | "removeEventListener"> {
   id: string;
   onfullscreenchange: InlineListener;
   onfullscreenerror: InlineListener;
@@ -31,7 +29,7 @@ export interface FreeJsxElement extends ARIAMixin, Omit<GlobalEventHandlers, "ad
   [dataAttribute: `data${string}`]: string;
 }
 
-export interface FreeJsxHTMLElement extends FreeJsxElement {
+export interface HTMLStaticProps extends StaticProps {
   accessKey: string;
   autocapitalize: string;
   contentEditable: "true" | "false" | "inherit";
@@ -48,7 +46,11 @@ export interface FreeJsxHTMLElement extends FreeJsxElement {
   translate: boolean;
 }
 
-export interface Hyperlink extends FreeJsxHTMLElement, Href {
+export interface HTMLStaticPropsWithName extends HTMLStaticProps {
+  name: string;
+}
+
+export interface Hyperlink extends Href, Targeter {
   hash: string;
   host: string;
   hostname: string;
@@ -61,85 +63,23 @@ export interface Hyperlink extends FreeJsxHTMLElement, Href {
   username: string;
 }
 
-export interface Citable extends FreeJsxHTMLElement {
+export interface Citable extends HTMLStaticProps {
   cite: string;
 }
 
-export interface Anchor extends Hyperlink, Named, Rel, Targeter, WithReferrerPolicy, WithText {
+export interface Anchor extends HTMLStaticPropsWithName, Hyperlink, Rel, WithReferrerPolicy {
   download: string;
   hreflang: string;
   type: string;
 }
 
-export interface Area extends Hyperlink, Alt, WithReferrerPolicy, Targeter {
-  coords: string;
-  download: string;
-  shape: string;
-}
-
-export interface Body extends FreeJsxHTMLElement {
-  onafterprint: InlineListener;
-  onbeforeprint: InlineListener;
-  onbeforeunload: InlineListener;
-  onhashchange: InlineListener;
-  onlanguagechange: InlineListener;
-  onmessage: InlineListener;
-  onoffline: InlineListener;
-  ononline: InlineListener;
-  onpopstate: InlineListener;
-  onredo: InlineListener;
-  onstorage: InlineListener;
-  onundo: InlineListener;
-  onunload: InlineListener;
-}
-
-export interface Button extends FreeJsxHTMLElement, Disableable, Named, Valued {
-  autofocus: boolean;
-  formAction: string;
-  formEnctype: string;
-  formMethod: string;
-  formNoValidate: boolean;
-  formTarget: string;
-  type: string;
-}
-
-export interface Dialog extends Omit<FreeJsxHTMLElement, "tabIndex"> {
-  open: boolean;
-  returnValue: string;
-}
-
-export interface Form extends FreeJsxHTMLElement, AutoComplete, Named, Targeter {
-  acceptCharset: string;
-  action: string;
-  encoding: string;
-  enctype: string;
-  method: "get" | "post" | "dialog" | string;
-  noValidate: boolean;
-}
-
-export interface Iframe extends FreeJsxHTMLElement, Dimensions, Named, Sourced, WithReferrerPolicy {
-  allow: string;
-  allowfullscreen: boolean;
-  scrolling: string;
-  srcdoc: string;
-}
-
-export interface FreeJsxImage extends FreeJsxHTMLElement, Alt, Dimensions, Sourced, WithReferrerPolicy {
-  crossOrigin: string | null;
-  decoding: "async" | "sync" | "auto";
-  isMap: boolean;
-  loading: "eager" | "lazy";
-  sizes: string;
-}
-
 export interface Input extends
-  FreeJsxHTMLElement,
+  HTMLStaticPropsWithName,
   Alt,
   AutoComplete,
   Dimensions,
   Disableable,
   MinMax,
-  Named,
   Sourced,
   Valued {
   accept: string;
@@ -176,11 +116,7 @@ export interface Input extends
   valueAsNumber: number;
 }
 
-export interface Label extends FreeJsxHTMLElement {
-  htmlFor: string;
-}
-
-export interface Link extends FreeJsxHTMLElement, Disableable, Href, Rel, Targeter, WithReferrerPolicy {
+export interface Link extends HTMLStaticProps, Disableable, Href, Rel, Targeter, WithReferrerPolicy {
   as: string;
   crossOrigin: string | null;
   hreflang: string;
@@ -191,98 +127,7 @@ export interface Link extends FreeJsxHTMLElement, Disableable, Href, Rel, Target
   type: string;
 }
 
-export interface MetaElement extends FreeJsxHTMLElement, Named {
-  content: string;
-  httpEquiv: string;
-  media: string;
-}
-
-export interface Meter extends FreeJsxHTMLElement, MinMax, Valued {
-  high: number;
-  low: number;
-  optimum: number;
-}
-
-export interface ObjectElement extends FreeJsxHTMLElement, Dimensions, Named {
-  data: string;
-  standby: string;
-  type: string;
-  useMap: string;
-}
-
-export interface Ol extends FreeJsxHTMLElement {
-  reversed: boolean;
-  start: number;
-  type: string;
-}
-
-export interface Option extends FreeJsxHTMLElement, Disableable, Valued, WithText {
-  defaultSelected: boolean;
-  label: string;
-  selected: boolean;
-}
-
-export interface Output extends FreeJsxHTMLElement, Named, Valued {
-  defaultValue: string;
-}
-
-export interface Progress extends FreeJsxHTMLElement {
-  max: number;
-  value: number;
-}
-
-export interface Script extends FreeJsxHTMLElement, WithReferrerPolicy, Sourced, WithText {
-  async: boolean;
-  crossOrigin: string;
-  defer: boolean;
-  integrity: string;
-  noModule: boolean;
-  type: string;
-}
-
-export interface Select extends FreeJsxHTMLElement, AutoComplete, Disableable, Named, Valued {
-  length: number;
-  multiple: boolean;
-  required: boolean;
-  selectedIndex: number;
-  size: number;
-}
-
-export interface FreeJsxSource extends FreeJsxHTMLElement, Dimensions, Sourced {
-  media: string;
-  sizes: string;
-  srcset: string;
-  type: string;
-}
-
-export interface StyleElement extends FreeJsxHTMLElement, Disableable {
-  media: string;
-}
-
-export interface Textarea extends FreeJsxHTMLElement, AutoComplete, Disableable, Named, Valued {
-  cols: number;
-  defaultValue: string;
-  dirName: string;
-  maxLength: number;
-  minLength: number;
-  placeholder: string;
-  readOnly: boolean;
-  required: boolean;
-  rows: number;
-  selectionDirection: "forward" | "backward" | "none" | string;
-  selectionEnd: number;
-  selectionStart: number;
-  wrap: string;
-}
-
-export interface Track extends FreeJsxHTMLElement, Sourced {
-  default: boolean;
-  kind: string;
-  label: string;
-  srclang: string;
-}
-
-export interface TableCell extends FreeJsxHTMLElement {
+export interface TableCell extends HTMLStaticProps {
   abbr: string;
   col: any;
   colgroup: any;
@@ -295,132 +140,245 @@ export interface TableCell extends FreeJsxHTMLElement {
   scope: string;
 }
 
-export interface Video extends FreeJsxHTMLElement, Dimensions {
-  disablePictureInPicture: boolean;
-  onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
-  onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
-  playsInline: boolean;
-  poster: string;
-}
-
 // ===== ===== ===== ===== =====
 // FREEJSX_TAG_NAME_MAP
 // ===== ===== ===== ===== =====
 
 export interface HTMLElementTagNameMap {
   a: Anchor;
-  abbr: FreeJsxHTMLElement;
-  address: FreeJsxHTMLElement;
-  area: Area;
-  article: FreeJsxHTMLElement;
-  aside: FreeJsxHTMLElement;
-  audio: FreeJsxHTMLElement;
-  b: FreeJsxHTMLElement;
-  base: FreeJsxHTMLElement & Href;
-  bdi: FreeJsxHTMLElement;
-  bdo: FreeJsxHTMLElement;
+  abbr: HTMLStaticProps;
+  address: HTMLStaticProps;
+  area: HTMLStaticProps & Hyperlink & Alt & WithReferrerPolicy & {
+    coords: string;
+    download: string;
+    shape: string;
+  };
+  article: HTMLStaticProps;
+  aside: HTMLStaticProps;
+  audio: HTMLStaticProps;
+  b: HTMLStaticProps;
+  base: HTMLStaticProps & Href;
+  bdi: HTMLStaticProps;
+  bdo: HTMLStaticProps;
   blockquote: Citable;
-  body: Body;
-  br: FreeJsxHTMLElement;
-  button: Button;
-  canvas: FreeJsxHTMLElement & Dimensions;
-  caption: FreeJsxHTMLElement;
-  cite: FreeJsxHTMLElement;
-  code: FreeJsxHTMLElement;
-  col: FreeJsxHTMLElement;
-  colgroup: FreeJsxHTMLElement;
-  data: FreeJsxHTMLElement & Valued;
-  datalist: FreeJsxHTMLElement;
-  dd: FreeJsxHTMLElement;
-  del: Citable;
-  details: FreeJsxHTMLElement & { open: boolean; };
-  dfn: FreeJsxHTMLElement;
-  dialog: Dialog;
-  div: FreeJsxHTMLElement;
-  dl: FreeJsxHTMLElement;
-  dt: FreeJsxHTMLElement;
-  em: FreeJsxHTMLElement;
-  embed: FreeJsxHTMLElement & Dimensions & Sourced & {
+  body: StaticProps & {
+    onafterprint: InlineListener;
+    onbeforeprint: InlineListener;
+    onbeforeunload: InlineListener;
+    onhashchange: InlineListener;
+    onlanguagechange: InlineListener;
+    onmessage: InlineListener;
+    onoffline: InlineListener;
+    ononline: InlineListener;
+    onpopstate: InlineListener;
+    onredo: InlineListener;
+    onstorage: InlineListener;
+    onundo: InlineListener;
+    onunload: InlineListener;
+  };
+  br: HTMLStaticProps;
+  button: HTMLStaticPropsWithName & Disableable & Valued & {
+    autofocus: boolean;
+    formAction: string;
+    formEnctype: string;
+    formMethod: string;
+    formNoValidate: boolean;
+    formTarget: string;
     type: string;
   };
-  fieldset: FreeJsxHTMLElement & Disableable & Named;
-  figcaption: FreeJsxHTMLElement;
-  figure: FreeJsxHTMLElement;
-  footer: FreeJsxHTMLElement;
-  form: Form;
-  h1: FreeJsxHTMLElement;
-  h2: FreeJsxHTMLElement;
-  h3: FreeJsxHTMLElement;
-  h4: FreeJsxHTMLElement;
-  h5: FreeJsxHTMLElement;
-  h6: FreeJsxHTMLElement;
-  head: FreeJsxHTMLElement;
-  header: FreeJsxHTMLElement;
-  hgroup: FreeJsxHTMLElement;
-  hr: FreeJsxHTMLElement;
-  html: FreeJsxHTMLElement;
-  i: FreeJsxHTMLElement;
-  iframe: Iframe;
-  img: FreeJsxImage;
+  canvas: HTMLStaticProps & Dimensions;
+  caption: HTMLStaticProps;
+  cite: HTMLStaticProps;
+  code: HTMLStaticProps;
+  col: HTMLStaticProps;
+  colgroup: HTMLStaticProps;
+  data: HTMLStaticProps & Valued;
+  datalist: HTMLStaticProps;
+  dd: HTMLStaticProps;
+  del: Citable;
+  details: HTMLStaticProps & { open: boolean; };
+  dfn: HTMLStaticProps;
+  dialog: Omit<HTMLStaticProps, "tabIndex"> & {
+    open: boolean;
+    returnValue: string;
+  };
+  div: HTMLStaticProps;
+  dl: HTMLStaticProps;
+  dt: HTMLStaticProps;
+  em: HTMLStaticProps;
+  embed: HTMLStaticProps & Dimensions & Sourced & {
+    type: string;
+  };
+  fieldset: HTMLStaticPropsWithName & Disableable;
+  figcaption: HTMLStaticProps;
+  figure: HTMLStaticProps;
+  footer: HTMLStaticProps;
+  form: HTMLStaticPropsWithName & AutoComplete & Targeter & {
+    acceptCharset: string;
+    action: string;
+    encoding: string;
+    enctype: string;
+    method: "get" | "post" | "dialog" | string;
+    noValidate: boolean;
+  };
+  h1: HTMLStaticProps;
+  h2: HTMLStaticProps;
+  h3: HTMLStaticProps;
+  h4: HTMLStaticProps;
+  h5: HTMLStaticProps;
+  h6: HTMLStaticProps;
+  head: HTMLStaticProps;
+  header: HTMLStaticProps;
+  hgroup: HTMLStaticProps;
+  hr: HTMLStaticProps;
+  html: HTMLStaticProps;
+  i: HTMLStaticProps;
+  iframe: HTMLStaticPropsWithName & Dimensions & Sourced & WithReferrerPolicy & {
+    allow: string;
+    allowfullscreen: boolean;
+    scrolling: string;
+    srcdoc: string;
+  };
+  img: HTMLStaticProps & Alt & Dimensions & Sourced & WithReferrerPolicy & {
+    crossOrigin: string | null;
+    decoding: "async" | "sync" | "auto";
+    isMap: boolean;
+    loading: "eager" | "lazy";
+    sizes: string;
+  };
   input: Input;
   ins: Citable;
-  kbd: FreeJsxHTMLElement;
-  label: Label;
-  legend: FreeJsxHTMLElement;
-  li: FreeJsxHTMLElement & Valued;
+  kbd: HTMLStaticProps;
+  label: HTMLStaticProps & {
+    htmlFor: string;
+  };
+  legend: HTMLStaticProps;
+  li: HTMLStaticProps & Valued;
   link: Link;
-  main: FreeJsxHTMLElement;
-  map: FreeJsxHTMLElement & Named;
-  mark: FreeJsxHTMLElement;
-  menu: FreeJsxHTMLElement;
-  meta: MetaElement;
-  meter: Meter;
-  nav: FreeJsxHTMLElement;
-  noscript: FreeJsxHTMLElement;
-  object: ObjectElement;
-  ol: Ol;
-  optgroup: FreeJsxHTMLElement & Disableable & { label: string; };
-  option: Option;
-  output: Output;
-  p: FreeJsxHTMLElement;
-  picture: FreeJsxHTMLElement;
-  pre: FreeJsxHTMLElement;
-  progress: Progress;
+  main: HTMLStaticProps;
+  map: HTMLStaticPropsWithName;
+  mark: HTMLStaticProps;
+  menu: HTMLStaticProps;
+  meta: HTMLStaticPropsWithName & {
+    content: string;
+    httpEquiv: string;
+    media: string;
+  };
+  meter: HTMLStaticProps & MinMax & Valued & {
+    high: number;
+    low: number;
+    optimum: number;
+  };
+  nav: HTMLStaticProps;
+  noscript: HTMLStaticProps;
+  object: HTMLStaticPropsWithName & Dimensions & {
+    data: string;
+    standby: string;
+    type: string;
+    useMap: string;
+  };
+  ol: HTMLStaticProps & {
+    reversed: boolean;
+    start: number;
+    type: string;
+  };
+  optgroup: HTMLStaticProps & Disableable & { label: string; };
+  option: HTMLStaticProps & Disableable & Valued & {
+    defaultSelected: boolean;
+    label: string;
+    selected: boolean;
+  };
+  output: HTMLStaticPropsWithName & Valued & {
+    defaultValue: string;
+  };
+  p: HTMLStaticProps;
+  picture: HTMLStaticProps;
+  pre: HTMLStaticProps;
+  progress: HTMLStaticProps & {
+    max: number;
+    value: number;
+  };
   q: Citable;
-  rp: FreeJsxHTMLElement;
-  rt: FreeJsxHTMLElement;
-  ruby: FreeJsxHTMLElement;
-  s: FreeJsxHTMLElement;
-  samp: FreeJsxHTMLElement;
-  script: Script;
-  section: FreeJsxHTMLElement;
-  select: Select;
-  slot: Omit<FreeJsxHTMLElement, "slot"> & Named;
-  small: FreeJsxHTMLElement;
-  source: FreeJsxSource;
-  span: FreeJsxHTMLElement;
-  strong: FreeJsxHTMLElement;
-  style: StyleElement;
-  sub: FreeJsxHTMLElement;
-  summary: FreeJsxHTMLElement;
-  sup: FreeJsxHTMLElement;
-  table: FreeJsxHTMLElement;
-  tbody: FreeJsxHTMLElement;
+  rp: HTMLStaticProps;
+  rt: HTMLStaticProps;
+  ruby: HTMLStaticProps;
+  s: HTMLStaticProps;
+  samp: HTMLStaticProps;
+  script: HTMLStaticProps & WithReferrerPolicy & Sourced & {
+    async: boolean;
+    crossOrigin: string;
+    defer: boolean;
+    integrity: string;
+    noModule: boolean;
+    text: string;
+    type: string;
+  };
+  section: HTMLStaticProps;
+  select: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued & {
+    length: number;
+    multiple: boolean;
+    required: boolean;
+    selectedIndex: number;
+    size: number;
+  };
+  slot: Omit<HTMLStaticPropsWithName, "slot">;
+  small: HTMLStaticProps;
+  source: HTMLStaticProps & Dimensions & Sourced & {
+    media: string;
+    sizes: string;
+    srcset: string;
+    type: string;
+  };
+  span: HTMLStaticProps;
+  strong: HTMLStaticProps;
+  style: StaticProps & Disableable & {
+    media: string;
+  };
+  sub: HTMLStaticProps;
+  summary: HTMLStaticProps;
+  sup: HTMLStaticProps;
+  table: HTMLStaticProps;
+  tbody: HTMLStaticProps;
   td: TableCell;
-  template: FreeJsxHTMLElement;
-  textarea: Textarea;
-  tfoot: FreeJsxHTMLElement;
+  template: HTMLStaticProps;
+  textarea: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued & {
+    cols: number;
+    defaultValue: string;
+    dirName: string;
+    maxLength: number;
+    minLength: number;
+    placeholder: string;
+    readOnly: boolean;
+    required: boolean;
+    rows: number;
+    selectionDirection: "forward" | "backward" | "none" | string;
+    selectionEnd: number;
+    selectionStart: number;
+    wrap: string;
+  };
+  tfoot: HTMLStaticProps;
   th: TableCell;
-  thead: FreeJsxHTMLElement;
-  time: FreeJsxHTMLElement & { dateTime: string; };
-  title: FreeJsxHTMLElement & WithText;
-  tr: FreeJsxHTMLElement;
-  track: Track;
-  u: FreeJsxHTMLElement;
-  ul: FreeJsxHTMLElement;
-  var: FreeJsxHTMLElement;
-  video: Video;
-  wbr: FreeJsxHTMLElement;
+  thead: HTMLStaticProps;
+  time: HTMLStaticProps & { dateTime: string; };
+  title: HTMLStaticProps;
+  tr: HTMLStaticProps;
+  track: HTMLStaticProps & Sourced & {
+    default: boolean;
+    kind: string;
+    label: string;
+    srclang: string;
+  };
+  u: HTMLStaticProps;
+  ul: HTMLStaticProps;
+  var: HTMLStaticProps;
+  video: HTMLStaticProps & Dimensions & {
+    disablePictureInPicture: boolean;
+    onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
+    onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
+    playsInline: boolean;
+    poster: string;
+  };
+  wbr: HTMLStaticProps;
 }
 
 // ===== ===== ===== ===== =====

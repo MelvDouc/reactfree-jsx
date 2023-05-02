@@ -14,10 +14,6 @@ export interface Href {
   href: string;
 }
 
-export interface Named {
-  name: string;
-}
-
 export interface MinMax {
   min: number | string;
   max: number | string;
@@ -37,10 +33,6 @@ export interface WithReferrerPolicy {
 
 export interface Targeter {
   target: string;
-}
-
-export interface WithText {
-  text: string;
 }
 
 export interface Valued {
