@@ -4,10 +4,12 @@ import {
   Dimensions,
   Disableable,
   Href,
+  Media,
   MinMax,
   Rel,
   Sourced,
   Targeter,
+  Typed,
   Valued,
   WithReferrerPolicy
 } from "./common-props.js";
@@ -16,6 +18,10 @@ import { Obs, PossibleObs } from "./Obs.js";
 
 export type { ComponentChild, ComponentChildren, ComponentFactory } from "./children.js";
 export type { ExtraProps, Obs, PossibleObs };
+
+// ===== ===== ===== ===== =====
+// INHERITED
+// ===== ===== ===== ===== =====
 
 type InlineListener = ((this: Element, ev: Event) => any) | null;
 
@@ -27,18 +33,18 @@ export interface StaticProps extends ARIAMixin, Omit<GlobalEventHandlers, "addEv
   scrollTop: number;
   slot: string;
   [dataAttribute: `data${string}`]: string;
+  extra: Record<string, any>;
 }
 
 export interface HTMLStaticProps extends StaticProps {
-  accessKey: string;
   autocapitalize: string;
   contentEditable: "true" | "false" | "inherit";
-  dir: string;
+  dir: "ltr" | "rtl" | "auto" | string;
   draggable: boolean;
-  enterKeyHint: string;
+  enterKeyHint: "enter" | "done" | "go" | "next" | "previous" | "search" | "send";
   hidden: boolean;
   inert: boolean;
-  inputMode: string;
+  inputMode: "none" | "email" | "decimal" | "numeric" | "search" | "tel" | "text" | "url" | string;
   lang: string;
   spellcheck: boolean;
   tabIndex: string | number;
@@ -50,7 +56,7 @@ export interface HTMLStaticPropsWithName extends HTMLStaticProps {
   name: string;
 }
 
-export interface Hyperlink extends Href, Targeter {
+export interface Hyperlink extends Href, Targeter, WithReferrerPolicy {
   hash: string;
   host: string;
   hostname: string;
@@ -67,10 +73,9 @@ export interface Citable extends HTMLStaticProps {
   cite: string;
 }
 
-export interface Anchor extends HTMLStaticPropsWithName, Hyperlink, Rel, WithReferrerPolicy {
+export interface Anchor extends HTMLStaticPropsWithName, Hyperlink, Rel, Typed {
   download: string;
   hreflang: string;
-  type: string;
 }
 
 export interface Input extends
@@ -81,12 +86,11 @@ export interface Input extends
   Disableable,
   MinMax,
   Sourced,
-  Valued {
+  Valued<true> {
   accept: string;
   capture: string;
   checked: boolean;
   defaultChecked: boolean;
-  defaultValue: string;
   dirName: string;
   files: FileList | null;
   formAction: string;
@@ -95,7 +99,7 @@ export interface Input extends
   formNoValidate: boolean;
   formTarget: string;
   indeterminate: boolean;
-  list: string;
+  readonly list: string;
   maxLength: number;
   minLength: number;
   multiple: boolean;
@@ -116,17 +120,6 @@ export interface Input extends
   valueAsNumber: number;
 }
 
-export interface Link extends HTMLStaticProps, Disableable, Href, Rel, Targeter, WithReferrerPolicy {
-  as: string;
-  crossOrigin: string | null;
-  hreflang: string;
-  imageSizes: string;
-  imageSrcset: string;
-  integrity: string;
-  media: string;
-  type: string;
-}
-
 export interface TableCell extends HTMLStaticProps {
   abbr: string;
   col: any;
@@ -141,14 +134,14 @@ export interface TableCell extends HTMLStaticProps {
 }
 
 // ===== ===== ===== ===== =====
-// FREEJSX_TAG_NAME_MAP
+// TAG NAME MAP
 // ===== ===== ===== ===== =====
 
-export interface HTMLElementTagNameMap {
+export interface HTMLPropsTagNameMap {
   a: Anchor;
   abbr: HTMLStaticProps;
   address: HTMLStaticProps;
-  area: HTMLStaticProps & Hyperlink & Alt & WithReferrerPolicy & {
+  area: HTMLStaticProps & Alt & Hyperlink & {
     coords: string;
     download: string;
     shape: string;
@@ -177,14 +170,13 @@ export interface HTMLElementTagNameMap {
     onunload: InlineListener;
   };
   br: HTMLStaticProps;
-  button: HTMLStaticPropsWithName & Disableable & Valued & {
+  button: HTMLStaticPropsWithName & Disableable & Typed & Valued & {
     autofocus: boolean;
     formAction: string;
     formEnctype: string;
     formMethod: string;
     formNoValidate: boolean;
     formTarget: string;
-    type: string;
   };
   canvas: HTMLStaticProps & Dimensions;
   caption: HTMLStaticProps;
@@ -206,9 +198,7 @@ export interface HTMLElementTagNameMap {
   dl: HTMLStaticProps;
   dt: HTMLStaticProps;
   em: HTMLStaticProps;
-  embed: HTMLStaticProps & Dimensions & Sourced & {
-    type: string;
-  };
+  embed: HTMLStaticProps & Dimensions & Sourced & Typed;
   fieldset: HTMLStaticPropsWithName & Disableable;
   figcaption: HTMLStaticProps;
   figure: HTMLStaticProps;
@@ -249,20 +239,24 @@ export interface HTMLElementTagNameMap {
   input: Input;
   ins: Citable;
   kbd: HTMLStaticProps;
-  label: HTMLStaticProps & {
-    htmlFor: string;
-  };
+  label: HTMLStaticProps & { htmlFor: string; };
   legend: HTMLStaticProps;
   li: HTMLStaticProps & Valued;
-  link: Link;
+  link: HTMLStaticProps & Disableable & Href & Media & Rel & Targeter & Typed & WithReferrerPolicy & {
+    as: string;
+    crossOrigin: string | null;
+    hreflang: string;
+    imageSizes: string;
+    imageSrcset: string;
+    integrity: string;
+  };
   main: HTMLStaticProps;
   map: HTMLStaticPropsWithName;
   mark: HTMLStaticProps;
   menu: HTMLStaticProps;
-  meta: HTMLStaticPropsWithName & {
+  meta: HTMLStaticPropsWithName & Media & {
     content: string;
     httpEquiv: string;
-    media: string;
   };
   meter: HTMLStaticProps & MinMax & Valued & {
     high: number;
@@ -271,16 +265,14 @@ export interface HTMLElementTagNameMap {
   };
   nav: HTMLStaticProps;
   noscript: HTMLStaticProps;
-  object: HTMLStaticPropsWithName & Dimensions & {
+  object: HTMLStaticPropsWithName & Dimensions & Typed & {
     data: string;
     standby: string;
-    type: string;
     useMap: string;
   };
-  ol: HTMLStaticProps & {
+  ol: HTMLStaticProps & Typed & {
     reversed: boolean;
     start: number;
-    type: string;
   };
   optgroup: HTMLStaticProps & Disableable & { label: string; };
   option: HTMLStaticProps & Disableable & Valued & {
@@ -288,9 +280,7 @@ export interface HTMLElementTagNameMap {
     label: string;
     selected: boolean;
   };
-  output: HTMLStaticPropsWithName & Valued & {
-    defaultValue: string;
-  };
+  output: HTMLStaticPropsWithName & Valued<true>;
   p: HTMLStaticProps;
   picture: HTMLStaticProps;
   pre: HTMLStaticProps;
@@ -304,18 +294,16 @@ export interface HTMLElementTagNameMap {
   ruby: HTMLStaticProps;
   s: HTMLStaticProps;
   samp: HTMLStaticProps;
-  script: HTMLStaticProps & WithReferrerPolicy & Sourced & {
+  script: HTMLStaticProps & WithReferrerPolicy & Sourced & Typed & {
     async: boolean;
     crossOrigin: string;
     defer: boolean;
     integrity: string;
     noModule: boolean;
     text: string;
-    type: string;
   };
   section: HTMLStaticProps;
   select: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued & {
-    length: number;
     multiple: boolean;
     required: boolean;
     selectedIndex: number;
@@ -323,17 +311,13 @@ export interface HTMLElementTagNameMap {
   };
   slot: Omit<HTMLStaticPropsWithName, "slot">;
   small: HTMLStaticProps;
-  source: HTMLStaticProps & Dimensions & Sourced & {
-    media: string;
+  source: HTMLStaticProps & Dimensions & Media & Sourced & Typed & {
     sizes: string;
     srcset: string;
-    type: string;
   };
   span: HTMLStaticProps;
   strong: HTMLStaticProps;
-  style: StaticProps & Disableable & {
-    media: string;
-  };
+  style: StaticProps & Disableable & Media;
   sub: HTMLStaticProps;
   summary: HTMLStaticProps;
   sup: HTMLStaticProps;
@@ -341,9 +325,8 @@ export interface HTMLElementTagNameMap {
   tbody: HTMLStaticProps;
   td: TableCell;
   template: HTMLStaticProps;
-  textarea: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued & {
+  textarea: HTMLStaticPropsWithName & AutoComplete & Disableable & Valued<true> & {
     cols: number;
-    defaultValue: string;
     dirName: string;
     maxLength: number;
     minLength: number;
@@ -388,7 +371,7 @@ export interface HTMLElementTagNameMap {
 export type Props<T extends keyof IntrinsicElementsHTML> = Partial<IntrinsicElementsHTML[T]>;
 
 export type IntrinsicElementsHTML = {
-  [K in keyof HTMLElementTagNameMap]: {
-    [P in keyof HTMLElementTagNameMap[K]]?: PossibleObs<HTMLElementTagNameMap[K][P]>
+  [K in keyof HTMLPropsTagNameMap]: {
+    [P in keyof HTMLPropsTagNameMap[K]]?: PossibleObs<HTMLPropsTagNameMap[K][P]>
   } & Partial<ExtraProps<K>>
 };
