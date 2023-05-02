@@ -3,7 +3,7 @@ import { PossibleObs } from "./Obs.js";
 export { ExtraProps };
 
 type FreeJsxOptionalClass = {
-  className?: PossibleObs<string>;
+  className?: string;
   /**
    * An array of CSS classes to add to the element.
    */
