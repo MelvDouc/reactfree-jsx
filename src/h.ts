@@ -2,7 +2,7 @@ import {
   applyChildren,
   applyClasses,
   applyProps,
-  applyStyles
+  applyStyle
 } from "./apply-props.js";
 import { FreeJSX } from "./types/index.js";
 
@@ -30,14 +30,15 @@ export function h<TagName extends (keyof HTMLElementTagNameMap) | FreeJSX.Compon
   }
 
   const element = document.createElement(tagName);
-  const { $init } = props;
+  const { $init, style, classes, className, classNames, ...others } = props as FreeJSX.Props<keyof FreeJSX.HTMLPropsTagNameMap>;
   delete props.$init;
 
-  applyClasses(element, props);
-  applyStyles(element, props);
-  applyProps(element, props);
+  applyClasses(element, className, classNames, classes);
+  style && applyStyle(element, style);
+  // @ts-ignore
+  applyProps(element, others);
   applyChildren(element, children);
-  $init && $init(element);
+  $init && $init(element as any);
   return element as unknown as ReturnType<typeof h<TagName>>;
 }
 
