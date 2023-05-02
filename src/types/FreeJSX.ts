@@ -13,7 +13,7 @@ import {
   Valued,
   WithReferrerPolicy
 } from "./common-props.js";
-import { ExtraProps } from "./props.js";
+import { ExtraProps } from "./extra-props.js";
 import { Obs, PossibleObs } from "./Obs.js";
 
 export type { ComponentChild, ComponentChildren, ComponentFactory } from "./children.js";
