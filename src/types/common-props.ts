@@ -6,12 +6,21 @@ export interface AutoComplete {
   autocomplete: string;
 }
 
+export interface Dimensions {
+  height: number | string;
+  width: number | string;
+}
+
 export interface Disableable {
   disabled: boolean;
 }
 
 export interface Href {
   href: string;
+}
+
+export interface Media {
+  media: string;
 }
 
 export interface MinMax {
@@ -35,11 +44,11 @@ export interface Targeter {
   target: string;
 }
 
-export interface Valued {
-  value: string | number;
+export interface Typed {
+  type: string;
 }
 
-export interface Dimensions {
-  height: number | string;
-  width: number | string;
-}
+export type Valued<WithDefault = false> = {
+  value: string | number;
+  defaultValue: WithDefault extends true ? (string | number) : never;
+};
