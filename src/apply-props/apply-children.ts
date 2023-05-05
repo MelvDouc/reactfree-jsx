@@ -32,5 +32,5 @@ export default function applyChildren(
 }
 
 function isFalseOrNullish(value: unknown): value is false | null | undefined {
-  return value === false || false == null;
+  return value === false || value == null;
 }
