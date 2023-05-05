@@ -33,7 +33,6 @@ interface _ElemPropsNoSlot extends ARIAMixin, Omit<GlobalEventHandlers, "addEven
   scrollLeft: number;
   scrollTop: number;
   slot: string;
-  [dataAttribute: `data${string}`]: string;
 }
 
 interface _HTMLPropsNoTabIndex {
@@ -210,6 +209,24 @@ export interface LinkProps extends HTMLProps, Disableable, Href, Media, Rel, Tar
 
 export interface MapProps extends HTMLProps, Named { }
 
+interface MediaProps extends HTMLProps, Sourced {
+  autoplay: boolean;
+  controls: boolean;
+  crossOrigin: string;
+  currentTime: number;
+  defaultMuted: boolean;
+  defaultPlaybackRate: number;
+  disableRemotePlayback: boolean;
+  loop: boolean;
+  muted: boolean;
+  playbackRate: number;
+  preload: "none" | "metadata" | "auto" | "";
+  preservesPitch: boolean;
+  volume: number;
+  onencrypted: InlineListener;
+  onwaitingforkey: InlineListener;
+}
+
 export interface MetaProps extends HTMLProps, Named, Media {
   content: string;
   httpEquiv: string;
@@ -310,7 +327,7 @@ export interface TrackProps extends HTMLProps, Sourced {
   srclang: string;
 }
 
-export interface VideoProps extends HTMLProps, Dimensions {
+export interface VideoProps extends MediaProps, Dimensions {
   disablePictureInPicture: boolean;
   onenterpictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
   onleavepictureinpicture: ((this: HTMLVideoElement, ev: Event) => any) | null;
@@ -329,7 +346,7 @@ export interface HTMLPropsTagNameMap {
   area: AreaProps;
   article: HTMLProps;
   aside: HTMLProps;
-  audio: HTMLProps;
+  audio: MediaProps;
   b: HTMLProps;
   base: BBaseProps;
   bdi: HTMLProps;
