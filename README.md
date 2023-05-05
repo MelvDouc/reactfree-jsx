@@ -1,6 +1,7 @@
 # React-free JSX
 
-A package to use JSX and TSX with the full power of Vanilla JS minus the constraints of React. It is meant to be installed in a Vite project.
+A package to use JSX and TSX with the full power of Vanilla JS minus the
+constraints of React. It is meant to be installed in a Vite project.
 
 ## Getting Started
 
@@ -21,7 +22,8 @@ npm i -D vite@3.2.5 reactfree-jsx
 
 ### vite.config.ts
 
-Create a file with the above name in the app's route directory to tell Vite how to compile JSX.
+Create a file with the above name in the app's route directory to tell Vite how
+to compile JSX.
 
 ```javascript
 import { defineConfig } from "vite";
@@ -47,7 +49,8 @@ A VSCode bug may necessitate adding
 import("reactfree-jsx");
 ```
 
-to `src/vite-env.d.ts`. Otherwise it might complain that no `JSX.IntrinsicElements` interface was found.
+to `src/vite-env.d.ts`. Otherwise it might complain that no
+`JSX.IntrinsicElements` interface was found.
 
 ### src/App.tsx
 
@@ -55,9 +58,7 @@ Create an `App.tsx` file in the `src` folder. It may look something like this:
 
 ```tsx
 export default function App() {
-  return (
-    <div>This is what JSX looks like.</div>
-  );
+  return <div>This is what JSX looks like.</div>;
 }
 
 // src/main.ts
@@ -78,11 +79,11 @@ function Counter({ initialCount }: {
     <div>
       <p className="count">Count: {initialCount}</p>
     </div>
-  )
+  );
 }
 
 // Calling the component function
-<Counter initialCount={0} />
+<Counter initialCount={0} />;
 ```
 
 ## Observable
@@ -99,8 +100,8 @@ function Counter({ initialCount }: {
 
   return (
     <div>
-      // The text node will be updated automatically
-      // when the value of `count` changes.
+      // The text node will be updated automatically // when the value of
+      `count` changes.
       <p className="count">Count: {count}</p>
       <button onclick={() => count.value++}>+</button>
       <button onclick={() => count.value--}>-</button>
@@ -111,7 +112,8 @@ function Counter({ initialCount }: {
 
 ## Props
 
-Elements also accept observables as attribute values. An attribute's value will thus be mapped on to the value of an observable.
+Elements also accept observables as attribute values. An attribute's value will
+thus be mapped on to the value of an observable.
 
 ```tsx
 const hidden = new Observable(true);
@@ -137,9 +139,10 @@ const isGradient = new Observable(true);
   classNames={["bg-primary", "bg-gradient"]}
   classes={{
     "bg-primary": true,
-    "bg-gradient": isGradient
+    "bg-gradient": isGradient,
   }}
-></div>
+>
+</div>;
 ```
 
 An element's `style` property accepts both static and dynamic values.
@@ -148,19 +151,40 @@ An element's `style` property accepts both static and dynamic values.
 <div
   style={{
     color: "white",
-    backgroundColor: isRedBackground.map((value) => value ? "red" : "blue")
+    backgroundColor: isRedBackground.map((value) => value ? "red" : "blue"),
   }}
-></div>
+>
+</div>;
 ```
 
-Elements also have a unique `$init` prop whose value is a function which takes in the current element and will be run after the element is created and all its other props have been added.
+Elements also have a unique `$init` prop whose value is a function which takes
+in the current element and will be run after the element is created and all its
+other props have been added.
 
 ```tsx
 <div
   $init={(element) => {
-    console.log("I can modify this element using normal JS inside this function.");
+    console.log(
+      "I can interact with this element using normal JS inside this function.",
+    );
   }}
-></div>
+>
+</div>;
+```
+
+### Boolean attributes
+
+You can watch for the changes on a boolean attribute by using an observable.
+
+```tsx
+const openObs = new Observable(false);
+
+// Opening and closing the element will toggle the value of `openObs`.
+<details open={openObs}>
+  <summary>
+    This element is {openObs.map((isOpen) => isOpen ? "open" : "closed")}.
+  </summary>
+</details>;
 ```
 
 ## Routing
@@ -174,11 +198,9 @@ import { Router } from "reactfree-jsx";
 const router = new Router({
   $404Route: {
     title: "Page Not Found",
-    component: () => (
-      <h1>Page Not Found</h1>
-    )
+    component: () => <h1>Page Not Found</h1>,
   },
-  pageTitleFormatter: (title) => `${title} | My App`
+  pageTitleFormatter: (title) => `${title} | My App`,
 });
 
 router
@@ -191,13 +213,11 @@ router
           Go to <em>user1</em>'s profile
         </router.link>
       </>
-    )
+    ),
   })
   .addRoute("/profile/:username", {
     getTitle: ({ username }) => `${username}'s Profile`,
-    component: ({ username }) => (
-      <h1>{username}'s Profile</h1>
-    )
+    component: ({ username }) => <h1>{username}'s Profile</h1>,
   });
 
 export default router;
@@ -212,7 +232,9 @@ export default function App() {
         router.onUrlChange(async ({ component }) => {
           element.replaceChildren(await component());
         });
-      }}></div>
+      }}
+    >
+    </div>
   );
 
   router.updateUrl(location.pathname);
