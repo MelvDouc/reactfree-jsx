@@ -5,28 +5,23 @@ export default function applyChildren(
   element: Pick<Element, "append" | "replaceChild">,
   children: ComponentChildren
 ): void {
-  if ((typeof children !== "object" || children instanceof Element) && !!children) {
-    element.append(children as string | Node);
+  if (children instanceof Node || typeof children !== "object" && !!children) {
+    element.append(children as Node | string);
     return;
   }
 
   if (children instanceof Observable) {
-    if (typeof children.value !== "object") {
-      const textNode = document.createTextNode(String(children.value));
-      element.append(textNode);
-      children.subscribe((value) => {
-        textNode.textContent = String(value);
-      });
-      return;
-    }
-
-    let prevChild = children.value!;
-    element.append(prevChild);
+    let prevNode: Node = (children.value instanceof Node)
+      ? children.value
+      : document.createTextNode(children.value ? String(children.value) : "");
+    element.append(prevNode);
     children.subscribe((value) => {
-      element.replaceChild(value as Element, prevChild);
-      prevChild = value as Element;
+      const newNode = (value instanceof Node)
+        ? value
+        : document.createTextNode(value ? String(value) : "");
+      element.replaceChild(newNode, prevNode);
+      prevNode = newNode;
     });
-    return;
   }
 
   if (Array.isArray(children))
