@@ -1,9 +1,8 @@
-import { Observable } from "melv_observable";
-import { FreeJSX } from "@/types/index.js";
+import { Observable, OptionalObs } from "melv_observable";
 
 export default function applyProps<T extends keyof HTMLElementTagNameMap>(
   element: HTMLElementTagNameMap[T],
-  props: Partial<FreeJSX.HTMLPropsTagNameMap[T]>
+  props: Record<string, OptionalObs<any>>
 ): void {
   for (const key in props) {
     // @ts-ignore

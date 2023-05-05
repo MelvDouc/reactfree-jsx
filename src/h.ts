@@ -43,7 +43,7 @@ function createElement<T extends keyof FreeJSX.HTMLPropsTagNameMap>(
   style && applyStyle(element, style);
   // @ts-ignore
   applyProps(element, others);
-  extraAttributes && Object.keys(extraAttributes).forEach((key) => element.setAttribute(key, extraAttributes[key]));
+  extraAttributes && applyProps(element, extraAttributes);
   applyChildren(element, children);
   $init && $init(element);
   return element;

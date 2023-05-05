@@ -27,7 +27,7 @@ export type ExtraProps<K extends keyof HTMLElementTagNameMap> = {
   /**
    * Additional HTML attributes to add to the element.
    */
-  extraAttributes: Record<string, string>;
+  extraAttributes: Record<string, OptionalObs<string>>;
 } & FreeJsxOptionalClass;
 
 // ===== ===== ===== ===== =====
