@@ -1,6 +1,6 @@
 import type { Observable } from "melv_observable";
 
-export type PrimitiveChild = string | number | bigint | null | undefined;
+export type PrimitiveChild = string | number | bigint | boolean | null | undefined;
 export type PrimitiveOrNodeChild = PrimitiveChild | Node;
 export type ComponentChild = PrimitiveOrNodeChild | Observable<PrimitiveChild | Element>;
 export type ComponentChildren = ComponentChild | ComponentChild[];

@@ -5,7 +5,7 @@ export default function applyChildren(
   element: Pick<Element, "append" | "replaceChild">,
   children: ComponentChildren
 ): void {
-  if ((typeof children !== "object" || children instanceof Element) && children != null) {
+  if ((typeof children !== "object" || children instanceof Element) && !!children) {
     element.append(children as string | Node);
     return;
   }
