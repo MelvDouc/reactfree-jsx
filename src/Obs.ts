@@ -1,0 +1,1 @@
+export { Observable as Obs } from "melv_observable";
