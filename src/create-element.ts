@@ -1,10 +1,13 @@
+import { Component, ComponentChildren } from "@/typings/component.js";
+import { IntrinsicElement } from "@/typings/intrinsic-element.js";
 import applyChildren from "@/utils/apply-children.js";
+import applyClasses from "@/utils/apply-classes.js";
 import applyProps from "@/utils/apply-props.js";
-import { TagName, Component, ComponentChildren } from "@/types.js";
+import applyStyle from "@/utils/apply-style.js";
 
 export function h(
-  tagName: TagName | (typeof Fragment) | Component,
-  props: Record<string, unknown> | null,
+  tagName: keyof HTMLElementTagNameMap | (typeof Fragment) | Component,
+  props: IntrinsicElement<keyof HTMLElementTagNameMap> | null,
   ...children: ComponentChildren
 ): HTMLElement | DocumentFragment {
   if (tagName === Fragment)
@@ -13,9 +16,11 @@ export function h(
   if (typeof tagName === "function")
     return (tagName as Component)({ ...props, children });
 
-  const { $init, ...others } = props ?? {};
+  const { className, style, $init, ...others } = props ?? {};
   const element = document.createElement(tagName);
   applyProps(element, others);
+  className && applyClasses(element, className);
+  style && applyStyle(element, style);
   applyChildren(element, children);
 
   if (typeof $init === "function")

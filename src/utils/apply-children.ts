@@ -1,5 +1,5 @@
 import { Obs } from "@/Obs.js";
-import { ComponentChildren } from "@/types.js";
+import { ComponentChildren } from "@/typings/component.js";
 
 export default function applyChildren(
   element: Element | DocumentFragment,
@@ -21,7 +21,7 @@ export default function applyChildren(
 
     child.subscribe((value) => {
       const newNode = getNode(value);
-      element.replaceChild(node, newNode);
+      element.replaceChild(newNode, node);
       node = newNode;
     });
   });

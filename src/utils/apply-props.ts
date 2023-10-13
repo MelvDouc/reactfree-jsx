@@ -1,20 +1,30 @@
 import { Obs } from "@/Obs.js";
-import { HTMLElementProps } from "@/types.js";
+import { HTMLElementProps } from "@/typings/intrinsic-element.js";
 
-function bindProp<E extends Element, K extends keyof E>(element: E, prop: K, obs: Obs<E[K]>) {
-  element[prop] = obs.value;
-  obs.subscribe((value) => element[prop] = value);
-}
+export default function applyProps<K extends keyof HTMLElementTagNameMap>(
+  element: HTMLElementTagNameMap[K],
+  props: HTMLElementProps<K>
+) {
+  let key: Extract<keyof typeof props, string>;
 
-export default function applyProps<E extends HTMLElement>(element: E, props: HTMLElementProps<E>) {
-  for (const key in props) {
-    const value = props[key];
+  for (key in props) {
+    const item = props[key];
 
-    if (value instanceof Obs) {
-      bindProp(element, key, value);
+    if (item instanceof Obs) {
+      applyProp(element, key, item.value);
+      item.subscribe((value) => applyProp(element, key, value));
       continue;
     }
 
-    element[key as keyof E] = value as E[keyof E];
+    applyProp(element, key, item);
   }
+}
+
+function applyProp(element: Element, key: string, value: unknown) {
+  if (!(key in element) || key === "list") {
+    element.setAttribute(key, String(value));
+    return;
+  }
+
+  element[key as "id"] = value as any;
 }
