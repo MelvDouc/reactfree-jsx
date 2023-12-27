@@ -1,5 +1,5 @@
-import { Obs } from "@/Obs.js";
-import { HTMLElementProps } from "@/typings/intrinsic-element.js";
+import { Obs } from "@/core/Obs.js";
+import type { HTMLElementProps } from "@/typings/mod.js";
 
 export default function applyProps<K extends keyof HTMLElementTagNameMap>(
   element: HTMLElementTagNameMap[K],
@@ -20,11 +20,11 @@ export default function applyProps<K extends keyof HTMLElementTagNameMap>(
   }
 }
 
-function applyProp(element: Element, key: string, value: unknown) {
+function applyProp(element: Element, key: string, value: any) {
   if (!(key in element) || key === "list") {
     element.setAttribute(key, String(value));
     return;
   }
 
-  element[key as "id"] = value as any;
+  element[key as "id"] = value;
 }

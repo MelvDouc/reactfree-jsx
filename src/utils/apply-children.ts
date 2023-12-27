@@ -1,5 +1,5 @@
-import { Obs } from "@/Obs.js";
-import { ComponentChildren } from "@/typings/component.js";
+import { Obs } from "@/core/Obs.js";
+import type { ComponentChildren } from "@/typings/mod.js";
 
 export default function applyChildren(
   element: Element | DocumentFragment,
@@ -16,20 +16,29 @@ export default function applyChildren(
       return;
     }
 
-    let node = getNode(child.value);
-    element.appendChild(node);
-
+    const startComment = new Comment("reactfree-jsx - do not remove");
+    const endComment = new Comment(startComment.data);
+    element.append(startComment, getNode(child.value), endComment);
     child.subscribe((value) => {
-      const newNode = getNode(value);
-      element.replaceChild(newNode, node);
-      node = newNode;
+      const children = [...element.childNodes];
+      const endCommentIndex = children.indexOf(endComment);
+      const nextChildren = children.slice(endCommentIndex);
+      for (let i = children.indexOf(startComment) + 1; i < endCommentIndex; i++)
+        element.removeChild(children[i]);
+      element.append(getNode(value), ...nextChildren);
     });
   });
 }
 
 function getNode(value: unknown) {
-  if (value instanceof Element || value instanceof DocumentFragment)
+  if (value instanceof Node)
     return value;
+
+  if (Array.isArray(value)) {
+    const fragment = new DocumentFragment();
+    value.forEach((item) => fragment.appendChild(getNode(item)));
+    return fragment;
+  }
 
   if (isFalsyComponentChild(value))
     return document.createTextNode("");

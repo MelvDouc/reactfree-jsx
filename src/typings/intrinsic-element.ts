@@ -1,6 +1,6 @@
-import type { Obs } from "@/Obs.js";
-import PropsTagNameMap from "@/typings/props/PropsTagNameMap.js";
-import { ExcludeMethods } from "@/typings/type-utils.js";
+import type { Obs } from "@/core/Obs.js";
+import type { PropsTagNameMap } from "@/typings/props/PropsTagNameMap.js";
+import type { ExcludeMethods } from "@/typings/type-utils.js";
 
 export type OptionalObs<T> = T | Obs<T>;
 
@@ -19,6 +19,7 @@ export type IntrinsicElement<T extends keyof HTMLElementTagNameMap> =
   & {
     className?: string | ClassRecord;
     style?: StyleRecord;
+    is?: string;
     $init?: (element: HTMLElementTagNameMap[T]) => unknown;
     [key: `data-${string}`]: OptionalObs<string>;
   };

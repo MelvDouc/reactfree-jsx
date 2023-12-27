@@ -1,4 +1,4 @@
-import { CommonProps } from "@/typings/props/Props.js";
+import type { CommonProps } from "@/typings/props/Props.js";
 
 export interface TableProps extends CommonProps {
   caption: HTMLTableCaptionElement | null;

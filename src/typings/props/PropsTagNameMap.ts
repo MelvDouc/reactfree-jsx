@@ -1,4 +1,4 @@
-import {
+import type {
   ButtonProps,
   FieldSetProps,
   FormProps,
@@ -10,17 +10,17 @@ import {
   SelectProps,
   TextAreaProps
 } from "@/typings/props/Form.js";
-import { LiProps, OlProps } from "@/typings/props/List.js";
-import {
+import type { LiProps, OlProps } from "@/typings/props/List.js";
+import type {
   AudioProps,
   SourceProps,
   TrackProps,
   VideoProps
 } from "@/typings/props/Media.js";
-import { AnchorProps, AreaProps } from "@/typings/props/Navigables.js";
-import { CommonProps } from "@/typings/props/Props.js";
-import { TableCellProps, TableColProps, TableProps } from "@/typings/props/Table.js";
-import {
+import type { AnchorProps, AreaProps } from "@/typings/props/Navigables.js";
+import type { CommonProps } from "@/typings/props/Props.js";
+import type { TableCellProps, TableColProps, TableProps } from "@/typings/props/Table.js";
+import type {
   BaseProps,
   CanvasProps,
   DataProps,
@@ -158,4 +158,4 @@ interface PropsTagNameMap {
   wbr: CommonProps;
 }
 
-export default PropsTagNameMap;
+export type { PropsTagNameMap };

@@ -1,7 +1,8 @@
-.gitignore
-.vscode
-node_modules
-src
-test
-tsconfig.json
-tsup.config.js
+/.vscode
+/node_modules
+/src
+/test
+
+/.gitignore
+/package-lock.json
+/tsconfig.json

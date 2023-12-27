@@ -1,5 +1,4 @@
-import { Component, ComponentChildren } from "@/typings/component.js";
-import { IntrinsicElement } from "@/typings/intrinsic-element.js";
+import type { Component, ComponentChildren, IntrinsicElement } from "@/typings/mod.js";
 import applyChildren from "@/utils/apply-children.js";
 import applyClasses from "@/utils/apply-classes.js";
 import applyProps from "@/utils/apply-props.js";
@@ -16,11 +15,11 @@ export function h(
   if (typeof tagName === "function")
     return (tagName as Component)({ ...props, children });
 
-  const { className, style, $init, ...others } = props ?? {};
-  const element = document.createElement(tagName);
-  applyProps(element, others);
+  const { className, style, is, $init, ...others } = props ?? {};
+  const element = document.createElement(tagName, { is });
   className && applyClasses(element, className);
   style && applyStyle(element, style);
+  applyProps(element, others);
   applyChildren(element, children);
 
   if (typeof $init === "function")

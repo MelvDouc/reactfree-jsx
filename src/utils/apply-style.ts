@@ -1,5 +1,5 @@
-import { Obs } from "@/Obs.js";
-import { StyleRecord } from "@/typings/intrinsic-element.js";
+import { Obs } from "@/core/Obs.js";
+import type { StyleRecord } from "@/typings/mod.js";
 
 export default function applyStyle(element: HTMLElement, style: StyleRecord) {
   for (const key in style) {

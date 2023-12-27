@@ -1,5 +1,5 @@
-import { Obs } from "@/Obs.js";
-import { ClassRecord } from "@/typings/intrinsic-element.js";
+import { Obs } from "@/core/Obs.js";
+import type { ClassRecord } from "@/typings/mod.js";
 
 export default function applyClasses(element: Element, classes: string | ClassRecord) {
   if (typeof classes === "string") {

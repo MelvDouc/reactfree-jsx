@@ -1,4 +1,4 @@
-import { CommonProps } from "@/typings/props/Props.js";
+import type { CommonProps } from "@/typings/props/Props.js";
 
 interface PopoverInvokerProps extends CommonProps {
   disabled: boolean;

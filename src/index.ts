@@ -1,8 +1,7 @@
-import { IntrinsicElement } from "@/typings/intrinsic-element.js";
-import PropsTagNameMap from "@/typings/props/PropsTagNameMap.js";
+import type { IntrinsicElement, PropsTagNameMap } from "@/typings/mod.js";
 
-export { obs } from "@/Obs.js";
-export { Fragment, h } from "@/create-element.js";
+export { obs } from "@/core/Obs.js";
+export { Fragment, h } from "@/core/create-element.js";
 
 declare global {
   namespace JSX {
