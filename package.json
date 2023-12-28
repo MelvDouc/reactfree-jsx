@@ -12,6 +12,7 @@
   ],
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     "require": {
       "types": "./dist/index.d.cts",
@@ -23,9 +24,7 @@
     }
   },
   "scripts": {
-    "test": "echo NO_TESTS",
     "build": "rm -rf dist && npx tsup src/index.ts --format=cjs,esm --dts",
-    "build:w": "npx tsup src/index.ts --format=cjs,esm --dts --watch",
     "prepublishOnly": "npm run build"
   },
   "license": "ISC",

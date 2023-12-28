@@ -1,12 +1,12 @@
-import type { IntrinsicElement, PropsTagNameMap } from "@/typings/mod.js";
+import type { IntrinsicElement, HTMLPropsTagNameMap } from "$src/types.js";
 
-export { obs } from "@/core/Obs.js";
-export { Fragment, h } from "@/core/create-element.js";
+export { obs } from "$src/Obs.js";
+export { Fragment, h } from "$src/create-element.js";
 
 declare global {
   namespace JSX {
     type IntrinsicElements = {
-      [K in keyof PropsTagNameMap]: IntrinsicElement<K>
+      [K in keyof HTMLPropsTagNameMap]: IntrinsicElement<K>
     };
   }
 }

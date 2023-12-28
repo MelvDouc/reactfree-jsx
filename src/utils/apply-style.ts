@@ -1,5 +1,5 @@
-import { Obs } from "@/core/Obs.js";
-import type { StyleRecord } from "@/typings/mod.js";
+import { Obs } from "$src/Obs.js";
+import type { StyleRecord } from "$src/types.js";
 
 export default function applyStyle(element: HTMLElement, style: StyleRecord) {
   for (const key in style) {

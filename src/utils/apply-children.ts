@@ -1,5 +1,5 @@
-import { Obs } from "@/core/Obs.js";
-import type { ComponentChildren } from "@/typings/mod.js";
+import { Obs } from "$src/Obs.js";
+import type { ComponentChildren } from "$src/types.js";
 
 export default function applyChildren(
   element: Element | DocumentFragment,
