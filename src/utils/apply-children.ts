@@ -20,12 +20,11 @@ export default function applyChildren(
     const endComment = new Comment(startComment.data);
     element.append(startComment, getNode(child.value), endComment);
     child.subscribe((value) => {
-      const children = [...element.childNodes];
-      const endCommentIndex = children.indexOf(endComment);
-      const nextChildren = children.slice(endCommentIndex);
-      for (let i = children.indexOf(startComment) + 1; i < endCommentIndex; i++)
-        element.removeChild(children[i]);
-      element.append(getNode(value), ...nextChildren);
+      const childNodes = [...element.childNodes];
+      const endCommentIndex = childNodes.indexOf(endComment);
+      for (let i = childNodes.indexOf(startComment) + 1; i < endCommentIndex; i++)
+        childNodes[i].remove();
+      startComment.after(getNode(value));
     });
   });
 }
@@ -40,10 +39,7 @@ function getNode(value: unknown) {
     return fragment;
   }
 
-  if (isFalsyComponentChild(value))
-    return document.createTextNode("");
-
-  return document.createTextNode(String(value));
+  return document.createTextNode(isFalsyComponentChild(value) ? "" : String(value));
 }
 
 export function isFalsyComponentChild(value: unknown) {

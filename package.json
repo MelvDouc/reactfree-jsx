@@ -25,6 +25,7 @@
   "scripts": {
     "test": "echo NO_TESTS",
     "build": "rm -rf dist && npx tsup src/index.ts --format=cjs,esm --dts",
+    "build:w": "npx tsup src/index.ts --format=cjs,esm --dts --watch",
     "prepublishOnly": "npm run build"
   },
   "license": "ISC",
@@ -38,7 +39,6 @@
   },
   "homepage": "https://github.com/MelvDouc/reactfree-jsx#readme",
   "devDependencies": {
-    "@types/node": "^20.8.5",
     "tsup": "^8.0.1",
     "typescript": "^5.2.2"
   },
