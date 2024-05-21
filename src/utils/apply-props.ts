@@ -1,5 +1,5 @@
-import { Obs } from "$src/Obs.js";
-import type { ElementSpecificProps } from "$src/types.js";
+import { Observable } from "melv_observable";
+import type { ElementSpecificProps } from "$types/props.js";
 
 const readonlyAttributes = new Set([
   "list",
@@ -15,7 +15,7 @@ export default function applyProps<K extends keyof HTMLElementTagNameMap>(
   for (key in props) {
     const item = props[key];
 
-    if (item instanceof Obs) {
+    if (item instanceof Observable) {
       applyProp(element, key, item.value);
       item.subscribe((value) => applyProp(element, key, value));
       continue;

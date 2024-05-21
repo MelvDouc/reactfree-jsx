@@ -1,6 +1,6 @@
 {
   "name": "reactfree-jsx",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "author": "Melvin Doucet",
   "description": "A package to use JSX without React",
   "keywords": [
@@ -24,7 +24,7 @@
     }
   },
   "scripts": {
-    "build": "rm -rf dist && npx tsup src/index.ts --format=cjs,esm --dts",
+    "build": "tsup src/index.ts --format=cjs,esm --dts",
     "prepublishOnly": "npm run build"
   },
   "license": "ISC",

@@ -1,5 +1,5 @@
-import { Obs } from "$src/Obs.js";
-import type { ClassRecord } from "$src/types.js";
+import { Observable } from "melv_observable";
+import type { ClassRecord } from "$types/props.js";
 
 export default function applyClasses(element: Element, classes: string | ClassRecord) {
   if (typeof classes === "string") {
@@ -10,7 +10,7 @@ export default function applyClasses(element: Element, classes: string | ClassRe
   for (const className in classes) {
     const item = classes[className];
 
-    if (item instanceof Obs) {
+    if (item instanceof Observable) {
       item.value && element.classList.add(className);
       item.subscribe((value) => {
         value

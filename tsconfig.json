@@ -6,15 +6,19 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "Node16",
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
     "skipDefaultLibCheck": true,
     "declaration": true,
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
       "$src/*": [
-        "./src/*"
+        "./*"
+      ],
+      "$types/*": [
+        "./types/*"
       ]
     },
     // strictness

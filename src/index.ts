@@ -1,7 +1,9 @@
-import type { IntrinsicElement, HTMLPropsTagNameMap } from "$src/types.js";
+import type { HTMLPropsTagNameMap, IntrinsicElement } from "$types/props.js";
 
+export { type Observable as Obs } from "melv_observable";
 export { obs } from "$src/Obs.js";
 export { Fragment, h } from "$src/create-element.js";
+export type { Component } from "$types/component-types.js";
 
 declare global {
   namespace JSX {

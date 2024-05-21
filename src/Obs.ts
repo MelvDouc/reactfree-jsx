@@ -4,7 +4,4 @@ function obs<T>(value?: T) {
   return new Obs(value);
 }
 
-export {
-  Obs,
-  obs
-};
+export { obs };

@@ -1,47 +1,64 @@
-import { Obs } from "$src/Obs.js";
-import type { ComponentChildren } from "$src/types.js";
+import { Observable } from "melv_observable";
+import type {
+  ComponentChild,
+  ComponentChildren,
+  ElementOrFragment,
+  ObsOfAppendables
+} from "$types/component-types.js";
+import type { RecursiveArray } from "$types/misc.js";
 
-export default function applyChildren(
+export default function applyChildren(element: ElementOrFragment, children: ComponentChildren) {
+  children.forEach((child) => applyChild(element, child));
+}
+
+function applyChild(
   element: Element | DocumentFragment,
-  children: ComponentChildren
+  child: ComponentChild | RecursiveArray<ComponentChild>
 ) {
-  children.forEach((child) => {
-    if (Array.isArray(child)) {
-      applyChildren(element, child);
-      return;
-    }
+  if (Array.isArray(child)) {
+    applyChildren(element, child);
+    return;
+  }
 
-    if (!(child instanceof Obs)) {
-      element.append(getNode(child));
-      return;
-    }
+  if (child instanceof Observable) {
+    appendObservable(element, child);
+    return;
+  }
 
-    const startComment = new Comment("reactfree-jsx - do not remove");
-    const endComment = new Comment(startComment.data);
-    element.append(startComment, getNode(child.value), endComment);
-    child.subscribe((value) => {
-      const childNodes = [...element.childNodes];
-      const endCommentIndex = childNodes.indexOf(endComment);
-      for (let i = childNodes.indexOf(startComment) + 1; i < endCommentIndex; i++)
-        childNodes[i].remove();
-      startComment.after(getNode(value));
-    });
+  if (child instanceof Node) {
+    element.appendChild(child);
+    return;
+  }
+
+  if (!isFalsy(child)) {
+    element.appendChild(createTextNode(child));
+  }
+}
+
+function appendObservable(element: ElementOrFragment, observable: ObsOfAppendables) {
+  const startComment = new Comment("reactfree-jsx - do not remove");
+  const endComment = new Comment(startComment.data);
+
+  applyChildren(element, [startComment, observable.value, endComment]);
+
+  observable.subscribe((value) => {
+    const childNodes = [...element.childNodes];
+    const startCommentIndex = childNodes.indexOf(startComment);
+    const endCommentIndex = childNodes.indexOf(endComment);
+
+    for (let i = endCommentIndex - 1; i > startCommentIndex; i--)
+      childNodes[i].remove();
+
+    const fragment = new DocumentFragment();
+    applyChild(fragment, value);
+    startComment.after(fragment);
   });
 }
 
-function getNode(value: unknown) {
-  if (value instanceof Node)
-    return value;
-
-  if (Array.isArray(value)) {
-    const fragment = new DocumentFragment();
-    value.forEach((item) => fragment.appendChild(getNode(item)));
-    return fragment;
-  }
-
-  return document.createTextNode(isFalsyComponentChild(value) ? "" : String(value));
+function createTextNode(child: unknown) {
+  return document.createTextNode(String(child));
 }
 
-export function isFalsyComponentChild(value: unknown) {
+function isFalsy(value: unknown) {
   return value === false || value == null;
 }

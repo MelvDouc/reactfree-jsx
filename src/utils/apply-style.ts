@@ -1,16 +1,18 @@
-import { Obs } from "$src/Obs.js";
-import type { StyleRecord } from "$src/types.js";
+import { Observable } from "melv_observable";
+import type { StyleAttribute, StyleRecord } from "$types/props.js";
 
 export default function applyStyle(element: HTMLElement, style: StyleRecord) {
-  for (const key in style) {
+  let key: StyleAttribute;
+
+  for (key in style) {
     const item = style[key];
 
-    if (item instanceof Obs) {
+    if (item instanceof Observable) {
       element.style[key] = item.value;
       item.subscribe((value) => element.style[key] = value);
       continue;
     }
 
-    element.style[key] = item!;
+    element.style[key] = item as string;
   }
 }
