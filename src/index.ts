@@ -1,14 +1,6 @@
-import type { HTMLPropsTagNameMap, IntrinsicElement } from "$types/props.js";
-
-export { type Observable as Obs } from "melv_observable";
+export { default as Fragment } from "$src/create-element/Fragment.js";
+export { h } from "$src/create-element/h.js";
 export { obs } from "$src/Obs.js";
-export { Fragment, h } from "$src/create-element.js";
+export type * as JSX from "$src/types/jsx.js";
+export { type Obs } from "$src/types/misc.js";
 export type { Component } from "$types/component-types.js";
-
-declare global {
-  namespace JSX {
-    type IntrinsicElements = {
-      [K in keyof HTMLPropsTagNameMap]: IntrinsicElement<K>
-    };
-  }
-}

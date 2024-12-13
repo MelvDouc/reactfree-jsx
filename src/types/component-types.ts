@@ -1,9 +1,9 @@
 import type { Obs, RecursiveArray } from "$types/misc.js";
 
 type Primitive = boolean | string | number | bigint | symbol | undefined | null;
-type Appendable = Primitive | Node;
-export type ObsOfAppendables = Obs<RecursiveArray<Appendable>>;
-export type ElementOrFragment = Element | DocumentFragment;
-export type ComponentChild = Appendable | ObsOfAppendables;
+type ReactFreeNode = Primitive | Node;
+
+export type ReactFreeNodeObs = Obs<RecursiveArray<ReactFreeNode>>;
+export type ComponentChild = ReactFreeNode | ReactFreeNodeObs;
 export type ComponentChildren = RecursiveArray<ComponentChild>;
-export type Component = <T extends ElementOrFragment>(props: Record<string, unknown> & { children?: ComponentChildren; }) => T;
+export type Component = (props: Record<string, unknown> & { children?: ComponentChildren; }) => Node;

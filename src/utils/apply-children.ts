@@ -2,17 +2,16 @@ import { Observable } from "melv_observable";
 import type {
   ComponentChild,
   ComponentChildren,
-  ElementOrFragment,
-  ObsOfAppendables
+  ReactFreeNodeObs
 } from "$types/component-types.js";
 import type { RecursiveArray } from "$types/misc.js";
 
-export default function applyChildren(element: ElementOrFragment, children: ComponentChildren) {
-  children.forEach((child) => applyChild(element, child));
+export default function applyChildren(node: Node, children: ComponentChildren) {
+  children.forEach((child) => applyChild(node, child));
 }
 
 function applyChild(
-  element: Element | DocumentFragment,
+  element: Node,
   child: ComponentChild | RecursiveArray<ComponentChild>
 ) {
   if (Array.isArray(child)) {
@@ -35,14 +34,14 @@ function applyChild(
   }
 }
 
-function appendObservable(element: ElementOrFragment, observable: ObsOfAppendables) {
+function appendObservable(node: Node, observable: ReactFreeNodeObs) {
   const startComment = new Comment("reactfree-jsx - do not remove");
   const endComment = new Comment(startComment.data);
 
-  applyChildren(element, [startComment, observable.value, endComment]);
+  applyChildren(node, [startComment, observable.value, endComment]);
 
   observable.subscribe((value) => {
-    const childNodes = [...element.childNodes];
+    const childNodes = [...node.childNodes];
     const startCommentIndex = childNodes.indexOf(startComment);
     const endCommentIndex = childNodes.indexOf(endComment);
 
