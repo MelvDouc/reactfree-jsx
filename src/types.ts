@@ -1,4 +1,38 @@
-import type { OptionalObs } from "$types/misc.js";
+// ===== ===== ===== ===== =====
+// UTILS
+// ===== ===== ===== ===== =====
+
+type RecursiveArray<T> = T[] | RecursiveArray<T>[];
+
+export type Obs<T> = import("$src/deps.ts").Observable<T>;
+export type OptionalObs<T> = T | Obs<T>;
+
+// ===== ===== ===== ===== =====
+// NODES
+// ===== ===== ===== ===== =====
+
+/**
+ * A primitive value that is the child of an element.
+ * It will be omitted if it's false or nullish; otherwise it'll be converted to a text node.
+ */
+type Primitive = boolean | string | number | bigint | symbol | undefined | null;
+
+/**
+ * A value that's a node or can be converted to one
+ * in order to be appended as a child of another node.
+ */
+type ReactFreeNode = Primitive | Node;
+
+export type ObservableNode = Obs<ReactFreeNode | RecursiveArray<ReactFreeNode>>;
+export type NonArrayNode = ReactFreeNode | ObservableNode;
+export type ComponentChild = NonArrayNode | RecursiveArray<NonArrayNode>;
+export type ComponentChildren = ComponentChild[];
+export type ComponentParentProps = { children?: any; };
+export type Component<P = {}> = (props: ComponentParentProps & P) => Node;
+
+// ===== ===== ===== ===== =====
+// PROPS
+// ===== ===== ===== ===== =====
 
 type RFreeGlobalEventHandlers = Omit<GlobalEventHandlers, "addEventListener" | "removeEventListener">;
 
@@ -38,8 +72,17 @@ interface ARIAProps {
   ariaValueNow: string;
 }
 
-interface HTMLElementProps extends ARIAProps, RFreeGlobalEventHandlers {
+interface ElementProps extends ARIAProps, RFreeGlobalEventHandlers {
   autofocus: boolean;
+  id: string;
+  nonce: string;
+  slot: string;
+  scrollLeft: number;
+  scrollTop: number;
+  tabIndex: number;
+}
+
+interface HTMLElementProps extends ElementProps {
   accessKey: string;
   autocapitalize: string;
   contentEditable: string;
@@ -47,24 +90,17 @@ interface HTMLElementProps extends ARIAProps, RFreeGlobalEventHandlers {
   draggable: boolean;
   enterKeyHint: string;
   hidden: boolean;
-  id: string;
   inert: boolean;
   inputMode: string;
   lang: string;
-  nonce: string;
   popover: string | null;
-  scrollLeft: number;
-  scrollTop: number;
-  slot: string;
   spellcheck: boolean;
   tabIndex: number;
   title: string;
   translate: boolean;
 }
 
-// ===== ===== ===== ===== =====
-// FORM
-// ===== ===== ===== ===== =====
+/* FORM */
 
 interface PopoverInvokerProps extends HTMLElementProps {
   disabled: boolean;
@@ -204,9 +240,7 @@ interface TextAreaProps extends HTMLElementProps {
   value: string;
 }
 
-// ===== ===== ===== ===== =====
-// NAVIGATION
-// ===== ===== ===== ===== =====
+/* Navigation */
 
 interface NavigableProps extends HTMLElementProps {
   download: string;
@@ -241,9 +275,7 @@ interface MapProps extends HTMLElementProps {
   name: string;
 }
 
-// ===== ===== ===== ===== =====
-// MEDIA
-// ===== ===== ===== ===== =====
+/* Media */
 
 interface MediaProps extends HTMLElementProps {
   autoplay: boolean;
@@ -302,9 +334,7 @@ interface VideoProps extends MediaProps {
   width: number;
 }
 
-// ===== ===== ===== ===== =====
-// HEAD
-// ===== ===== ===== ===== =====
+/* Head */
 
 interface BaseProps extends HTMLElementProps {
   href: string;
@@ -353,9 +383,7 @@ interface StyleProps extends HTMLElementProps {
   title: string;
 }
 
-// ===== ===== ===== ===== =====
-// LIST
-// ===== ===== ===== ===== =====
+/* List */
 
 interface LiProps extends HTMLElementProps {
   value: string;
@@ -367,9 +395,7 @@ interface OlProps extends HTMLElementProps {
   type: string;
 }
 
-// ===== ===== ===== ===== =====
-// TABLE
-// ===== ===== ===== ===== =====
+/* Table */
 
 interface TableProps extends HTMLElementProps {
   caption: HTMLTableCaptionElement | null;
@@ -388,9 +414,7 @@ interface TableColProps extends HTMLElementProps {
   span: number;
 }
 
-// ===== ===== ===== ===== =====
-// OTHERS
-// ===== ===== ===== ===== =====
+/* Others */
 
 interface CanvasProps extends HTMLElementProps {
   height: number;
@@ -471,11 +495,268 @@ interface TimeProps extends HTMLElementProps {
   dateTime: string;
 }
 
-// ===== ===== ===== ===== =====
-// TAG NAME MAP
-// ===== ===== ===== ===== =====
+/* SVG */
 
-export interface HTMLPropsTagNameMap {
+export interface SVGElementProps extends ElementProps {
+  "accent-height": string;
+  accumulate: string;
+  additive: string;
+  "alignment-baseline": string;
+  alphabetic: string;
+  amplitude: string;
+  "arabic-form": string;
+  ascent: string;
+  attributeName: string;
+  attributeType: string;
+  azimuth: string;
+  baseFrequency: string;
+  "baseline-shift": string;
+  baseProfile: string;
+  bbox: string;
+  begin: string;
+  bias: string;
+  by: string;
+  calcMode: string;
+  "cap-height": string;
+  class: string;
+  clip: string;
+  clipPathUnits: string;
+  "clip-path": string;
+  c: string;
+  "lip-rule": string;
+  color: string;
+  "color-interpolation": string;
+  "color-interpolation-filters": string;
+  "color-rendering": string;
+  crossorigin: string;
+  cursor: string;
+  cx: string;
+  cy: string;
+  d: string;
+  decelerate: string;
+  decoding: string;
+  descent: string;
+  diffuseConstant: string;
+  direction: string;
+  display: string;
+  divisor: string;
+  "dominant-baseline": string;
+  dur: string;
+  dx: string;
+  dy: string;
+  edgeMode: string;
+  elevation: string;
+  end: string;
+  exponent: string;
+  fill: string;
+  "fill-opacity": string;
+  "fill-rule": string;
+  filter: string;
+  filterUnits: string;
+  "flood-color": string;
+  "flood-opacity": string;
+  "font-family": string;
+  "font-size": string;
+  "font-size-adjust": string;
+  "font-stretch": string;
+  "font-style": string;
+  "font-variant": string;
+  "font-weight": string;
+  format: string;
+  from: string;
+  fr: string;
+  fx: string;
+  fy: string;
+  g1: string;
+  g2: string;
+  "glyph-name": string;
+  "glyph-orientation-horizontal": string;
+  "glyph-orientation-vertical": string;
+  glyphRef: string;
+  gradientTransform: string;
+  gradientUnits: string;
+  hanging: string;
+  height: string;
+  href: string;
+  hreflang: string;
+  "horiz-adv-x": string;
+  "horiz-origin-x": string;
+  "horiz-origin-y": string;
+  id: string;
+  ideographic: string;
+  "image-rendering": string;
+  in: string;
+  in2: string;
+  intercept: string;
+  k: string;
+  k1: string;
+  k2: string;
+  k3: string;
+  k4: string;
+  kernelMatrix: string;
+  kernelUnitLength: string;
+  keyPoints: string;
+  keySplines: string;
+  keyTimes: string;
+  lang: string;
+  lengthAdjust: string;
+  "letter-spacing": string;
+  "lighting-color": string;
+  limitingConeAngle: string;
+  local: string;
+  "marker-end": string;
+  "marker-mid": string;
+  "marker-start": string;
+  markerHeight: string;
+  markerUnits: string;
+  markerWidth: string;
+  mask: string;
+  maskContentUnits: string;
+  maskUnits: string;
+  mathematical: string;
+  max: string;
+  media: string;
+  method: string;
+  min: string;
+  mode: string;
+  name: string;
+  numOctaves: string;
+  offset: string;
+  opacity: string;
+  operator: string;
+  order: string;
+  orient: string;
+  orientation: string;
+  origin: string;
+  overflow: string;
+  "overline-position": string;
+  "overline-thickness": string;
+  "panose-1": string;
+  "paint-order": string;
+  path: string;
+  pathLength: string;
+  patternContentUnits: string;
+  patternTransform: string;
+  patternUnits: string;
+  ping: string;
+  "pointer-events": string;
+  points: string;
+  pointsAtX: string;
+  pointsAtY: string;
+  pointsAtZ: string;
+  preserveAlpha: string;
+  preserveAspectRatio: string;
+  primitiveUnits: string;
+  r: string;
+  radius: string;
+  referrerPolicy: string;
+  refX: string;
+  refY: string;
+  rel: string;
+  "rendering-intent": string;
+  repeatCount: string;
+  repeatDur: string;
+  requiredExtensions: string;
+  requiredFeatures: string;
+  restart: string;
+  result: string;
+  rotate: string;
+  rx: string;
+  ry: string;
+  scale: string;
+  seed: string;
+  "shape-rendering": string;
+  side: string;
+  slope: string;
+  spacing: string;
+  specularConstant: string;
+  specularExponent: string;
+  speed: string;
+  spreadMethod: string;
+  startOffset: string;
+  stdDeviation: string;
+  stemh: string;
+  stemv: string;
+  stitchTiles: string;
+  "stop-color": string;
+  "stop-opacity": string;
+  "strikethrough-position": string;
+  "strikethrough-thickness": string;
+  string: string;
+  stroke: string;
+  "stroke-dasharray": string;
+  "stroke-dashoffset": string;
+  "stroke-linecap": string;
+  "stroke-linejoin": string;
+  "stroke-miterlimit": string;
+  "stroke-opacity": string;
+  "stroke-width": string;
+  style: string;
+  surfaceScale: string;
+  systemLanguage: string;
+  tabindex: string;
+  tableValues: string;
+  target: string;
+  targetX: string;
+  targetY: string;
+  "text-anchor": string;
+  "text-decoration": string;
+  "text-rendering": string;
+  textLength: string;
+  to: string;
+  transform: string;
+  "transform-origin": string;
+  type: string;
+  u1: string;
+  u2: string;
+  "underline-position": string;
+  "underline-thickness": string;
+  unicode: string;
+  "unicode-bidi": string;
+  "unicode-range": string;
+  "units-per-em": string;
+  "v-alphabetic": string;
+  "v-hanging": string;
+  "v-ideographic": string;
+  "v-mathematical": string;
+  values: string;
+  "vector-effect": string;
+  version: string;
+  "vert-adv-y": string;
+  "vert-origin-x": string;
+  "vert-origin-y": string;
+  viewBox: string;
+  visibility: string;
+  width: string;
+  widths: string;
+  "word-spacing": string;
+  "writing-mode": string;
+  x: string;
+  "x-height": string;
+  x1: string;
+  x2: string;
+  xChannelSelector: string;
+  "xlink:actuate": string;
+  "xlink:arcrole": string;
+  "xlink:href Deprecated": string;
+  "xlink:role": string;
+  "xlink:show": string;
+  "xlink:title": string;
+  "xlink:type": string;
+  "xml:lang": string;
+  "xml:space": string;
+  xmlns: string;
+  y: string;
+  y1: string;
+  y2: string;
+  yChannelSelector: string;
+  z: string;
+  zoomAndPan: string;
+}
+
+/* Tag name map */
+
+type HTMLPropsTagNameMap = {
   a: AnchorProps;
   abbr: HTMLElementProps;
   address: HTMLElementProps;
@@ -588,16 +869,25 @@ export interface HTMLPropsTagNameMap {
   var: HTMLElementProps;
   video: VideoProps;
   wbr: HTMLElementProps;
-}
+};
 
-// ===== ===== ===== ===== =====
-// INTRINSIC ELEMENT
-// ===== ===== ===== ===== =====
+type SVGPropsTagNameMap = {
+  [K in keyof SVGElementTagNameMap]: SVGElementProps;
+};
 
-export type HTMLTagName = keyof HTMLElementTagNameMap;
+export type ElementPropsTagNameMap = HTMLPropsTagNameMap & SVGPropsTagNameMap;
 
-export type ElementSpecificProps<T extends HTMLTagName> = {
-  [K in keyof HTMLPropsTagNameMap[T]]?: OptionalObs<HTMLPropsTagNameMap[T][K]>
+/* Intrinsic */
+
+export type TagName = keyof ElementPropsTagNameMap;
+
+export type TagNameToElement<T extends TagName> =
+  T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T]
+  : T extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[T]
+  : Element;
+
+export type ElementSpecificProps<T extends TagName> = {
+  [K in keyof ElementPropsTagNameMap[T]]?: OptionalObs<ElementPropsTagNameMap[T][K]>
 };
 
 export type ClassRecord = Record<string, OptionalObs<boolean>>;
@@ -608,12 +898,13 @@ export type StyleRecord = {
   [K in StyleAttribute]?: OptionalObs<string>;
 };
 
-export type IntrinsicElement<T extends HTMLTagName> =
+export type IntrinsicElement<T extends TagName> =
   & ElementSpecificProps<T>
+  & ComponentParentProps
   & {
     className?: string | ClassRecord;
     style?: StyleRecord;
     is?: string;
-    $init?: (element: HTMLElementTagNameMap[T]) => unknown;
+    $init?: (element: TagNameToElement<T>) => unknown;
     [key: `data-${string}`]: OptionalObs<string>;
   };

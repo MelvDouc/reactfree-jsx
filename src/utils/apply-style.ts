@@ -1,5 +1,5 @@
-import { Observable } from "melv_observable";
-import type { StyleAttribute, StyleRecord } from "$types/props.js";
+import { Observable } from "$src/deps.js";
+import type { StyleAttribute, StyleRecord } from "$src/types.js";
 
 export default function applyStyle(element: HTMLElement, style: StyleRecord) {
   let key: StyleAttribute;

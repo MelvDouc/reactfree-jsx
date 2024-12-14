@@ -1,5 +1,5 @@
-import { Observable } from "melv_observable";
-import type { ClassRecord } from "$types/props.js";
+import { Observable } from "$src/deps.js";
+import type { ClassRecord } from "$src/types.js";
 
 export default function applyClasses(element: Element, classes: string | ClassRecord) {
   if (typeof classes === "string") {

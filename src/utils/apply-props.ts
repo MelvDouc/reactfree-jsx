@@ -1,14 +1,17 @@
-import { Observable } from "melv_observable";
-import type { ElementSpecificProps } from "$types/props.js";
+import { Observable } from "$src/deps.js";
+import type { ElementSpecificProps, TagName } from "$src/types.js";
 
 const readonlyAttributes = new Set([
   "list",
-  "role"
+  "role",
+  "style",
+  "viewBox"
 ]);
 
-export default function applyProps<K extends keyof HTMLElementTagNameMap>(
-  element: HTMLElementTagNameMap[K],
-  props: ElementSpecificProps<K>
+export default function applyProps<K extends TagName>(
+  element: Element,
+  props: ElementSpecificProps<K>,
+  isSVG: boolean
 ) {
   let key: Extract<keyof typeof props, string>;
 
@@ -16,17 +19,17 @@ export default function applyProps<K extends keyof HTMLElementTagNameMap>(
     const item = props[key];
 
     if (item instanceof Observable) {
-      applyProp(element, key, item.value);
-      item.subscribe((value) => applyProp(element, key, value));
+      applyProp(element, key, item.value, isSVG);
+      item.subscribe((value) => applyProp(element, key, value, isSVG));
       continue;
     }
 
-    applyProp(element, key, item);
+    applyProp(element, key, item, isSVG);
   }
 }
 
-function applyProp(element: Element, key: string, value: any) {
-  if (!(key in element) || readonlyAttributes.has(key)) {
+function applyProp(element: Element, key: string, value: any, isSVG: boolean) {
+  if (!(key in element) || readonlyAttributes.has(key) || isSVG) {
     element.setAttribute(key, String(value));
     return;
   }

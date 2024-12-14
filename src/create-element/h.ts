@@ -1,17 +1,15 @@
-import type Fragment from "$src/create-element/Fragment.js";
+import type { Component, ComponentChildren, IntrinsicElement, TagName, TagNameToElement } from "$src/types.js";
 import applyChildren from "$src/utils/apply-children.js";
 import applyClasses from "$src/utils/apply-classes.js";
 import applyProps from "$src/utils/apply-props.js";
 import applyStyle from "$src/utils/apply-style.js";
-import type { Component, ComponentChildren } from "$types/component-types.js";
-import type { HTMLTagName, IntrinsicElement } from "$types/props.js";
 
-export function h(tagName: HTMLTagName, props: IntrinsicElement<HTMLTagName> | null, ...children: ComponentChildren): HTMLElement;
+export function h(tagName: TagName, props: IntrinsicElement<TagName> | null, ...children: ComponentChildren): HTMLElement;
 export function h(tagName: Component, props: Parameters<Component>[0] | null, ...children: ComponentChildren): Node;
 
-export function h(
-  tagName: HTMLTagName | Component | typeof Fragment,
-  props: IntrinsicElement<HTMLTagName> | Parameters<Component>[0] | null,
+export function h<T extends TagName | Component>(
+  tagName: T,
+  props: (T extends TagName ? IntrinsicElement<TagName> : Parameters<Component>[0]) | null,
   ...children: ComponentChildren
 ): Node {
   props ??= {};
@@ -19,12 +17,92 @@ export function h(
   if (typeof tagName === "function")
     return tagName({ ...props, children });
 
-  const { className, style, is, $init, ...others } = props as IntrinsicElement<HTMLTagName>;
-  const element = document.createElement(tagName, is ? { is } : void 0);
+  return SVG_TAG_NAMES.includes(tagName)
+    ? createSVGElement(tagName, props, children)
+    : createHTMLElement(tagName, props, children);
+}
+
+function createHTMLElement<T extends TagName>(tagName: T, { className, style, is, $init, ...props }: IntrinsicElement<T>, children: ComponentChildren): HTMLElement {
+  const element = document.createElement(tagName, is ? { is } : undefined);
   className && applyClasses(element, className);
   style && applyStyle(element, style);
-  applyProps(element, others);
+  applyProps(element, props, false);
   applyChildren(element, children);
-  $init && $init(element);
+  $init && $init(element as TagNameToElement<T>);
   return element;
 }
+
+function createSVGElement<T extends TagName>(tagName: T, { $init, ...props }: IntrinsicElement<T>, children: ComponentChildren): SVGElement {
+  const element = document.createElementNS(NAMESPACES.SVG, tagName);
+  applyProps(element, props, true);
+  applyChildren(element, children);
+  $init && $init(element as TagNameToElement<T>);
+  return element;
+}
+
+const NAMESPACES = {
+  HTML: "http://www.w3.org/2000/xhtml",
+  SVG: "http://www.w3.org/2000/svg"
+} as const;
+
+const SVG_TAG_NAMES = [
+  "animate",
+  "animateMotion",
+  "animateTransform",
+  "circle",
+  "clipPath",
+  "defs",
+  "desc",
+  "ellipse",
+  "feBlend",
+  "feColorMatrix",
+  "feComponentTransfer",
+  "feComposite",
+  "feConvolveMatrix",
+  "feDiffuseLighting",
+  "feDisplacementMap",
+  "feDistantLight",
+  "feDropShadow",
+  "feFlood",
+  "feFuncA",
+  "feFuncB",
+  "feFuncG",
+  "feFuncR",
+  "feGaussianBlur",
+  "feImage",
+  "feMerge",
+  "feMergeNode",
+  "feMorphology",
+  "feOffset",
+  "fePointLight",
+  "feSpecularLighting",
+  "feSpotLight",
+  "feTile",
+  "feTurbulence",
+  "filter",
+  "foreignObject",
+  "g",
+  "image",
+  "line",
+  "linearGradient",
+  "marker",
+  "mask",
+  "metadata",
+  "mpath",
+  "path",
+  "pattern",
+  "polygon",
+  "polyline",
+  "radialGradient",
+  "rect",
+  "set",
+  "stop",
+  "svg",
+  "switch",
+  "symbol",
+  "text",
+  "textPath",
+  "tspan",
+  "use",
+  "view"
+];
