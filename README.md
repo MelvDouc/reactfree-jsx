@@ -19,14 +19,11 @@ npm i reactfree-jsx
 Create a `vite.config.ts` file in the app's route directory to tell Vite how to compile JSX.
 
 ```javascript
+import { reactfreePlugin } from "reactfree-jsx";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  esbuild: {
-    jsxFactory: "h",
-    jsxFragment: "Fragment",
-    jsxInject: "import {h, Fragment} from 'reactfree-jsx';",
-  },
+  plugins: [reactfreePlugin()]
 });
 ```
 
@@ -35,7 +32,9 @@ export default defineConfig({
 ```json
 {
   "compilerOptions": {
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "jsxFactory": "createElement",
+    "jsxFragmentFactory": "Fragment"
   }
 }
 ```

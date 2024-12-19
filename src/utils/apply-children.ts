@@ -1,11 +1,11 @@
 import { Observable } from "$src/deps.js";
-import type { ComponentChild, ComponentChildren, ObservableNode } from "$src/types.js";
+import type { ComponentChild, NodeObs } from "$src/typings/index.types.js";
 
-export default function applyChildren(node: Node, children: ComponentChildren) {
+export default function applyChildren(node: Node, children: ComponentChild[]): void {
   children.forEach((child) => applyChild(node, child));
 }
 
-function applyChild(element: Node, child: ComponentChild) {
+export function applyChild(element: Node, child: ComponentChild): void {
   if (Array.isArray(child)) {
     applyChildren(element, child);
     return;
@@ -21,17 +21,14 @@ function applyChild(element: Node, child: ComponentChild) {
     return;
   }
 
-  if (!isFalseOrNullish(child)) {
+  if (!isFalseOrNullish(child))
     element.appendChild(createTextNode(child));
-  }
 }
 
-function appendObservable(node: Node, obs: ObservableNode) {
+function appendObservable(node: Node, obs: NodeObs): void {
   const startComment = new Comment("reactfree-jsx - do not remove");
   const endComment = new Comment(startComment.data);
-  const v = obs.value;
-
-  applyChildren(node, [startComment, v, endComment]);
+  applyChildren(node, [startComment, obs.value, endComment]);
 
   obs.subscribe((value) => {
     const childNodes = [...node.childNodes];
@@ -47,10 +44,10 @@ function appendObservable(node: Node, obs: ObservableNode) {
   });
 }
 
-function createTextNode(child: unknown) {
+function createTextNode(child: unknown): Text {
   return document.createTextNode(String(child));
 }
 
-function isFalseOrNullish(value: unknown) {
+function isFalseOrNullish(value: unknown): value is false | null | undefined {
   return value === false || value == null;
 }

@@ -1,22 +1,33 @@
-import Fragment from "$src/create-element/Fragment.js";
-import { h } from "$src/create-element/h.js";
-import obs from "$src/create-element/obs.js";
-import type { ElementPropsTagNameMap, IntrinsicElement, Obs } from "$src/types.js";
-
+// Extend the global JSX namespace to include custom intrinsic elements.
 declare global {
   namespace JSX {
-    type IntrinsicElements = {
-      [K in keyof ElementPropsTagNameMap]: IntrinsicElement<K>
-    };
+    // Allows TypeScript to infer the return type of components as `JSX.Element`.
+    interface Element extends globalThis.Node { }
+
+    // Allows for child nodes to be inferred as the value of the `children` prop.
+    interface ElementChildrenAttribute {
+      children: {};
+    }
+
+    // Necessary for custom JSX to be recognized by TypeScript.
+    type IntrinsicElements = import("$src/typings/index.types.js").JSXIntrinsicElements;
   }
 
-  // JSX fragments won't work anymore without this.
-  const React: any;
+  // Now necessary for the `<></>` shorthand to be recognized by TypeScript.
+  const Fragment: typeof import("$src/create-element/create-fragment.js").default;
 }
 
-export {
-  Fragment,
-  h,
-  obs,
-  type Obs
-};
+export { default as createElement } from "$src/create-element/create-element.js";
+export { default as Fragment } from "$src/create-element/create-fragment.js";
+export { default as obs } from "$src/state-management/obs.js";
+export { default as TypedEventEmitter } from "$src/state-management/TypedEventEmitter.js";
+export type {
+  ClassRecord,
+  Component,
+  ComponentChild,
+  ComponentParentProps,
+  Obs,
+  OptionalObs,
+  StyleRecord
+} from "$src/typings/index.types.js";
+export { reactfreePlugin } from "$src/vite-plugin.js";

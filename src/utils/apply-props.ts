@@ -1,38 +1,40 @@
 import { Observable } from "$src/deps.js";
-import type { ElementSpecificProps, TagName } from "$src/types.js";
 
-const readonlyAttributes = new Set([
+const READONLY_PROPERTIES = [
   "list",
-  "role",
-  "style",
-  "viewBox"
-]);
+  "preserveAspectRatio",
+  "requiredExtensions",
+  "sizes",
+  "systemLanguage",
+  "viewBox",
+  "x",
+  "y",
+  "z"
+];
 
-export default function applyProps<K extends TagName>(
-  element: Element,
-  props: ElementSpecificProps<K>,
-  isSVG: boolean
-) {
-  let key: Extract<keyof typeof props, string>;
-
-  for (key in props) {
+export default function applyProps(element: Element, props: Record<string, unknown>): void {
+  for (const key in props) {
     const item = props[key];
 
     if (item instanceof Observable) {
-      applyProp(element, key, item.value, isSVG);
-      item.subscribe((value) => applyProp(element, key, value, isSVG));
+      applyProp(element, key, item.value);
+      item.subscribe((value) => applyProp(element, key, value));
       continue;
     }
 
-    applyProp(element, key, item, isSVG);
+    applyProp(element, key, item);
   }
 }
 
-function applyProp(element: Element, key: string, value: any, isSVG: boolean) {
-  if (!(key in element) || readonlyAttributes.has(key) || isSVG) {
-    element.setAttribute(key, String(value));
+function applyProp(element: Element, prop: string, value: unknown): void {
+  if (isReadonlyProperty(prop) || prop.startsWith("data-")) {
+    element.setAttribute(prop, String(value));
     return;
   }
 
-  element[key as "id"] = value;
+  Reflect.set(element, prop, value);
+}
+
+function isReadonlyProperty(prop: string) {
+  return READONLY_PROPERTIES.includes(prop);
 }
