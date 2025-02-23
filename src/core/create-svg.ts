@@ -1,8 +1,6 @@
-import type { SVGOnlyTagName } from "$src/typings/mod.js";
-
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
-const SVG_TAG_NAMES: SVGOnlyTagName[] = [
+const SVG_TAG_NAMES = new Set([
   "animate",
   "animateMotion",
   "animateTransform",
@@ -62,10 +60,10 @@ const SVG_TAG_NAMES: SVGOnlyTagName[] = [
   "tspan",
   "use",
   "view"
-];
+]);
 
-export function isSVGTagName(tagName: string): tagName is SVGOnlyTagName {
-  return SVG_TAG_NAMES.includes(tagName as SVGOnlyTagName);
+export function isSVGTagName(tagName: string): boolean {
+  return SVG_TAG_NAMES.has(tagName);
 }
 
 export default function createSVG(tagName: string): SVGElement {

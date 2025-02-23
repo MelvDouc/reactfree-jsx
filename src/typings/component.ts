@@ -1,19 +1,19 @@
-import type { Obs } from "$src/props/obs.js";
-import type { AnyDepth } from "$src/typings/utils.js";
+import type { Observable as Obs } from "$src/core/state/obs.js";
 
 /**
  * A primitive value that is the child of an element.
  * It will be omitted if it's false or nullish; otherwise it'll be converted to a text node.
  */
-type Primitive = boolean | string | number | bigint | symbol | undefined | null;
+export type Primitive = boolean | string | number | bigint | symbol | undefined | null;
+type StaticComponentChild = Primitive | Node | ComponentChildren;
 
-/**
- * A value that's a node or can be converted to one
- * in order to be appended as a child of another node.
- */
-type ReactFreeNode = Primitive | Node;
+export type ComponentObs = Obs<StaticComponentChild>;
+export type ComponentChild = StaticComponentChild | ComponentObs;
+export type ComponentChildren = ComponentChild[];
 
-export type NodeObs = Obs<AnyDepth<ReactFreeNode>>;
-export type ComponentChild = AnyDepth<ReactFreeNode | NodeObs>;
-export type ComponentParentProps = { children?: ComponentChild; };
-export type Component<P = {}> = (props: P) => JSX.Element;
+export type ComponentParentProps = {
+  children?: ComponentChild;
+};
+
+export type Component<P> = (props: P) => JSX.Element;
+export type ComponentProps = Record<string, unknown>;

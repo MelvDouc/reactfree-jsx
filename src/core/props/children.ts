@@ -1,11 +1,11 @@
-import { Observable } from "$src/props/obs.js";
-import type { ComponentChild, NodeObs } from "$src/typings/mod.js";
+import { Observable } from "$src/core/state/obs.js";
+import type { ComponentChild, ComponentChildren, ComponentObs } from "$src/typings/component.js";
 
-export function applyChildren(node: Node, children: ComponentChild[]): void {
+export function applyChildren(node: Node, children: ComponentChildren): void {
   children.forEach((child) => applyChild(node, child));
 }
 
-export function applyChild(element: Node, child: ComponentChild): void {
+function applyChild(element: Node, child: ComponentChild): void {
   if (Array.isArray(child)) {
     applyChildren(element, child);
     return;
@@ -25,7 +25,7 @@ export function applyChild(element: Node, child: ComponentChild): void {
     element.appendChild(createTextNode(child));
 }
 
-function appendObservable(node: Node, obs: NodeObs): void {
+function appendObservable(node: Node, obs: ComponentObs): void {
   const startComment = new Comment("reactfree-jsx - do not remove");
   const endComment = new Comment(startComment.data);
   applyChildren(node, [startComment, obs.value, endComment]);

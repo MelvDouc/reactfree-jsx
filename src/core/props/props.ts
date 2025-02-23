@@ -1,4 +1,4 @@
-import { Observable } from "$src/props/obs.js";
+import { Observable } from "$src/core/state/obs.js";
 
 const READONLY_PROPERTIES = new Set([
   "list",
@@ -17,8 +17,7 @@ export function applyProps(element: Element, props: Record<string, unknown>): vo
     const item = props[key];
 
     if (item instanceof Observable) {
-      applyProp(element, key, item.value);
-      item.subscribe((value) => applyProp(element, key, value));
+      item.bind(element, key, (value) => applyProp(element, key, value));
       continue;
     }
 

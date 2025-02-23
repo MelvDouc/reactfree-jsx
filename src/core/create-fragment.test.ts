@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import createFragment from "$src/create-element/create-fragment.js";
+import createFragment from "$src/core/create-fragment.js";
 
 describe("Fragment component", () => {
   it("renders correctly", () => {

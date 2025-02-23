@@ -1,5 +1,6 @@
-import type { OptionalObs } from "$src/props/obs.js";
+import type { OptionalObs } from "$src/core/state/obs.js";
 import type { ElementProps } from "$src/typings/element.js";
+import type { EventHandlerProp } from "$src/typings/props.js";
 
 type AreaShape = "rect" | "circle" | "poly" | "default";
 type AutoCapitalize = "" | "off" | "none" | "on" | "sentences" | "words" | "characters";
@@ -254,8 +255,8 @@ interface TrackProps extends HTMLElementProps<HTMLTrackElement> {
 interface VideoProps extends MediaProps<HTMLVideoElement> {
   disablePictureInPicture?: OptionalObs<boolean>;
   height?: OptionalObs<number>;
-  onenterpictureinpicture?: OptionalObs<HTMLVideoElement["onenterpictureinpicture"]>;
-  onleavepictureinpicture?: OptionalObs<HTMLVideoElement["onleavepictureinpicture"]>;
+  onenterpictureinpicture?: EventHandlerProp<HTMLVideoElement, PictureInPictureEvent>;
+  onleavepictureinpicture?: EventHandlerProp<HTMLVideoElement, PictureInPictureEvent>;
   playsInline?: OptionalObs<boolean>;
   poster?: OptionalObs<string>;
   width?: OptionalObs<number>;
@@ -425,23 +426,23 @@ interface TimeProps extends HTMLElementProps<HTMLTimeElement> {
 
 export interface HTMLPropsTagNameMap {
   a: AnchorProps;
-  abbr: HTMLElementProps;
-  address: HTMLElementProps;
+  abbr: HTMLElementProps<HTMLElement>;
+  address: HTMLElementProps<HTMLElement>;
   area: AreaProps;
-  article: HTMLElementProps;
-  aside: HTMLElementProps;
+  article: HTMLElementProps<HTMLElement>;
+  aside: HTMLElementProps<HTMLElement>;
   audio: AudioProps;
-  b: HTMLElementProps;
+  b: HTMLElementProps<HTMLElement>;
   base: BaseProps;
   bdi: HTMLElementProps;
   bdo: HTMLElementProps;
   blockquote: QuoteProps;
-  body: HTMLElementProps;
+  body: HTMLElementProps<HTMLBodyElement>;
   br: HTMLElementProps;
   button: ButtonProps;
   canvas: CanvasProps;
   caption: HTMLElementProps;
-  cite: HTMLElementProps;
+  cite: HTMLElementProps<HTMLElement>;
   code: HTMLElementProps;
   col: TableColProps;
   colgroup: TableColProps;
@@ -462,7 +463,7 @@ export interface HTMLPropsTagNameMap {
   figure: HTMLElementProps;
   footer: HTMLElementProps;
   form: FormProps;
-  head: HTMLElementProps;
+  head: HTMLElementProps<HTMLHeadElement>;
   header: HTMLElementProps;
   h1: HTMLElementProps;
   h2: HTMLElementProps;
@@ -470,7 +471,7 @@ export interface HTMLPropsTagNameMap {
   h4: HTMLElementProps;
   h5: HTMLElementProps;
   h6: HTMLElementProps;
-  html: HTMLElementProps;
+  html: HTMLElementProps<HTMLHtmlElement>;
   hr: HTMLElementProps;
   hgroup: HTMLElementProps;
   i: HTMLElementProps;
@@ -498,7 +499,7 @@ export interface HTMLPropsTagNameMap {
   output: OutputProps;
   p: HTMLElementProps;
   picture: HTMLElementProps;
-  pre: HTMLElementProps;
+  pre: HTMLElementProps<HTMLPreElement>;
   progress: ProgressProps;
   q: QuoteProps;
   rp: HTMLElementProps;
@@ -522,7 +523,7 @@ export interface HTMLPropsTagNameMap {
   table: TableProps;
   tbody: HTMLElementProps;
   td: TableCellProps;
-  template: HTMLElementProps;
+  template: HTMLElementProps<HTMLTemplateElement>;
   textarea: TextAreaProps;
   tfoot: HTMLElementProps;
   th: TableCellProps;

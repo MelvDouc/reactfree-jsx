@@ -1,1 +1,0 @@
-export type AnyDepth<T> = T | AnyDepth<T>[];

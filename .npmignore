@@ -7,3 +7,4 @@
 /.gitignore
 /package-lock.json
 /tsconfig.json
+/vitest.config.ts

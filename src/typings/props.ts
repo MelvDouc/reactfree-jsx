@@ -1,20 +1,32 @@
-import { Observable, type OptionalObs } from "$src/props/obs.js";
+import { type OptionalObs } from "$src/core/state/obs.js";
 
-function applyStyle(element: HTMLElement | SVGElement, style: StyleRecord) {
-  Object.entries(style).forEach(([k, v]) => {
-    if (!(v instanceof Observable)) {
-      element.style[k as StyleAttribute] = v;
-      return;
-    }
+// ===== ===== ===== ===== =====
+// CLASSNAME
+// ===== ===== ===== ===== =====
 
-    element.style[k as StyleAttribute] = v.value;
-    v.subscribe((value) => {
-      element.style[k as StyleAttribute] = value;
-    });
-  });
-}
+export type ClassNameProp = OptionalObs<string> | Record<string, OptionalObs<boolean>>;
 
-type StyleAttribute =
+// ===== ===== ===== ===== =====
+// EVENT HANDLERS
+// ===== ===== ===== ===== =====
+
+export type EventHandlerProp<El extends Element, Ev extends Event> = OptionalObs<
+  ((this: El, ev: Ev) => unknown) | null
+>;
+
+export type EventHandlerProps<El extends Element> = {
+  [K in keyof GlobalEventHandlersEventMap as `on${K}`]?: EventHandlerProp<El, GlobalEventHandlersEventMap[K]>;
+};
+
+// ===== ===== ===== ===== =====
+// STYLE
+// ===== ===== ===== ===== =====
+
+export type StyleRecord = {
+  [K in StyleAttribute]?: OptionalObs<string>;
+};
+
+export type StyleAttribute =
   | "accentColor"
   | "alignContent"
   | "alignItems"
@@ -433,12 +445,3 @@ type StyleAttribute =
   | "x"
   | "y"
   | "zIndex";
-
-type StyleRecord = {
-  [K in StyleAttribute]?: OptionalObs<string>;
-};
-
-export {
-  applyStyle,
-  type StyleRecord
-};

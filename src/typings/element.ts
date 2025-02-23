@@ -1,14 +1,6 @@
-import type { OptionalObs } from "$src/props/obs.js";
-import type { StyleRecord } from "$src/props/style.js";
+import type { OptionalObs } from "$src/core/state/obs.js";
+import type { ClassNameProp, EventHandlerProps, StyleRecord } from "$src/typings/props.js";
 import type { ComponentParentProps } from "$src/typings/component.js";
-
-type Events = GlobalEventHandlersEventMap;
-
-type EventHandlerProp<El extends Element, Ev extends Event> = ((this: El, ev: Ev) => unknown) | null;
-
-type EventHandlerProps<E extends Element> = {
-  [K in keyof Events as `on${K}`]?: OptionalObs<EventHandlerProp<E, Events[K]>>
-};
 
 interface AriaProps {
   [key: `aria${string}`]: OptionalObs<string>;
@@ -20,7 +12,7 @@ interface DatasetProps {
 
 export interface ElementProps<E extends Element> extends AriaProps, ComponentParentProps, DatasetProps, EventHandlerProps<E> {
   autofocus?: OptionalObs<boolean>;
-  className?: OptionalObs<string> | Record<string, OptionalObs<boolean>>;
+  className?: ClassNameProp;
   id?: OptionalObs<string>;
   is?: E extends HTMLElement ? string : never;
   nonce?: OptionalObs<string>;

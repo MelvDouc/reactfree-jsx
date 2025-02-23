@@ -1,0 +1,13 @@
+{
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "cSpell.words": [
+    "appendable",
+    "github",
+    "jsxs",
+    "onbegin",
+    "onenterpictureinpicture",
+    "onleavepictureinpicture",
+    "onrepeat",
+    "vitest"
+  ]
+}

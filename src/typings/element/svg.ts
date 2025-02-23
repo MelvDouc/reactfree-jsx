@@ -1,5 +1,6 @@
-import type { OptionalObs } from "$src/props/obs.js";
+import type { OptionalObs } from "$src/core/state/obs.js";
 import type { ElementProps } from "$src/typings/element.js";
+import type { EventHandlerProp } from "$src/typings/props.js";
 
 type AccumulateProp = "sum" | "none";
 type AdditiveProp = "sum" | "replace";
@@ -41,9 +42,9 @@ interface SVGAnimationProps<T extends SVGAnimateElement> extends SVGElementProps
   dur?: OptionalObs<string>;
   end?: OptionalObs<string>;
   keyPoints?: OptionalObs<string>;
-  onbegin?: OptionalObs<((this: SVGAnimateElement, ev: Event) => unknown) | null>;
-  onend?: OptionalObs<((this: SVGAnimateElement, ev: Event) => unknown) | null>;
-  onrepeat?: OptionalObs<((this: SVGAnimateElement, ev: Event) => unknown) | null>;
+  onbegin?: EventHandlerProp<SVGAnimateElement, Event>;
+  onend?: EventHandlerProp<SVGAnimateElement, Event>;
+  onrepeat?: EventHandlerProp<SVGAnimateElement, Event>;
   repeatCount?: OptionalObs<string>;
   repeatDur?: OptionalObs<string>;
   requiredExtensions?: OptionalObs<string>;

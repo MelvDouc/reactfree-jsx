@@ -1,17 +1,14 @@
-import { Observable } from "$src/props/obs.js";
-import type { JSXProps } from "$src/typings/mod.js";
+import { Observable } from "$src/core/state/obs.js";
+import type { ClassNameProp } from "$src/typings/props.js";
 
-export function applyClasses(element: Element, classes: Exclude<JSXProps["className"], undefined>) {
+export function applyClasses(element: Element, classes: ClassNameProp) {
   if (typeof classes === "string") {
     element.className = classes;
     return;
   }
 
   if (classes instanceof Observable) {
-    element.className = classes.value ?? "";
-    classes.subscribe((value) => {
-      element.className = value;
-    });
+    classes.bind(element, "className");
     return;
   }
 

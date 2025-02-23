@@ -7,11 +7,10 @@
       "DOM.Iterable"
     ],
     "module": "ES2020",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     "skipDefaultLibCheck": true,
     "declaration": true,
     "sourceMap": true,
-    "outDir": "dist",
     "baseUrl": "src",
     "paths": {
       "$src/*": [

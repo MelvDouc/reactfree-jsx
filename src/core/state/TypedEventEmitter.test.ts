@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import TypedEventEmitter from "$src/state-management/TypedEventEmitter.js";
+import TypedEventEmitter from "$src/core/state/TypedEventEmitter.js";
 
 describe("TypedEventEmitter", () => {
   it("should emit events", () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { applyClasses } from "$src/props/classes.js";
-import obs from "$src/props/obs.js";
+import { applyClasses } from "$src/core/props/classes.js";
+import obs from "$src/core/state/obs.js";
 
 describe("applyClasses", () => {
   it("should work with strings", () => {
