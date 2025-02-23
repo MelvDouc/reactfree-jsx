@@ -25,8 +25,8 @@ export default class TypedEventEmitter<T extends EventParamsRecord> {
    * @param eventType The name of the event to listen for.
    * @param arg The argument to pass to the listeners.
    */
-  public emit<K extends keyof T>(eventType: K, arg: T[K]): void {
-    this._listeners[eventType]?.forEach((listener) => listener(arg));
+  public emit<K extends keyof T>(eventType: K, ...args: T[K]): void {
+    this._listeners[eventType]?.forEach((listener) => listener(...args));
   }
 
   /**
@@ -37,17 +37,17 @@ export default class TypedEventEmitter<T extends EventParamsRecord> {
   public createHandlers<K extends keyof T>(eventType: K): Handlers<T, K> {
     return [
       (listener) => this.on(eventType, listener),
-      (arg) => this.emit(eventType, arg)
+      (...args) => this.emit(eventType, ...args)
     ];
   }
 }
 
-type EventParamsRecord = Record<string, unknown>;
-type Listener<T extends EventParamsRecord, K extends keyof T> = (arg: T[K]) => unknown;
+type EventParamsRecord = Record<string, unknown[]>;
+type Listener<T extends EventParamsRecord, K extends keyof T> = (...args: T[K]) => unknown;
 
 type Handlers<T extends EventParamsRecord, K extends keyof T> = [
   on: (listener: Listener<T, K>) => () => void,
-  emit: (arg: T[K]) => void
+  emit: (...args: T[K]) => void
 ];
 
 type TypedEventEmitterListeners<T extends EventParamsRecord> = {

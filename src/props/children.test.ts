@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import applyChildren from "$src/utils/apply-children.js";
-import obs from "$src/state-management/obs.js";
+import { applyChildren } from "$src/props/children.js";
+import obs from "$src/props/obs.js";
 
 describe("applyChildren", () => {
   it("should work with multidimensional arrays", () => {

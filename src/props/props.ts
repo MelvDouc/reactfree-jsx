@@ -1,6 +1,6 @@
-import { Observable } from "$src/deps.js";
+import { Observable } from "$src/props/obs.js";
 
-const READONLY_PROPERTIES = [
+const READONLY_PROPERTIES = new Set([
   "list",
   "preserveAspectRatio",
   "requiredExtensions",
@@ -10,9 +10,9 @@ const READONLY_PROPERTIES = [
   "x",
   "y",
   "z"
-];
+]);
 
-export default function applyProps(element: Element, props: Record<string, unknown>): void {
+export function applyProps(element: Element, props: Record<string, unknown>): void {
   for (const key in props) {
     const item = props[key];
 
@@ -35,6 +35,6 @@ function applyProp(element: Element, prop: string, value: unknown): void {
   Reflect.set(element, prop, value);
 }
 
-function isReadonlyProperty(prop: string) {
-  return READONLY_PROPERTIES.includes(prop);
+function isReadonlyProperty(prop: string): boolean {
+  return READONLY_PROPERTIES.has(prop);
 }

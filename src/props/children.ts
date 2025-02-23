@@ -1,7 +1,7 @@
-import { Observable } from "$src/deps.js";
-import type { ComponentChild, NodeObs } from "$src/typings/index.types.js";
+import { Observable } from "$src/props/obs.js";
+import type { ComponentChild, NodeObs } from "$src/typings/mod.js";
 
-export default function applyChildren(node: Node, children: ComponentChild[]): void {
+export function applyChildren(node: Node, children: ComponentChild[]): void {
   children.forEach((child) => applyChild(node, child));
 }
 

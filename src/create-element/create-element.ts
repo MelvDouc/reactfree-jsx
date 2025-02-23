@@ -1,18 +1,22 @@
 import createSVG, { isSVGTagName } from "$src/create-element/create-svg.js";
-import type { Component, ComponentChild, JSXIntrinsicElements } from "$src/typings/index.types.js";
-import applyChildren from "$src/utils/apply-children.js";
-import applyClasses from "$src/utils/apply-classes.js";
-import applyProps from "$src/utils/apply-props.js";
-import applyStyle from "$src/utils/apply-style.js";
+import { applyChildren } from "$src/props/children.js";
+import { applyClasses } from "$src/props/classes.js";
+import { applyProps } from "$src/props/props.js";
+import { applyStyle } from "$src/props/style.js";
+import type { Component, ComponentChild, JSXProps } from "$src/typings/mod.js";
 
-export default function createElement(tagName: string | Component, props: object | null, ...children: ComponentChild[]): Node {
+export default function createElement(
+  tagName: string | Component,
+  props: object | null,
+  ...children: ComponentChild[]
+): JSX.Element {
   if (typeof tagName === "function")
     return tagName({ ...props, children });
 
-  const { className, style, $init, ...p } = (props ?? {}) as JSXIntrinsicElements[keyof JSXIntrinsicElements];
-  const element = createHTMLOrSVGElement(tagName);
+  const { className, is, style, $init, ...otherProps } = (props ?? {}) as JSXProps;
+  const element = createHTMLOrSVGElement(tagName, is);
 
-  applyProps(element, p);
+  applyProps(element, otherProps);
   className && applyClasses(element, className);
   style && applyStyle(element, style);
   applyChildren(element, children);
@@ -21,8 +25,8 @@ export default function createElement(tagName: string | Component, props: object
   return element;
 }
 
-function createHTMLOrSVGElement(tagName: string): HTMLElement | SVGElement {
+function createHTMLOrSVGElement(tagName: string, is?: string): HTMLElement | SVGElement {
   return isSVGTagName(tagName)
     ? createSVG(tagName)
-    : document.createElement(tagName);
+    : document.createElement(tagName, { is });
 }

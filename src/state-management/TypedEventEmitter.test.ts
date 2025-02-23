@@ -4,7 +4,7 @@ import TypedEventEmitter from "$src/state-management/TypedEventEmitter.js";
 describe("TypedEventEmitter", () => {
   it("should emit events", () => {
     const emitter = new TypedEventEmitter<{
-      foo: string;
+      foo: [string];
     }>();
 
     let value = "";
@@ -17,7 +17,7 @@ describe("TypedEventEmitter", () => {
 
   it("should remove listeners", () => {
     const emitter = new TypedEventEmitter<{
-      foo: null;
+      foo: [];
     }>();
 
     let count = 0;
@@ -26,11 +26,11 @@ describe("TypedEventEmitter", () => {
     });
 
     for (let i = 0; i < 5; i++)
-      emitter.emit("foo", null);
+      emitter.emit("foo");
 
     removeListener();
     expect(count).toBe(5);
-    emitter.emit("foo", null);
+    emitter.emit("foo");
     expect(count).toBe(5);
   });
 });

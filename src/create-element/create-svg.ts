@@ -1,4 +1,4 @@
-import type { SVGOnlyTagName } from "$src/typings/index.types.js";
+import type { SVGOnlyTagName } from "$src/typings/mod.js";
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 

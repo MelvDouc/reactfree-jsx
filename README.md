@@ -1,7 +1,6 @@
 # React-free JSX
 
-A package to use JSX and TSX with the full power of Vanilla JS minus the
-constraints of React. It is meant to be installed in a Vite project.
+A package to use JSX and TSX with the full power of Vanilla JS minus the constraints of React.
 
 ## Getting Started
 
@@ -14,27 +13,14 @@ npm init vite
 npm i reactfree-jsx
 ```
 
-### vite.config.ts
-
-Create a `vite.config.ts` file in the app's route directory to tell Vite how to compile JSX.
-
-```javascript
-import { reactfreePlugin } from "reactfree-jsx";
-import { defineConfig } from "vite";
-
-export default defineConfig({
-  plugins: [reactfreePlugin()]
-});
-```
-
 ### tsconfig.json
 
 ```json
 {
   "compilerOptions": {
-    "jsx": "preserve",
-    "jsxFactory": "createElement",
-    "jsxFragmentFactory": "Fragment"
+    "jsx": "react",
+    "jsxFactory": "RF_JSX.createElement",
+    "jsxFragmentFactory": "RF_JSX.Fragment"
   }
 }
 ```
@@ -108,8 +94,7 @@ function Counter({ initialCount }: {
 
 ## Props
 
-Elements props can be reactive. An attribute's value will
-thus be mapped on to the value of an observable.
+Elements props can be reactive. An attribute's value will thus be mapped on to the value of an observable.
 
 ```tsx
 const hidden = obs(true);
@@ -159,7 +144,7 @@ other props have been added.
 <div
   $init={(element) => {
     console.log(
-      "I can interact with this element using normal JS inside this function.",
+      "I can interact with this element using normal JS inside this function."
     );
   }}
 >

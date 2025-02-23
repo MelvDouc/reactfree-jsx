@@ -1,9 +1,17 @@
-import { Observable } from "$src/deps.js";
-import type { ClassRecord } from "$src/typings/index.types.js";
+import { Observable } from "$src/props/obs.js";
+import type { JSXProps } from "$src/typings/mod.js";
 
-export default function applyClasses(element: Element, classes: string | ClassRecord) {
+export function applyClasses(element: Element, classes: Exclude<JSXProps["className"], undefined>) {
   if (typeof classes === "string") {
     element.className = classes;
+    return;
+  }
+
+  if (classes instanceof Observable) {
+    element.className = classes.value ?? "";
+    classes.subscribe((value) => {
+      element.className = value;
+    });
     return;
   }
 

@@ -1,4 +1,5 @@
-import type { AnyDepth, Obs } from "$src/typings/utils.types.js";
+import type { Obs } from "$src/props/obs.js";
+import type { AnyDepth } from "$src/typings/utils.js";
 
 /**
  * A primitive value that is the child of an element.
@@ -15,4 +16,4 @@ type ReactFreeNode = Primitive | Node;
 export type NodeObs = Obs<AnyDepth<ReactFreeNode>>;
 export type ComponentChild = AnyDepth<ReactFreeNode | NodeObs>;
 export type ComponentParentProps = { children?: ComponentChild; };
-export type Component<P = {}> = (props: P) => Node;
+export type Component<P = {}> = (props: P) => JSX.Element;

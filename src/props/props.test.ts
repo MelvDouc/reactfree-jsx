@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import applyProps from "$src/utils/apply-props.js";
-import obs from "$src/state-management/obs.js";
 import createSVG from "$src/create-element/create-svg.js";
+import obs from "$src/props/obs.js";
+import { applyProps } from "$src/props/props.js";
 
 describe("applyProps", () => {
   it("should handle simple props", () => {

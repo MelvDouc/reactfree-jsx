@@ -1,33 +1,51 @@
+import createElement from "$src/create-element/create-element.js";
+import createFragment from "$src/create-element/create-fragment.js";
+import obs from "$src/props/obs.js";
+import TypedEventEmitter from "$src/state-management/TypedEventEmitter.js";
+import type {
+  Component,
+  ComponentChild,
+  ComponentParentProps,
+  JSXProps,
+  JSXPropsTagNameMap,
+  Obs,
+  OptionalObs
+} from "$src/typings/mod.js";
+
 // Extend the global JSX namespace to include custom intrinsic elements.
 declare global {
   namespace JSX {
     // Allows TypeScript to infer the return type of components as `JSX.Element`.
-    interface Element extends globalThis.Node { }
+    type Element = globalThis.Node;
 
     // Allows for child nodes to be inferred as the value of the `children` prop.
-    interface ElementChildrenAttribute {
-      children: {};
-    }
+    interface ElementChildrenAttribute extends ComponentParentProps { }
 
     // Necessary for custom JSX to be recognized by TypeScript.
-    type IntrinsicElements = import("$src/typings/index.types.js").JSXIntrinsicElements;
+    interface IntrinsicElements extends JSXPropsTagNameMap { }
   }
 
   // Now necessary for the `<></>` shorthand to be recognized by TypeScript.
-  const Fragment: typeof import("$src/create-element/create-fragment.js").default;
+  const RF_JSX: {
+    createElement: typeof createElement;
+    Fragment: typeof createFragment;
+  };
 }
 
-export { default as createElement } from "$src/create-element/create-element.js";
-export { default as Fragment } from "$src/create-element/create-fragment.js";
-export { default as obs } from "$src/state-management/obs.js";
-export { default as TypedEventEmitter } from "$src/state-management/TypedEventEmitter.js";
-export type {
-  ClassRecord,
-  Component,
-  ComponentChild,
-  ComponentParentProps,
-  Obs,
-  OptionalObs,
-  StyleRecord
-} from "$src/typings/index.types.js";
-export { reactfreePlugin } from "$src/vite-plugin.js";
+Object.defineProperty(globalThis, "RF_JSX", {
+  value: {
+    createElement,
+    Fragment: createFragment
+  }
+});
+
+export {
+  obs,
+  TypedEventEmitter,
+  type Component,
+  type ComponentChild,
+  type ComponentParentProps,
+  type JSXProps,
+  type Obs,
+  type OptionalObs
+};
