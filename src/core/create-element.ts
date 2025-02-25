@@ -3,13 +3,20 @@ import { applyChildren } from "$src/core/props/children.js";
 import { applyClasses } from "$src/core/props/classes.js";
 import { applyProps } from "$src/core/props/props.js";
 import { applyStyle } from "$src/core/props/style.js";
-import type { Component, ComponentChildren, ComponentProps } from "$src/typings/component.js";
+import type { Component, ComponentChild, ComponentProps } from "$src/typings/component.js";
 import type { JSXProps } from "$src/typings/intrinsic.js";
 
+/**
+ * @param tag An HTML/SVG tag name or a component function.
+ * @param props An object containing the element's properties
+ * or the component function's parameter object.
+ * @param children The element's child nodes.
+ * @returns A JSX element.
+ */
 export default function createElement(
   tag: string | Component<ComponentProps | undefined>,
   props: ComponentProps | null,
-  ...children: ComponentChildren
+  ...children: ComponentChild[]
 ): JSX.Element {
   if (typeof tag === "function")
     return tag({ ...props, children });

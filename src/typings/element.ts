@@ -17,10 +17,10 @@ export interface ElementProps<E extends Element> extends AriaProps, ComponentPar
   is?: E extends HTMLElement ? string : never;
   nonce?: OptionalObs<string>;
   role?: OptionalObs<string | null>;
-  slot?: OptionalObs<string>;
-  style?: StyleRecord;
   scrollLeft?: OptionalObs<number>;
   scrollTop?: OptionalObs<number>;
+  slot?: OptionalObs<string>;
+  style?: StyleRecord;
   tabIndex?: OptionalObs<number>;
   $init?: (element: E) => unknown;
 }

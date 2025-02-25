@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { applyChildren } from "$src/core/props/children.js";
+import { applyChild } from "$src/core/props/children.js";
 import obs from "$src/core/state/obs.js";
 
 describe("applyChildren", () => {
@@ -12,7 +12,7 @@ describe("applyChildren", () => {
       ["e", ["f", "g"]],
       "h"
     ];
-    applyChildren(element, children);
+    applyChild(element, children);
     expect(element.innerHTML).toBe("abcdefgh");
   });
 
@@ -28,7 +28,7 @@ describe("applyChildren", () => {
       }),
       "c"
     ];
-    applyChildren(element, children);
+    applyChild(element, children);
 
     expect(element.childNodes[0]).toBeInstanceOf(Text);
     expect(element.childNodes[1]).toBeInstanceOf(Comment);

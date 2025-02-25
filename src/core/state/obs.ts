@@ -1,7 +1,14 @@
+/**
+ * @param value The initial value.
+ * @returns A new {@link Observable} instance.
+ */
 export default function obs<T>(value?: T): Observable<T> {
   return new Observable(value);
 }
 
+/**
+ * An object that can be used to run functions every time a value is reassigned.
+ */
 export class Observable<T> {
   private _value: T;
   private readonly _subscriptions = new Set<Subscription<T>>();
@@ -36,7 +43,10 @@ export class Observable<T> {
    */
   public subscribe(subscription: Subscription<T>): () => void {
     this._subscriptions.add(subscription);
-    return () => this._subscriptions.delete(subscription);
+
+    return () => {
+      return this._subscriptions.delete(subscription);
+    };
   }
 
   /**
@@ -73,4 +83,8 @@ export class Observable<T> {
 }
 
 type Subscription<T> = (value: T) => unknown;
+
+/**
+ * A type that can be either a raw value or an observable.
+ */
 export type OptionalObs<T> = T | Observable<T>;

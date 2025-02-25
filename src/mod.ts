@@ -1,12 +1,7 @@
 import createElement from "$src/core/create-element.js";
 import createFragment from "$src/core/create-fragment.js";
 import obs, { type Observable as Obs, type OptionalObs } from "$src/core/state/obs.js";
-import type {
-  Component,
-  ComponentChild,
-  ComponentChildren,
-  ComponentParentProps
-} from "$src/typings/component.js";
+import type { Component, ComponentChild, ComponentParentProps } from "$src/typings/component.js";
 import type { JSXProps, JSXPropsTagNameMap } from "$src/typings/intrinsic.js";
 
 // Extend the global JSX namespace to include custom intrinsic elements.
@@ -29,7 +24,6 @@ export {
   obs,
   type Component,
   type ComponentChild,
-  type ComponentChildren,
   type ComponentParentProps,
   type JSXProps,
   type Obs,

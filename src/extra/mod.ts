@@ -1,1 +1,1 @@
-export { default as TypedEventEmitter } from "$src/core/state/TypedEventEmitter.js";
+export { default as TypedEventEmitter } from "$src/extra/TypedEventEmitter.js";
