@@ -1,6 +1,6 @@
 {
   "name": "reactfree-jsx",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "author": "Melvin Doucet",
   "description": "A package to use JSX without React",
   "keywords": [
