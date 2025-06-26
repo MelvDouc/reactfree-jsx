@@ -28,7 +28,7 @@ export default function createElement(
   className && applyClasses(element, className);
   style && applyStyle(element, style);
   applyChildren(element, children);
-  $init && ($init as (element: Element) => unknown)(element);
+  $init && ($init as (element: Element) => void)(element);
 
   return element;
 }

@@ -10,13 +10,7 @@ export type ClassNameProp = OptionalObs<string> | Record<string, OptionalObs<boo
 // EVENT HANDLERS
 // ===== ===== ===== ===== =====
 
-export type EventHandlerProp<El extends Element, Ev extends Event> = OptionalObs<
-  ((this: El, ev: Ev) => unknown) | null
->;
-
-export type EventHandlerProps<El extends Element> = {
-  [K in keyof GlobalEventHandlersEventMap as `on${K}`]?: EventHandlerProp<El, GlobalEventHandlersEventMap[K]>;
-};
+export type EventHandlerProp<Ev extends Event> = ((ev: Ev) => unknown) | null;
 
 // ===== ===== ===== ===== =====
 // STYLE

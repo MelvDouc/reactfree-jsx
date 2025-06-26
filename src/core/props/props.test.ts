@@ -27,6 +27,20 @@ describe("applyProps", () => {
     expect(svg.getAttribute("viewBox")).toBe(viewBox);
   });
 
+  it("should handle event listeners", () => {
+    const element = document.createElement("div");
+    let count = 0;
+
+    applyProps(element, {
+      "on:click": () => { count++; }
+    });
+
+    for (let i = 0; i < 5; i++)
+      element.click();
+
+    expect(count).to.eq(5);
+  });
+
   it("should handle observables", () => {
     const details = document.createElement("details");
     const openObs = obs(true);

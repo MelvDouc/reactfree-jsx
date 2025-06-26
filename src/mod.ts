@@ -8,7 +8,7 @@ import type { JSXProps, JSXPropsTagNameMap } from "$src/typings/intrinsic.js";
 declare global {
   namespace JSX {
     // Allows TypeScript to infer the return type of components as `JSX.Element`.
-    type Element = globalThis.Element;
+    type Element = HTMLElement | SVGElement | DocumentFragment;
 
     // Allows for child nodes to be inferred as the value of the `children` prop.
     interface ElementChildrenAttribute extends ComponentParentProps { }
