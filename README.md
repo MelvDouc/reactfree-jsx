@@ -63,8 +63,8 @@ function Counter({ initialCount }: {
       <!-- The text node will be updated automatically
       when the value of `count` changes. -->
       <p className="count">Count: {count}</p>
-      <button onclick={() => count.value++}>+</button>
-      <button onclick={() => count.value--}>-</button>
+      <button on:click={() => count.value++}>+</button>
+      <button on:click={() => count.value--}>-</button>
     </div>
   );
 }
@@ -82,7 +82,7 @@ const toggleHidden = () => {
 
 return (
   <>
-    <button onclick={toggleHidden}>Toggle</button>
+    <button on:click={toggleHidden}>Toggle</button>
     <p hidden={hidden}>Hidden text</p>
   </>
 );
