@@ -101,6 +101,7 @@ const inputSetters = {
   max: (e: HTMLInputElement, v: string | number) => e.max = String(v),
   maxLength: propertySetter<number>("maxLength"),
   multiple: propertySetter<boolean>("multiple"),
+  name,
   pattern: propertySetter<string>("pattern"),
   placeholder: propertySetter<string>("placeholder"),
   readOnly: propertySetter<boolean>("readOnly"),
