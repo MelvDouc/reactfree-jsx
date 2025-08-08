@@ -473,6 +473,7 @@ export const HTMLElementSetterTable = {
   dialog: dialogSetters,
   div: htmlElementSetters,
   dl: htmlElementSetters,
+  dd: htmlElementSetters,
   dt: htmlElementSetters,
   em: htmlElementSetters,
   embed: embedSetters,

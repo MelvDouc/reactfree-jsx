@@ -19,26 +19,21 @@ type ExtraProps = GlobalEventHandlerProps & {
   children?: ComponentChild;
 };
 
+type _JSX_Props<E, J> =
+  & {
+    [K in keyof J]?: OptionalObs<J[K]>;
+  }
+  & {
+    $init?: (element: E) => void;
+  }
+  & ExtraProps;
+
 type JSXPropsMapHTML = {
-  [K in keyof HTMLElementPropMap]:
-  & {
-    [K2 in keyof HTMLElementPropMap[K]]?: OptionalObs<HTMLElementPropMap[K][K2]>
-  }
-  & {
-    $init?: (element: HTMLElementTagNameMap[K]) => void;
-  }
-  & ExtraProps
+  [K in keyof HTMLElementPropMap]: _JSX_Props<HTMLElementTagNameMap[K], HTMLElementPropMap[K]>
 };
 
 type JSXPropsMapSVG = {
-  [K in keyof SVGElementPropMap]:
-  & {
-    [K2 in keyof SVGElementPropMap[K]]?: OptionalObs<SVGElementPropMap[K][K2]>;
-  }
-  & {
-    $init?: (element: SVGElementTagNameMap[K]) => void;
-  }
-  & ExtraProps
+  [K in keyof SVGElementPropMap]: _JSX_Props<SVGElementTagNameMap[K], SVGElementPropMap[K]>
 };
 
 export type JSXPropsTagNameMap = JSXPropsMapHTML & JSXPropsMapSVG;

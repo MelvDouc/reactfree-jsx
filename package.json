@@ -1,6 +1,6 @@
 {
   "name": "reactfree-jsx",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "author": "Melvin Doucet",
   "description": "A package to use JSX without React",
   "keywords": [
@@ -21,6 +21,10 @@
     "./extra": {
       "types": "./dist/extra/mod.d.ts",
       "default": "./dist/extra/mod.js"
+    },
+    "./extra/router": {
+      "types": "./dist/extra/router/mod.d.ts",
+      "default": "./dist/extra/router/mod.js"
     },
     "./jsx-dev-runtime": {
       "types": "./dist/jsx-dev-runtime/mod.d.ts",
@@ -47,11 +51,11 @@
   },
   "homepage": "https://github.com/MelvDouc/reactfree-jsx#readme",
   "devDependencies": {
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.1.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "vite": "^5.4.19",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.9"
+    "vitest": "^3.2.4"
   }
 }

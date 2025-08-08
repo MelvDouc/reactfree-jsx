@@ -42,14 +42,14 @@ export default class TypedEventEmitter<T extends EventParamsRecord> {
   }
 }
 
-type EventParamsRecord = Record<string, unknown[]>;
-type Listener<T extends EventParamsRecord, K extends keyof T> = (...args: T[K]) => unknown;
+export type EventParamsRecord = Record<string, unknown[]>;
+export type Listener<T extends EventParamsRecord, K extends keyof T> = (...args: T[K]) => unknown;
 
-type Handlers<T extends EventParamsRecord, K extends keyof T> = [
+export type Handlers<T extends EventParamsRecord, K extends keyof T> = [
   on: (listener: Listener<T, K>) => () => void,
   emit: (...args: T[K]) => void
 ];
 
-type TypedEventEmitterListeners<T extends EventParamsRecord> = {
+export type TypedEventEmitterListeners<T extends EventParamsRecord> = {
   [K in keyof T]?: Set<Listener<T, K>>;
 };

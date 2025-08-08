@@ -2,6 +2,8 @@
   "entry": [
     "src/mod.ts",
     "src/extra/mod.ts",
+    "src/extra/router/mod.ts",
+    "src/extra/router/mod.ts",
     "src/jsx-dev-runtime/mod.ts",
     "src/jsx-runtime/mod.ts"
   ],
