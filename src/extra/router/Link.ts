@@ -1,4 +1,4 @@
-import { getRouterInstance } from "$src/extra/router/RouterOutlet.js";
+import RouterOutlet from "$src/extra/router/RouterOutlet.js";
 import type { JsonValue } from "$src/extra/router/types.js";
 import { jsx } from "$src/jsx-runtime/mod.js";
 
@@ -14,7 +14,7 @@ export default function Link({ href, state = "", ...props }: {
 
   const handleClick = (e: Event): void => {
     e.preventDefault();
-    getRouterInstance()?.emitNavRequest(url, state, true);
+    RouterOutlet.getInstance()?.emitNavRequest(url, state, true);
   };
 
   return jsx("a", { ...props, href, "on:click": handleClick });

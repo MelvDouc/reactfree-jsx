@@ -7,7 +7,11 @@ import type { JsonValue } from "$src/extra/router/types.js";
 import TypedEventEmitter, { type Listener } from "$src/extra/TypedEventEmitter.js";
 
 export default class RouterOutlet extends HTMLElement {
-  public static instance: RouterOutlet | null = null;
+  private static instance: RouterOutlet | null = null;
+
+  public static getInstance(): RouterOutlet | null {
+    return this.instance;
+  }
 
   static {
     customElements.define("router-outlet", this);
@@ -116,10 +120,6 @@ export default class RouterOutlet extends HTMLElement {
 
     return null;
   }
-}
-
-export function getRouterInstance(): RouterOutlet | null {
-  return RouterOutlet.instance;
 }
 
 type RouterOutletEvents = {

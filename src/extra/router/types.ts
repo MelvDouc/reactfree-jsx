@@ -1,12 +1,14 @@
 export type ParamRecord = Record<string, string>;
 
-export type JsonValue =
+export type JsonValue = Serializable<string>;
+
+type Serializable<T extends string> =
   | string
   | number
   | boolean
   | null
-  | JsonValue[]
-  | { [key: string]: JsonValue; };
+  | Serializable<string>[]
+  | { [K in T]: Serializable<string>; };
 
 type RouteComponentProps<T extends ParamRecord> = {
   /**

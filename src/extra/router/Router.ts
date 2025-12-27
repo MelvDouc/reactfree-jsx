@@ -28,3 +28,12 @@ export function pageNotFound(message = ""): never {
 export function redirect(path: string, state: JsonValue = ""): never {
   throw new RedirectionError(new URL(path, location.origin), state);
 }
+
+/**
+ * Throw a redirection exception informing a {@link Router} to render a different page.
+ * @param path A URL pathname (including has and search params if needed) to a local page.
+ * @param state Data that can be retrieved using `getHistoryState()` on the next page.
+ */
+export function navigate(path: string, state: JsonValue = ""): void {
+  RouterOutlet.getInstance()?.emitNavRequest(new URL(path, location.origin), state, true);
+}
