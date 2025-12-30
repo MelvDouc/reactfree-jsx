@@ -1,4 +1,4 @@
-import type { RouteComponent, InferPathParams, ParamRecord } from "$src/extra/router/types.js";
+import type { RouteComponent, ParamRecord } from "$src/extra/router/types.js";
 
 const ROUTE_STACK: InternalRoute[] = [];
 
@@ -8,14 +8,14 @@ class InternalRoute {
     return RegExp(`^${source}$`);
   }
 
-  public readonly component: RouteComponent<ParamRecord>;
+  public readonly component: RouteComponent;
   private readonly pathRegex: RegExp;
   private readonly queryParams: { name: string; required: boolean; }[];
 
-  public constructor(path: string, component: RouteComponent<ParamRecord>, query: string[]) {
+  public constructor(path: string, query: string[], component: RouteComponent) {
     this.pathRegex = InternalRoute.pathToPathRegex(path);
-    this.component = component;
     this.queryParams = query.map((name) => ({ name, required: name.at(-1) !== "?" }));
+    this.component = component;
   }
 
   public parse(url: URL): ParamRecord | null {
@@ -35,33 +35,43 @@ class InternalRoute {
 /**
  * Define a component to render at a given URL.
  */
-function Route<T extends string>({ path, component, query = [] }: RouteProps<T>): null {
+function Route<P extends string, Q extends string>({ path, component, query = [] }: RouteProps<P, Q>): null {
   const route = new InternalRoute(
     path,
-    component as RouteComponent<ParamRecord>,
-    query
+    query,
+    component as RouteComponent
   );
   ROUTE_STACK.push(route);
 
   return null;
 }
 
-type RouteProps<T extends string> = {
+type RouteProps<Path extends string, Query extends string> = {
   /**
    * A relative URL to a page, e.g. "/", "/home" or "/(home)?" (regex syntax).
    * Dynamic parameters are denoted a by a leading colon: "/profile/:id".
    */
-  path: T;
+  path: Path;
   /**
    * An array of expected query (search) parameters.
    * Optional parameters are denoted by a trailing question mark, e.g. "redirected?".
    */
-  query?: string[];
+  query?: Query[];
   /**
    * The ReactFree-JSX element that will be rendered when the URL of this route is visited.
    */
-  component: RouteComponent<InferPathParams<T>>;
+  component: RouteComponent<InferPathParams<Path>, InferQueryParams<Query>>;
 };
+
+type InferPathParams<T extends string> =
+  T extends `${infer A}/${infer B}` ? InferPathParams<A> & InferPathParams<B>
+  : T extends `/${infer A}` ? InferPathParams<A>
+  : T extends `:${infer A}` ? { [K in A]: string }
+  : {};
+
+type InferQueryParams<Query extends string> =
+  & { [K in Query as K extends `${string}?` ? never : K]: string; }
+  & { [K in Query as K extends `${infer S}?` ? S : never]?: string; };
 
 export {
   Route as default,

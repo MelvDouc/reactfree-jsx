@@ -1,31 +1,18 @@
 export type ParamRecord = Record<string, string>;
 
-export type JsonValue = Serializable<string>;
-
-type Serializable<T extends string> =
-  | string
-  | number
-  | boolean
-  | null
-  | Serializable<string>[]
-  | { [K in T]: Serializable<string>; };
-
-type RouteComponentProps<T extends ParamRecord> = {
+type RouteComponentProps<P extends ParamRecord, Q extends ParamRecord> = {
   /**
    * A string dictionary matching the route's path,
    * e.g. "/profile/:id" => `{ id: string }`.
    */
-  params: T;
+  params: P;
   /**
    * A string dictionary matching the route's `query` property.
    */
-  query: ParamRecord;
+  query: Q;
 };
 
-export type RouteComponent<T extends ParamRecord> = (props: RouteComponentProps<T>) => unknown;
-
-export type InferPathParams<T extends string> =
-  T extends `${infer A}/${infer B}` ? InferPathParams<A> & InferPathParams<B>
-  : T extends `/${infer A}` ? InferPathParams<A>
-  : T extends `:${infer A}` ? { [K in A]: string }
-  : {};
+export type RouteComponent<
+  P extends ParamRecord = ParamRecord,
+  Q extends ParamRecord = ParamRecord
+> = (props: RouteComponentProps<P, Q>) => unknown;
