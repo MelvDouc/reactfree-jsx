@@ -3,7 +3,7 @@ import elementSetters, {
   createAttributeSetter as attributeSetter,
   eventListenerProperty,
   type ImgDecoding,
-  type SetterFn,
+  type InferPropsTable
 } from "$src/core/props/setters/element-setters.js";
 
 const alignmentBaseline = attributeSetter<AlignementBaseline>("alignment-baseline");
@@ -587,13 +587,7 @@ export const SVGElementSetterTable = {
   view: viewSetters
 } as const;
 
-type TableType = typeof SVGElementSetterTable;
-
-export type SVGElementPropMap = {
-  [K in keyof TableType]: {
-    [K2 in keyof TableType[K]]: TableType[K][K2] extends SetterFn<SVGElement, infer V> ? V : never;
-  }
-};
+export type SVGElementPropMap = InferPropsTable<typeof SVGElementSetterTable, SVGElement>;
 
 type Accumulate = "sum" | "none";
 type Additive = "sum" | "replace";

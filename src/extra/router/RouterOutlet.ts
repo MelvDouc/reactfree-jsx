@@ -7,8 +7,18 @@ import TypedEventEmitter, { type Listener } from "$src/extra/TypedEventEmitter.j
 export default class RouterOutlet extends HTMLElement {
   private static instance: RouterOutlet | null = null;
 
-  public static getInstance(): RouterOutlet | null {
-    return this.instance;
+  public static emitNavRequest(url: URL, state: unknown, stateAction: StateAction): void {
+    this.instance?.emitNavRequest(url, state, stateAction);
+  }
+
+  private static updateHistory(url: URL, state: unknown, stateAction: StateAction): void {
+    switch (stateAction) {
+      case "replace":
+        history.replaceState(state, "", url);
+        break;
+      case "push":
+        history.pushState(state, "", url);
+    }
   }
 
   static {
@@ -18,8 +28,7 @@ export default class RouterOutlet extends HTMLElement {
   private readonly routes: RouteObject[];
   private readonly eventEmitter: TypedEventEmitter<RouterOutletEvents>;
   private readonly contextCache = new Map<string, RouterContext>();
-  private readonly defaultComponent: (err: PageNotFoundError) => unknown;
-
+  private readonly defaultComponent: (err: PageNotFoundError) => JSX.Element | Promise<JSX.Element>;
 
   public constructor({ routes, defaultComponent, onNavStarted, onNavComplete }: RouterProps) {
     super();
@@ -45,19 +54,19 @@ export default class RouterOutlet extends HTMLElement {
     this.emitNavRequest(new URL(location.toString()), null, "none");
   }
 
-  public onNavRequest(listener: Listener<RouterOutletEvents, "navRequest">): VoidFunction {
-    return this.eventEmitter.on("navRequest", listener);
-  }
-
-  public emitNavRequest(url: URL, state: unknown, stateAction: StateAction): void {
+  private emitNavRequest(url: URL, state: unknown, stateAction: StateAction): void {
     this.eventEmitter.emit("navRequest", url, state, stateAction);
   }
 
-  public onNavStarted(listener: Listener<RouterOutletEvents, "navStarted">): VoidFunction {
+  private onNavRequest(listener: Listener<RouterOutletEvents, "navRequest">): VoidFunction {
+    return this.eventEmitter.on("navRequest", listener);
+  }
+
+  private onNavStarted(listener: Listener<RouterOutletEvents, "navStarted">): VoidFunction {
     return this.eventEmitter.on("navStarted", listener);
   }
 
-  public onNavComplete(listener: Listener<RouterOutletEvents, "navComplete">): VoidFunction {
+  private onNavComplete(listener: Listener<RouterOutletEvents, "navComplete">): VoidFunction {
     return this.eventEmitter.on("navComplete", listener);
   }
 
@@ -70,19 +79,8 @@ export default class RouterOutlet extends HTMLElement {
 
       this.eventEmitter.emit("navStarted", ctx);
 
-      switch (stateAction) {
-        case "replace":
-          history.replaceState(state, "", url);
-          break;
-        case "push":
-          history.pushState(state, "", url);
-      }
-
-      const element = await ctx.component({
-        params: ctx.pathParams,
-        query: Object.fromEntries(ctx.url.searchParams)
-      });
-      this.updateChildren(element);
+      RouterOutlet.updateHistory(url, state, stateAction);
+      this.updateChildren(await ctx.element());
 
       this.eventEmitter.emit("navComplete", url);
     } catch (error) {
@@ -92,14 +90,14 @@ export default class RouterOutlet extends HTMLElement {
       }
 
       if (error instanceof PageNotFoundError) {
-        this.updateChildren(this.defaultComponent(error));
+        this.updateChildren(await this.defaultComponent(error));
         this.eventEmitter.emit("navComplete", url);
       }
     }
   }
 
   private findContext(url: URL): RouterContext | null {
-    const key = url.toString();
+    const key = url.href;
 
     if (this.contextCache.has(key))
       return this.contextCache.get(key) as RouterContext;
@@ -117,7 +115,7 @@ export default class RouterOutlet extends HTMLElement {
     return null;
   }
 
-  private updateChildren(element: unknown): void {
+  private updateChildren(element: JSX.Element): void {
     this.replaceChildren();
     applyChild(this, element);
   }
@@ -137,7 +135,7 @@ export type RouterProps = {
    * Define which component to render when a page isn't found.
    * @param err An error containing the URL and state of the route that wasn't found.
    */
-  defaultComponent: (err: PageNotFoundError) => unknown;
+  defaultComponent: (err: PageNotFoundError) => JSX.Element | Promise<JSX.Element>;
   onNavStarted?: Listener<RouterOutletEvents, "navStarted">;
   onNavComplete?: Listener<RouterOutletEvents, "navComplete">;
 };

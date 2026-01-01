@@ -8,13 +8,13 @@ class InternalRoute {
     return RegExp(`^${source}$`);
   }
 
-  public readonly component: RouteComponent;
   private readonly pathRegex: RegExp;
-  private readonly queryParams: { name: string; required: boolean; }[];
+  private readonly requiredQueryParamNames: string[];
+  public readonly component: RouteComponent;
 
   public constructor(path: string, query: string[], component: RouteComponent) {
     this.pathRegex = InternalRoute.pathToPathRegex(path);
-    this.queryParams = query.map((name) => ({ name, required: name.at(-1) !== "?" }));
+    this.requiredQueryParamNames = query.filter((item) => !item.endsWith("?"));
     this.component = component;
   }
 
@@ -24,18 +24,16 @@ class InternalRoute {
     if (!matchArray)
       return null;
 
-    for (const { name, required } of this.queryParams)
-      if (required && !url.searchParams.has(name))
-        return null;
-
-    return matchArray.groups ?? {};
+    return this.requiredQueryParamNames.every((name) => url.searchParams.has(name))
+      ? (matchArray.groups ?? {})
+      : null;
   }
 }
 
 /**
  * Define a component to render at a given URL.
  */
-function Route<P extends string, Q extends string>({ path, component, query = [] }: RouteProps<P, Q>): null {
+function Route<P extends string, Q extends string>({ path, query = [], component }: RouteProps<P, Q>): null {
   const route = new InternalRoute(
     path,
     query,
@@ -60,7 +58,7 @@ type RouteProps<Path extends string, Query extends string> = {
   /**
    * The ReactFree-JSX element that will be rendered when the URL of this route is visited.
    */
-  component: RouteComponent<InferPathParams<Path>, InferQueryParams<Query>>;
+  component: RouteComponent<InferPathParams<Path> & InferQueryParams<Query>>;
 };
 
 type InferPathParams<T extends string> =

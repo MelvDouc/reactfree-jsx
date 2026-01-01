@@ -2,7 +2,7 @@ import elementSetters, {
   createAttributeSetter,
   eventListenerProperty,
   type ImgDecoding,
-  type SetterFn
+  type InferPropsTable
 } from "$src/core/props/setters/element-setters.js";
 
 function propertySetter<V>(key: string) {
@@ -558,13 +558,7 @@ export const HTMLElementSetterTable = {
   wbr: htmlElementSetters
 } as const;
 
-type TableType = typeof HTMLElementSetterTable;
-
-export type HTMLElementPropMap = {
-  [K in keyof TableType]: {
-    [K2 in keyof TableType[K]]: TableType[K][K2] extends SetterFn<HTMLElement, infer V> ? V : never;
-  }
-};
+export type HTMLElementPropMap = InferPropsTable<typeof HTMLElementSetterTable, HTMLElement>;
 
 type Autocapitalize = "" | "off" | "none" | "on" | "sentences" | "words" | "characters" | string;
 type Autocorrect = "" | "on" | "off" | string;

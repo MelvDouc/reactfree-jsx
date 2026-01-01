@@ -29,10 +29,10 @@ export function redirect(path: string, state: unknown = null): never {
 }
 
 /**
- * Throw a redirection exception informing a {@link Router} to render a different page.
+ * Emit a navigation request informing a {@link Router} to render a different page.
  * @param path A URL pathname (including has and search params if needed) to a local page.
  * @param state Data that can be retrieved using `getHistoryState()` on the next page.
  */
 export function navigate(path: string, state: unknown = null): void {
-  RouterOutlet.getInstance()?.emitNavRequest(new URL(path, location.origin), state, "push");
+  RouterOutlet.emitNavRequest(new URL(path, location.origin), state, "push");
 }
