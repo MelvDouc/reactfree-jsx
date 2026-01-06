@@ -100,6 +100,7 @@ const inputSetters = {
   list: createAttributeSetter("list"),
   max: (e: HTMLInputElement, v: string | number) => e.max = String(v),
   maxLength: propertySetter<number>("maxLength"),
+  minLength: propertySetter<number>("minLength"),
   multiple: propertySetter<boolean>("multiple"),
   name,
   pattern: propertySetter<string>("pattern"),

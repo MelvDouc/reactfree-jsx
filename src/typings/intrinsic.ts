@@ -1,6 +1,7 @@
 import type { HTMLElementPropMap } from "$src/core/props/setters/html-setters.js";
 import type { SVGElementPropMap } from "$src/core/props/setters/svg-setters.js";
 import type { OptionalObs } from "$src/core/state/obs.js";
+import type { Ref } from "$src/core/state/ref.js";
 import type { ComponentChild } from "$src/typings/component.js";
 import type { ClassNameProp, EventHandlerProp, StyleRecord } from "$src/typings/props.js";
 
@@ -19,12 +20,13 @@ type ExtraProps = GlobalEventHandlerProps & {
   children?: ComponentChild;
 };
 
-type _JSX_Props<E, J> =
+type _JSX_Props<E extends Element, J> =
   & {
     [K in keyof J]?: OptionalObs<J[K]>;
   }
   & {
     $init?: (element: E) => void;
+    $ref?: Ref<E>;
   }
   & ExtraProps;
 

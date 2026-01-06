@@ -11,13 +11,10 @@ export default class TypedEventEmitter<T extends EventParamsRecord> {
    * @param listener The function to run when the event is emitted.
    * @returns A function that removes the listener from the event.
    */
-  public on<K extends keyof T>(eventType: K, listener: Listener<T, K>): () => void {
-    if (!(eventType in this._listeners))
-      this._listeners[eventType] = new Set();
-
-    const listeners = this._listeners[eventType] as Set<Listener<T, K>>;
-    listeners.add(listener);
-    return () => listeners.delete(listener);
+  public on<K extends keyof T>(eventType: K, listener: Listener<T[K]>): () => void {
+    const listenerSet = (this._listeners[eventType] ??= new Set());
+    listenerSet.add(listener);
+    return () => listenerSet.delete(listener);
   }
 
   /**
@@ -34,7 +31,7 @@ export default class TypedEventEmitter<T extends EventParamsRecord> {
    * @param eventType The name of the event to listen for.
    * @returns A tuple containing a function to add a listener and another to emit an event.
    */
-  public createHandlers<K extends keyof T>(eventType: K): Handlers<T, K> {
+  public createHandlers<K extends keyof T>(eventType: K): HandlerTuple<T[K]> {
     return [
       (listener) => this.on(eventType, listener),
       (...args) => this.emit(eventType, ...args)
@@ -42,14 +39,12 @@ export default class TypedEventEmitter<T extends EventParamsRecord> {
   }
 }
 
+export type Listener<Args extends unknown[]> = (...args: Args) => unknown;
+export type OnFn<Args extends unknown[]> = (listener: Listener<Args>) => () => void;
+export type EmitFn<Args extends unknown[]> = (...args: Args) => void;
+export type HandlerTuple<Args extends unknown[]> = [on: OnFn<Args>, emit: EmitFn<Args>];
+
 export type EventParamsRecord = Record<string, unknown[]>;
-export type Listener<T extends EventParamsRecord, K extends keyof T> = (...args: T[K]) => unknown;
-
-export type Handlers<T extends EventParamsRecord, K extends keyof T> = [
-  on: (listener: Listener<T, K>) => () => void,
-  emit: (...args: T[K]) => void
-];
-
-export type TypedEventEmitterListeners<T extends EventParamsRecord> = {
-  [K in keyof T]?: Set<Listener<T, K>>;
+type TypedEventEmitterListeners<T extends EventParamsRecord> = {
+  [K in keyof T]?: Set<Listener<T[K]>>;
 };

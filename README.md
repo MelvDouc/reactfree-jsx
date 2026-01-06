@@ -125,3 +125,78 @@ const initDiv = (element: HTMLElement): void => {
 
 <div $init={initDiv}></div>;
 ```
+
+### The `$ref` prop
+
+It's possible to refer to an element indirectly using the utility function `createRef`.
+
+```tsx
+import { createRef } from "reactfree-jsx";
+
+const ref = createRef<HTMLDivElement>();
+
+const toggleActive = (): void => {
+  ref?.value?.classList.toggle("active");
+};
+
+<div className="active" $ref={ref}>
+  <button on:click={toggleActive}>Toggle active</button>
+</div>
+```
+
+## Extras
+
+### TypedEventEmitter
+
+An alternative to the native `EventTarget` class. Allows emitting and listening to events with typed parameters.
+
+```ts
+import { TypedEventEmitter } from "reactfree-jsx/extra";
+
+const emitter = new TypedEventEmitter<{
+  start: [date: Date];
+  end: [];
+}>();
+
+emitter.on("start", (date) => {
+  console.log(`start date = ${date}`);
+});
+
+emitter.emit("start", new Date());
+```
+
+### WebStore
+
+Handle `localStorage` and `sessionStorage` with the benefit of type safety.
+
+```ts
+import { WebStore } from "reactfree-jsx/extra";
+
+const store = new WebStore(localStorage, "todos", () => []);
+
+const todos = store.getData();
+store.setData([ { id: 1, task: "Finish writing docs." } ]);
+```
+
+### Router
+
+```tsx
+import { Router, Route } from "reactfree-jsx/extra/router";
+
+<Router>
+  <Route path="/(home)?" component={HomePage} />
+  <Route path="/profile/:id" component={ProfilePage} />
+</Router>
+```
+
+ProfilePage.tsx:
+
+```tsx
+export default function ProfilePage({ id }: {
+  id: string; // must match route path
+}) {
+  return (
+    <div>Profile id: {id}</div>
+  );
+}
+```

@@ -1,6 +1,7 @@
 import createElement from "$src/core/create-element.js";
 import createFragment from "$src/core/create-fragment.js";
 import obs, { type Observable as Obs, type OptionalObs } from "$src/core/state/obs.js";
+import { createRef, type Ref } from "$src/core/state/ref.js";
 import type { Component, ComponentChild, ComponentParentProps } from "$src/typings/component.js";
 import type { JSXProps, JSXPropsTagNameMap } from "$src/typings/intrinsic.js";
 
@@ -22,10 +23,12 @@ export {
   createElement,
   createFragment,
   obs,
+  createRef,
   type Component,
   type ComponentChild,
   type ComponentParentProps,
   type JSXProps,
   type Obs,
-  type OptionalObs
+  type OptionalObs,
+  type Ref
 };
