@@ -58,15 +58,15 @@ export default class RouterOutlet extends HTMLElement {
     this.eventEmitter.emit("navRequest", url, state, stateAction);
   }
 
-  private onNavRequest(listener: Listener<RouterOutletEvents, "navRequest">): VoidFunction {
+  private onNavRequest(listener: Listener<RouterOutletEvents["navRequest"]>): VoidFunction {
     return this.eventEmitter.on("navRequest", listener);
   }
 
-  private onNavStarted(listener: Listener<RouterOutletEvents, "navStarted">): VoidFunction {
+  private onNavStarted(listener: Listener<RouterOutletEvents["navStarted"]>): VoidFunction {
     return this.eventEmitter.on("navStarted", listener);
   }
 
-  private onNavComplete(listener: Listener<RouterOutletEvents, "navComplete">): VoidFunction {
+  private onNavComplete(listener: Listener<RouterOutletEvents["navComplete"]>): VoidFunction {
     return this.eventEmitter.on("navComplete", listener);
   }
 
@@ -136,6 +136,6 @@ export type RouterProps = {
    * @param err An error containing the URL and state of the route that wasn't found.
    */
   defaultComponent: (err: PageNotFoundError) => JSX.Element | Promise<JSX.Element>;
-  onNavStarted?: Listener<RouterOutletEvents, "navStarted">;
-  onNavComplete?: Listener<RouterOutletEvents, "navComplete">;
+  onNavStarted?: Listener<RouterOutletEvents["navStarted"]>;
+  onNavComplete?: Listener<RouterOutletEvents["navComplete"]>;
 };
